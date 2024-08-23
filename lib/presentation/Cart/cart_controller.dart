@@ -8,15 +8,13 @@ class CartController extends GetxController {
   void toggleCart(String itemName, String itemPrice, String itemImage) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
-      // Item already in the cart, remove it
       cartItems.removeAt(itemIndex);
     } else {
-      // Item not in the cart, add it
       cartItems.add({
         'name': itemName,
         'price': itemPrice,
         'image': itemImage,
-        'quantity': 1, // Initial quantity set to 1
+        'quantity': 1,
       });
     }
   }
@@ -24,10 +22,8 @@ class CartController extends GetxController {
   void updateQuantity(String itemName, int change) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
-      // Update quantity
       cartItems[itemIndex]['quantity'] += change;
 
-      // Remove item if quantity is zero or less
       if (cartItems[itemIndex]['quantity'] <= 0) {
         cartItems.removeAt(itemIndex);
       }

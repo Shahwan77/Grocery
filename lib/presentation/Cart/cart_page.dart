@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
 import 'package:lottie/lottie.dart';
 import '../../widgets/button/button.dart';
 import 'cart_controller.dart';
@@ -56,162 +57,162 @@ class CartPage extends StatelessWidget {
             ],
           );
         }
-        return ListView.builder(
-          itemCount: cartController.getCartItems().length,
-          itemBuilder: (context, index) {
-            final item = cartController.getCartItems()[index];
-            return Container(
-              margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading:  Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                          ),
-                          child: Image.asset(
-                            item['image'],
-                            width: 80, // Set width to match the container
-                            height: 60, // Set height to match the container
-                            //fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 34.h,
-                          right: 20.w,
-                          child: Container(
-                            height: 32,
-                            width: 34,
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: cartController.getCartItems().length,
+                itemBuilder: (context, index) {
+                  final item = cartController.getCartItems()[index];
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: ListTile(
+                      leading:  Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            height: 60,
+                            width: 80,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(30)
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
                             ),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.delete_outline,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                cartController.removeFromCart(
-                                  item['name'],
-                                  item['price'],
-                                  item['image'],
-                                );
-                              },
+                            child: Image.asset(
+                              item['image'],
+                              width: 80, // Set width to match the container
+                              height: 60, // Set height to match the container
+                              //fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    title: Text(
-                      item['name'],
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                            Text(
-                              item['price'],
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.sp,
+                          Positioned(
+                            bottom: 34.h,
+                            right: 20.w,
+                            child: Container(
+                              height: 32,
+                              width: 34,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  cartController.removeFromCart(
+                                    item['name'],
+                                    item['price'],
+                                    item['image'],
+                                  );
+                                },
                               ),
                             ),
-                            //Obx((){
+                          ),
+                        ],
+                      ),
+                      title: Text(
+                        item['name'],
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                              Text(
+                                item['price'],
+                                style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                              //Obx((){
 
-                            Padding(
-                              padding: const EdgeInsets.symmetric(),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.remove,
-                                        color: item['quantity'] > 1
-                                            ? Colors.red.shade800
-                                            : Colors.grey,
-                                      ),
-                                      onPressed: () {
-                                        if (item['quantity'] > 1) {
-                                          cartController.updateQuantity(
-                                              item['name'], -1);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: 5.w,),
-                                  Text(
-                                    '${item['quantity']}',
-                                    style: GoogleFonts.roboto(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                  SizedBox(width: 5.w,),
-                                  Container(
-                                    height: 40,
-                                    decoration: BoxDecoration(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.add,
-                                        color: item['quantity'] > 1
-                                            ? Colors.green.shade800
-                                            : Colors.grey,
                                       ),
-                                      onPressed: () {
-                                        cartController.updateQuantity(
-                                            item['name'], 1);
-                                      },
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.remove,
+                                          color: item['quantity'] > 1
+                                              ? Colors.red.shade800
+                                              : Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          if (item['quantity'] > 1) {
+                                            cartController.updateQuantity(
+                                                item['name'], -1);
+                                          }
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 5.w,),
+                                    Text(
+                                      '${item['quantity']}',
+                                      style: GoogleFonts.roboto(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.sp,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w,),
+                                    Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.add,
+                                          color: item['quantity'] > 1
+                                              ? Colors.green.shade800
+                                              : Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          cartController.updateQuantity(
+                                              item['name'], 1);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            // })
-                      ],
+                              // })
+                        ],
+                      ),
                     ),
-                    // trailing: IconButton(
-                    //   icon: Icon(
-                    //     Icons.delete_outline_outlined,
-                    //     color: Colors.green.shade800,
-                    //   ),
-                    //   onPressed: () {
-                    //     cartController.removeFromCart(
-                    //       item['name'],
-                    //       item['price'],
-                    //       item['image'],
-                    //     );
-                    //   },
-                    // ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
+              Button(
+                color: Colors.green.shade800,
+                size: Size(340.w, 45.h),
+                text: Text("Continue",style: TextStyle(fontSize: 18.sp,color: Colors.white),),
+                ontap: () {
+Get.to(LoginPage());
+                },),
+              SizedBox(height: 20.h,)
+            ],
+          ),
         );
       }),
     );

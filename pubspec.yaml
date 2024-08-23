@@ -44,6 +44,8 @@ dependencies:
   lottie:
   qr_code_scanner:
   share_plus:
+  intl_phone_field:
+
 
 dev_dependencies:
   flutter_test:
