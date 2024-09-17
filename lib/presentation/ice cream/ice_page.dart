@@ -17,9 +17,10 @@ class IceCreamPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          'Ice Cream Collection',
-          style: GoogleFonts.roboto(fontSize: 18.sp, fontWeight: FontWeight.w600),
+          'ICE CREAM COLLECTION',
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.green.shade800,
       ),
@@ -29,22 +30,22 @@ class IceCreamPage extends StatelessWidget {
             crossAxisCount: 2, // Number of columns in the grid
             crossAxisSpacing: 20.0, // Space between columns
             mainAxisSpacing: 40.0, // Space between rows
-            mainAxisExtent: 200
+            mainAxisExtent: 212
         ),
         itemCount:iceCreamItems.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               Container(
-                height: 200, // Container height
-                width: 160,  // Container width
+                height: 170.h, // Container height
+                width: 160.w,  // Container width
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
-                      blurRadius: 4.0,
+                      blurRadius: 4.r,
                       offset: Offset(0, 2),
                     ),
                   ],
@@ -65,13 +66,13 @@ class IceCreamPage extends StatelessWidget {
                       child: Image.asset(
                         iceCreamItems[index].imagePath,
                         fit: BoxFit.cover,
-                        height: 100, // Image height
-                        width: 100,  // Image width
+                        height: 80.h, // Image height
+                        width: 80.w,  // Image width
                       ),
                     ),
                     Text(
                       iceCreamItems[index].name,
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -85,7 +86,7 @@ class IceCreamPage extends StatelessWidget {
                         children: [
                           Text(
                             iceCreamItems[index].price,
-                            style: GoogleFonts.roboto(
+                            style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
                             ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
-import 'package:grocery/presentation/home_screen/page/home_page.dart';
+import 'package:grocery/presentation/pending.dart';
+import 'package:grocery/presentation/shaw.dart';
+import 'package:grocery/routes/app_pages.dart';
+import 'package:grocery/routes/app_routes.dart';
 
 void main() {
 
@@ -21,10 +23,11 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: GetMaterialApp(
         title: 'Flutter Demo',
-        //initialRoute:AppRoutes.SplashScreen,
-       // getPages: AppPages.Lists,
+       //home: BigBazr(),
+        initialRoute:AppRoutes.BottomNav,
+       getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,
-        home: CustomBottomNavBar(),
+       // home: CustomBottomNavBar(),
       ),
     );
   }

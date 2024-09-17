@@ -34,7 +34,7 @@ class Drop extends StatelessWidget {
                 fillColor: Colors.grey.shade200,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
                 hintText: 'Day',hintStyle: TextStyle(
@@ -65,7 +65,7 @@ class Drop extends StatelessWidget {
                 fillColor: Colors.grey.shade200,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 3.w),
                 hintText: 'Month',hintStyle:TextStyle(
@@ -96,7 +96,7 @@ class Drop extends StatelessWidget {
                 fillColor: Colors.grey.shade200,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
                 hintText: 'Year',hintStyle: TextStyle(

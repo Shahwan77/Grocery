@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/widgets/drawer/cus_drawer.dart';
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      surfaceTintColor: Colors.white,
       backgroundColor: Colors.white,
       elevation: 0,
       toolbarHeight: toolbarHeight,
@@ -27,13 +29,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(30.r),
                   color: Colors.grey.shade100,
                 ),
                 child: Builder(
                   builder: (context) {
                     return IconButton(
-                      icon: Icon(Icons.menu, color: Colors.green.shade800),
+                      icon: SvgPicture.asset(
+                        'assets/menu1.svg',
+                        color: Colors.green.shade800,
+                        height: 30,
+                        width: 30,
+                      ),
                       onPressed: () {
                         _openCustomDrawer(context);
                       },
@@ -57,14 +64,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(
                     '24 | United Arab Emirates |',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     '13 | 4',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -76,14 +83,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(
                     '0.00',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     'AED',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -101,10 +108,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     hintText: 'Search here...',
                     hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide.none,
                     ),
-                    suffixIcon: Icon(Icons.search, color: Colors.green.shade800),
+                    suffixIcon:
+                        Icon(Icons.search, color: Colors.green.shade800),
                     filled: true,
                     fillColor: Colors.grey.shade100,
                     contentPadding: EdgeInsets.symmetric(
@@ -124,12 +132,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     // Handle the scanned data here
                   }
                 },
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 child: Container(
-                  height: 54,
-                  width: 54,
+                  height: 46.h,
+                  width: 48.w,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                     color: Colors.grey.shade100,
                   ),
                   child: Icon(
@@ -159,6 +167,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
 }
+
 void _openCustomDrawer(BuildContext context) {
   Navigator.of(context).push(
     PageRouteBuilder(
@@ -188,4 +197,3 @@ class CustomDrawerOverlay extends StatelessWidget {
     );
   }
 }
-

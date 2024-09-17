@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Button extends StatelessWidget {
   final Widget text;
@@ -14,7 +15,7 @@ class Button extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           fixedSize:size,
           backgroundColor:color,
-          shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(30.r)),
         ),
         onPressed: ontap,
         child: text

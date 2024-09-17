@@ -41,7 +41,7 @@ class TopDiscountPage extends StatelessWidget {
                           width: 50.w,
                           height: 50.w,
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
+                            strokeWidth: 2.w,
                             color: Colors.green.shade800,
                           ),
                         ),
@@ -85,113 +85,118 @@ class TopDiscountPage extends StatelessWidget {
                         color: Colors.grey.shade400,
                       )
                     ],
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15.r),
                     border: Border.all(color: Colors.grey.shade100),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(() {
-                            return GestureDetector(
-                              onTap: () {
-                                final item = {
-                                  'name': toptext[index],
-                                  'price': topPrice[index],  // Assuming you have a list of prices
-                                  'image': topImage[index],  // Assuming you have a list of images
-                                };
-
-                                favoriteController.toggleFavorite(
-                                  item['name']!,
-                                  item['price']!,
-                                  item['image']!,
-                                );
-
-                                Get.snackbar(
-                                  favoriteController.isFavorite(item['name']!)
-                                      ? 'Added to Favorites'
-                                      : 'Removed from Favorites',
-                                  '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
-                              },
-                              child: Icon(
-                                favoriteController.isFavorite(toptext[index])
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: favoriteController.isFavorite(toptext[index])
-                                    ? Colors.red
-                                    : Colors.grey,
-                              ),
-                            );
-                          }),
-                          Icon(
-                            Icons.info_outline,
-                            color: Colors.green.shade800,
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Image.asset(
-                          topImage[index],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 8.0),
-                        child: Text(
-                          toptext[index],
-                          style: GoogleFonts.roboto(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
-                        child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              topPrice[index],
-                              style: GoogleFonts.roboto(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
                             Obx(() {
                               return GestureDetector(
                                 onTap: () {
-                                  cartController.toggleCart(
-                                    toptext[index],
-                                    topPrice[index],
-                                    topImage[index],
-                                  );                                  Get.snackbar(
-                                    cartController.isInCart(toptext[index])
-                                        ? 'Added to Cart'
-                                        : 'Removed from Cart',
-                                    '${toptext[index]} has been ${cartController.isInCart(toptext[index]) ? 'added to' : 'removed from'} your cart.',
-                                    snackPosition: SnackPosition.BOTTOM,
+                                  final item = {
+                                    'name': toptext[index],
+                                    'price': topPrice[index],  // Assuming you have a list of prices
+                                    'image': topImage[index],  // Assuming you have a list of images
+                                  };
+
+                                  favoriteController.toggleFavorite(
+                                    item['name']!,
+                                    item['price']!,
+                                    item['image']!,
+                                  );
+
+                                  Get.snackbar(
+                                    favoriteController.isFavorite(item['name']!)
+                                        ? 'Added to Favorites'
+                                        : 'Removed from Favorites',
+                                    '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                    snackPosition: SnackPosition.TOP,
                                   );
                                 },
                                 child: Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: cartController.isInCart(toptext[index])
-                                      ? Colors.green.shade800
+                                  favoriteController.isFavorite(toptext[index])
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: favoriteController.isFavorite(toptext[index])
+                                      ? Colors.red
                                       : Colors.grey,
                                 ),
                               );
                             }),
+                            Icon(
+                              Icons.info_outline,
+                              color: Colors.green.shade800,
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Image.asset(
+                            topImage[index],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 8.0),
+                          child: Text(
+                            toptext[index],
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 8.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                topPrice[index],
+                                style: GoogleFonts.roboto(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Obx(() {
+                                return GestureDetector(
+                                  onTap: () {
+                                    cartController.toggleCart(
+                                      toptext[index],
+                                      topPrice[index],
+                                      topImage[index],
+                                    );                                  Get.snackbar(
+                                      cartController.isInCart(toptext[index])
+                                          ? 'Added to Cart'
+                                          : 'Removed from Cart',
+                                      '${toptext[index]} has been ${cartController.isInCart(toptext[index]) ? 'added to' : 'removed from'} your cart.',
+                                      snackPosition: SnackPosition.TOP,
+                                    );
+                                  },
+                                  child: Icon(
+                                    cartController.isInCart(toptext[index])
+                                        ? Icons.shopping_cart
+                                        : Icons.shopping_cart_outlined,
+                                    color: cartController.isInCart(toptext[index])
+                                        ? Colors.green.shade800
+                                        : Colors.grey,
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

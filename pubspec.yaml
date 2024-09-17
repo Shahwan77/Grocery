@@ -45,6 +45,9 @@ dependencies:
   qr_code_scanner:
   share_plus:
   intl_phone_field:
+  flutter_svg:
+  pinput:
+
 
 
 dev_dependencies:

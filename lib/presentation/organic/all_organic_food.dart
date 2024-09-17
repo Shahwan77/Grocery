@@ -1,156 +1,166 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import 'organic_model.dart';
+import 'organic_controller.dart';
 
 class AllOrganicFood extends StatelessWidget {
-  AllOrganicFood({super.key});
+  final int categoryId;
+
+  AllOrganicFood({super.key, required this.categoryId});
+
+  final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
 
-
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.all(8.0),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns in the grid
-          crossAxisSpacing: 20.0, // Space between columns
-          mainAxisSpacing: 40.0, // Space between rows
-          mainAxisExtent: 240),
-      itemCount: organicItems.length,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            Container(
-              height: 240, // Container height
-              width: 190, // Container width
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Obx(() {
-                          return GestureDetector(
-                            onTap: () {
-                              final item = {
-                                'name': organicItems[index].name,
-                                'price': organicItems[index].price,  // Assuming you have a list of prices
-                                'image': organicItems[index].imagePath,  // Assuming you have a list of images
-                              };
+    // Fetch organic foods for the given category ID
+    organicFoodController.fetchOrganicFoods(2);
 
-                              favoriteController.toggleFavorite(
-                                item['name']!,
-                                item['price']!,
-                                item['image']!,
-                              );
+    return Obx(() {
+      if (organicFoodController.organicItems.isEmpty) {
+        return Center(child: CircularProgressIndicator());
+      }
 
-                              Get.snackbar(
-                                favoriteController.isFavorite(item['name']!)
-                                    ? 'Added to Favorites'
-                                    : 'Removed from Favorites',
-                                '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-                            },
-                            child: Icon(
-                              favoriteController.isFavorite(organicItems[index].name)
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: favoriteController.isFavorite(organicItems[index].name)
-                                  ? Colors.red
-                                  : Colors.grey,
-                            ),
-                          );
-                        }),
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.green.shade800,
-                        ),
-                      ],
+      return GridView.builder(
+        padding: EdgeInsets.all(8.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 20.0,
+          mainAxisSpacing: 50.0,
+          mainAxisExtent: 220,
+        ),
+        itemCount: organicFoodController.organicItems.length,
+        itemBuilder: (context, index) {
+          final item = organicFoodController.organicItems[index];
+          return Column(
+            children: [
+              Container(
+                height: 210,
+                width: 190,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
                     ),
-                  ),
-                  Center(
-                    child: Image.asset(
-                      organicItems[index].imagePath, // Use imagePath from model
-                      fit: BoxFit.cover,
-                      height: 100, // Image height
-                      width: 100, // Image width
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Text(
-                      organicItems[index].name,
-                      style: GoogleFonts.roboto(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          organicItems[index].price,
-                          style: GoogleFonts.roboto(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Obx(() {
+                            return GestureDetector(
+                              onTap: () {
+                                final itemData = {
+                                  'name': item.name,
+                                  'price': item.price,
+                                  'image': item.image,
+                                };
+
+                                favoriteController.toggleFavorite(
+                                  itemData['name']!,
+                                  itemData['price']!,
+                                  itemData['image']!,
+                                );
+
+                                Get.snackbar(
+                                  favoriteController.isFavorite(itemData['name']!)
+                                      ? 'Added to Favorites'
+                                      : 'Removed from Favorites',
+                                  '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              },
+                              child: Icon(
+                                favoriteController.isFavorite(item.name)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: favoriteController.isFavorite(item.name)
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                            );
+                          }),
+                          Icon(
+                            Icons.info_outline,
+                            color: Colors.green.shade800,
                           ),
-                        ),
-                        Obx(() {
-                          return GestureDetector(
-                            onTap: () {
-                              cartController.toggleCart(
-                                organicItems[index].name,
-                                organicItems[index].price,
-                                organicItems[index].imagePath,
-                              );
-                              Get.snackbar(
-                                cartController.isInCart(
-                                  organicItems[index].name,
-                                )
-                                    ? 'Added to Cart'
-                                    : 'Removed from Cart',
-                                '${organicItems[index].name} has been ${cartController.isInCart(
-                                  organicItems[index].name,
-                                ) ? 'added to' : 'removed from'} your cart.',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-                            },
-                            child: Icon(
-                              Icons.shopping_cart_outlined,
-                              color: cartController.isInCart(
-                                organicItems[index].name,
-                              )
-                                  ? Colors.green.shade800
-                                  : Colors.grey,
+                        ],
+                      ),
+                    ),
+                    Center(
+                      child: Image.network(
+                        'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                        fit: BoxFit.cover,
+                        height: 80, // Image height
+                        width: 80, // Image width
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                      child: Text(
+                        item.name,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.price,
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
                             ),
-                          );
-                        }),
-                      ]),
-                ],
+                          ),
+                          Obx(() {
+                            return GestureDetector(
+                              onTap: () {
+                                cartController.toggleCart(
+                                  item.name,
+                                  item.price,
+                                  item.image,
+                                );
+                                Get.snackbar(
+                                  cartController.isInCart(item.name)
+                                      ? 'Added to Cart'
+                                      : 'Removed from Cart',
+                                  '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              },
+                              child: Icon(
+                                Icons.shopping_cart_outlined,
+                                color: cartController.isInCart(item.name)
+                                    ? Colors.green.shade800
+                                    : Colors.grey,
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    );
+            ],
+          );
+        },
+      );
+    });
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignupController extends GetxController {
   RxBool isChecked = false.obs;
   RxBool obsecure = true.obs;
   var showAlert = false.obs;
+  var showOtpField = false.obs;
+
   final TextEditingController passwordController = TextEditingController();
 
   void togglePasswordVisibility() {

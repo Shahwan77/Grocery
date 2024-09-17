@@ -1,156 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../home_screen/models/categories_model.dart';
+import 'category_controller.dart';
 
 class SeeAllPage extends StatelessWidget {
   const SeeAllPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<String> imageUrls = [
-      "assets/cat2.png", "assets/cat5.png",
-      "assets/cat3.png", "assets/cat6.png",
-      "assets/cat4.png", "assets/cat7.png",
-      "assets/cat2.png", "assets/cat5.png",
-      "assets/cat3.png", "assets/cat6.png",
-      "assets/cat4.png", "assets/cat7.png",
-    ];
+    final CategoryController categoryController = Get.put(CategoryController());
 
-    return DefaultTabController(
-      length: 2, // Number of tabs
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.green.shade800,
-          title: Text('See All'),
 
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.green.shade800,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text('See All',
+          style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white),
         ),
-        body: Column(
-          children: [
-            Container(
-              color: Colors.white,
-              child: TabBar(
-                indicatorColor: Colors.green.shade800,
-                tabs: [
-                  Tab(text: 'Tab 1'),
-                  Tab(text: 'Tab 2'),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // First tab content
-                  GridView.builder(
-                    padding: EdgeInsets.all(8.0),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Number of columns in the grid
-                      crossAxisSpacing: 20.0, // Space between columns
-                      mainAxisSpacing: 40.0, // Space between rows
-                      mainAxisExtent: 200
+      ),
+      body: GridView.builder(
+        padding: EdgeInsets.all(8.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 40.0,
+            mainAxisExtent: 180),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return Column(
+            children: [
+              Container(
+                height: 144.h,
+                width: 140.w,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.green.shade800,width: 1),
+                  borderRadius: BorderRadius.circular(20),
+
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Image.asset(
+                          item.imagePath,
+                          fit: BoxFit.cover,
+                          height: 100, // Image height
+                          width: 100, // Image width
+                        ),
+                      ),
                     ),
-                    itemCount: imageUrls.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Container(
-                            height: 200, // Container height
-                            width: 160,  // Container width
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4.0,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(Icons.favorite_border, color: Colors.green),
-                                      Icon(Icons.info_outline, color: Colors.green),
-                                    ],
-                                  ),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    imageUrls[index],
-                                    fit: BoxFit.cover,
-                                    height: 100, // Image height
-                                    width: 100,  // Image width
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  // Second tab content
-                  GridView.builder(
-                    padding: EdgeInsets.all(8.0),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Number of columns in the grid
-                      crossAxisSpacing: 20.0, // Space between columns
-                      mainAxisSpacing: 40.0, // Space between rows
-                    ),
-                    itemCount: imageUrls.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Container(
-                            height: 200, // Container height
-                            width: 160,  // Container width
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4.0,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(Icons.favorite_border, color: Colors.green),
-                                      Icon(Icons.info_outline, color: Colors.green),
-                                    ],
-                                  ),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    imageUrls[index],
-                                    fit: BoxFit.cover,
-                                    height: 100, // Image height
-                                    width: 100,  // Image width
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(top: 24.7.h),
+                      child: Container(
+                        height: 30,
+                        width: 140.w,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade800,
+                          borderRadius: BorderRadius.vertical(bottom:Radius.circular(18))
+                        ),
+                          child: Center(child: Text(item.name,style: TextStyle(fontSize: 10,color: Colors.white),))),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }
 }
+

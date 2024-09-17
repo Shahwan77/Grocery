@@ -30,7 +30,7 @@ final List<ItemModel> items = [
   ItemModel(name: 'FROZEN ICE CREAM', imagePath: 'assets/cat1.png'),
   ItemModel(name: 'ORGANIC &\nHEALTHY FOOD', imagePath: 'assets/cat2.png'),
   ItemModel(name: 'BAKERY PRODUCTS', imagePath: 'assets/cat3.png'),
-  ItemModel(name: 'FRUITS &\n VEGETABLES', imagePath: 'assets/cat4.png'),
+  ItemModel(name: 'FRUITS & VEGETABLES', imagePath: 'assets/cat4.png'),
   ItemModel(name: 'DAIRY & EGGS', imagePath: 'assets/cat5.png'),
   ItemModel(name: 'TEA & COFFEE', imagePath: 'assets/cat6.png'),
   ItemModel(name: 'WATER & DRINK', imagePath: 'assets/cat7.png'),

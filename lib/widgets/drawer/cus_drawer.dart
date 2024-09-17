@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
-import 'package:grocery/presentation/home_screen/page/home_page.dart';
-
+import '../../presentation/Track & History/track_history.dart';
 import '../../presentation/favorite/fav_page.dart';
 import 'controller.dart';
 
@@ -20,7 +18,7 @@ class CusDrawer extends StatelessWidget {
         children: [
           // Drawer Header
           Container(
-            height: 189,
+            height: 180.h,
             child: DrawerHeader(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -33,8 +31,8 @@ class CusDrawer extends StatelessWidget {
                 ),
               ),
               child: CircleAvatar(
-                radius: 30.0,
-                backgroundColor: Colors.transparent,
+                radius: 15.r,
+                backgroundColor: Colors.white,
               ),
             ),
           ),
@@ -50,6 +48,7 @@ class CusDrawer extends StatelessWidget {
           DrawerItem(Icons.newspaper, 'Return Policies', 8),
           DrawerItem(Icons.login_outlined, 'Logout', 9),
 
+          SizedBox(height: 10.h,),
           // Container with 4 images
           Column(
             children: [
@@ -59,14 +58,14 @@ class CusDrawer extends StatelessWidget {
                   border: Border.all(color: Colors.grey),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding:  EdgeInsets.symmetric(vertical: 10.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Image.asset('assets/gro5.png', width: 30, height: 30),
-                      Image.asset('assets/gro6.png', width: 30, height: 30),
-                      Image.asset('assets/gro7.png', width: 30, height: 30),
-                      Image.asset('assets/gro8.png', width: 30, height: 30),
+                      Image.asset('assets/gro5.png', width: 30.w, height: 30.h),
+                      Image.asset('assets/gro6.png', width: 30.w, height: 30.h),
+                      Image.asset('assets/gro7.png', width: 30.w, height: 30.h),
+                      Image.asset('assets/gro8.png', width: 30.w, height: 30.h),
                     ],
                   ),
                 ),
@@ -82,20 +81,24 @@ class CusDrawer extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: "Terms and Conditions, Privacy\npolicy, Return policy, ",
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           WidgetSpan(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 2),
+                            alignment: PlaceholderAlignment.middle,
+                            child: GestureDetector(
+                              onTap: () {
+                                print('see all policies');
+                              },
                               child: Text(
-                                "see all policies",
-                                style: GoogleFonts.roboto(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                'see all policies',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
                                   color: Colors.blue.shade800,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
@@ -117,7 +120,7 @@ class CusDrawer extends StatelessWidget {
   Widget DrawerItem(IconData icon, String title, int index) {
     return Obx(() {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding:  EdgeInsets.symmetric(horizontal: 10.w),
         child: Container(
           decoration: BoxDecoration(
             color: drawerController.selectedIndex.value == index
@@ -126,9 +129,9 @@ class CusDrawer extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(
               color: drawerController.selectedIndex.value == index && index == 9
-                  ? Colors.red.shade800
+                  ? Colors.transparent
                   : Colors.transparent,
-              width: 4.0,
+              width: 4.w,
             ),
           ),
           child: Column(
@@ -137,9 +140,9 @@ class CusDrawer extends StatelessWidget {
                 leading: Icon(icon, color: Colors.green.shade800),
                 title: Text(
                   title,
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                   selectionColor: Colors.green.shade800,
                 ),
@@ -148,10 +151,13 @@ class CusDrawer extends StatelessWidget {
                     : Colors.transparent,
                 onTap: () {
                   drawerController.setSelectedIndex(index);
+
                   if (index == 3) {
                     Get.to(() => FavoritesPage());  // Navigate to FavoritesPage
+                  } else if (index == 4) {
+                    Get.to(() => TrackHistory());  // Navigate to TrackHistory
                   }
-                  // Handle navigation or other logic
+                  // Handle other navigation or logic
                 },
               ),
             ],

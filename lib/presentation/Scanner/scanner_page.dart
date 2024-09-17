@@ -18,8 +18,15 @@ class ScannerPage extends StatelessWidget {
           Expanded(
             flex: 1,
             child: QRView(
+              cameraFacing: CameraFacing.back,
               key: controller.qrKey,
               onQRViewCreated: controller.onQRViewCreated,
+              overlay: QrScannerOverlayShape(
+                borderColor: Colors.green,
+                borderRadius: 10.r,
+                borderLength:30.h,
+                borderWidth: 10.w,
+              ),
             ),
           ),
           Expanded(

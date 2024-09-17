@@ -89,7 +89,7 @@ class PopularProductPage extends StatelessWidget {
                                 width: 50.w,
                                 height: 50.w,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: 2.w,
                                   color: Colors.green.shade800,
                                 ),
                               ),
@@ -109,11 +109,11 @@ class PopularProductPage extends StatelessWidget {
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: Colors.green.shade800,
-                            width: 2,
+                            width: 2.w,
                           ),
                         ),
                         child: Icon(
-                          size: 40,
+                          size: 40.sp,
                           Icons.arrow_forward_ios,
                           color: Colors.green.shade800,
                         ),
@@ -127,116 +127,121 @@ class PopularProductPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [BoxShadow(color: Colors.grey.shade400)],
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15.r),
                     border: Border.all(color: Colors.grey.shade100),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(() {
-                            return GestureDetector(
-                              onTap: () {
-                                final item = {
-                                  'name': poptext[index],
-                                  'price': popPrice[index],  // Assuming you have a list of prices
-                                  'image': popImage[index],  // Assuming you have a list of images
-                                };
-
-                                favoriteController.toggleFavorite(
-                                  item['name']!,
-                                  item['price']!,
-                                  item['image']!,
-                                );
-
-                                Get.snackbar(
-                                  favoriteController.isFavorite(item['name']!)
-                                      ? 'Added to Favorites'
-                                      : 'Removed from Favorites',
-                                  '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
-                              },
-                              child: Icon(
-                                favoriteController.isFavorite(poptext[index])
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: favoriteController.isFavorite(poptext[index])
-                                    ? Colors.red
-                                    : Colors.grey,
-                              ),
-                            );
-                          }),
-                          Icon(
-                            Icons.info_outline,
-                            color: Colors.green.shade800,
-                          ),
-                        ],
-                      ),
-
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                popImage[index],
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          poptext[index],
-                          style: GoogleFonts.roboto(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              popPrice[index],
-                              style: GoogleFonts.roboto(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
                             Obx(() {
                               return GestureDetector(
                                 onTap: () {
-                                  cartController.toggleCart(
-                                    poptext[index],
-                                    popPrice[index],
-                                    popImage[index],
+                                  final item = {
+                                    'name': poptext[index],
+                                    'price': popPrice[index],  // Assuming you have a list of prices
+                                    'image': popImage[index],  // Assuming you have a list of images
+                                  };
+
+                                  favoriteController.toggleFavorite(
+                                    item['name']!,
+                                    item['price']!,
+                                    item['image']!,
                                   );
+
                                   Get.snackbar(
-                                    cartController.isInCart(poptext[index])
-                                        ? 'Added to Cart'
-                                        : 'Removed from Cart',
-                                    '${poptext[index]} has been ${cartController.isInCart(poptext[index]) ? 'added to' : 'removed from'} your cart.',
-                                    snackPosition: SnackPosition.BOTTOM,
+                                    favoriteController.isFavorite(item['name']!)
+                                        ? 'Added to Favorites'
+                                        : 'Removed from Favorites',
+                                    '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                    snackPosition: SnackPosition.TOP,
                                   );
                                 },
                                 child: Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: cartController.isInCart(poptext[index])
-                                      ? Colors.green.shade800
+                                  favoriteController.isFavorite(poptext[index])
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: favoriteController.isFavorite(poptext[index])
+                                      ? Colors.red
                                       : Colors.grey,
                                 ),
                               );
                             }),
+                            Icon(
+                              Icons.info_outline,
+                              color: Colors.green.shade800,
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  popImage[index],
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            poptext[index],
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                popPrice[index],
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Obx(() {
+                                return GestureDetector(
+                                  onTap: () {
+                                    cartController.toggleCart(
+                                      poptext[index],
+                                      popPrice[index],
+                                      popImage[index],
+                                    );
+                                    Get.snackbar(
+                                      cartController.isInCart(poptext[index])
+                                          ? 'Added to Cart'
+                                          : 'Removed from Cart',
+                                      '${poptext[index]} has been ${cartController.isInCart(poptext[index]) ? 'added to' : 'removed from'} your cart.',
+                                      snackPosition: SnackPosition.TOP,
+                                    );
+                                  },
+                                  child: Icon(
+                                    cartController.isInCart(poptext[index])
+                                        ? Icons.shopping_cart
+                                        : Icons.shopping_cart_outlined,
+                                    color: cartController.isInCart(poptext[index])
+                                        ? Colors.green
+                                        : Colors.grey,
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

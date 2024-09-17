@@ -53,14 +53,14 @@ class CustomTextfield extends StatelessWidget {
         filled: true,
         fillColor: fillclr,
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
+          borderSide:BorderSide(style: BorderStyle.solid),
           borderRadius: BorderRadius.circular(bdrds),
         ),
         labelText: lbtxt,
-        //labelStyle: Labelstyle.Default_txt,
+       // labelStyle:TextStyle(color: Colors.black,fontWeight: FontWeight.w600,),
         focusColor: fcsclr,
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey,fontWeight: FontWeight.w400),
+       // hintStyle: TextStyle(color: Colors.grey,fontWeight: FontWeight.w400),
         prefix: Text(pref ?? ''),
 
         border: OutlineInputBorder(

@@ -6,35 +6,38 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Cart/cart_controller.dart';
+import '../favorite/fav_controller.dart';
 import 'organic_model.dart';
 
 class Spread extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
+  final FavoriteController favoriteController = Get.put(FavoriteController());
+
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: EdgeInsets.all(9.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Number of columns in the grid
-        crossAxisSpacing: 20.0, // Space between columns
-        mainAxisSpacing: 40.0, // Space between rows
-        mainAxisExtent: 240,
+        crossAxisCount: 2,
+        crossAxisSpacing: 20.0,
+        mainAxisSpacing: 40.0,
+        mainAxisExtent: 250,
       ),
       itemCount: imageUrls.length,
       itemBuilder: (context, index) {
         return Column(
           children: [
             Container(
-              height: 240, // Container height
-              width: 190, // Container width
+              height: 200.h, // Container height
+              width: 190.w, // Container width
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(8.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,
-                    blurRadius: 4.0,
+                    blurRadius: 4.r,
                     offset: Offset(0, 2),
                   ),
                 ],
@@ -44,13 +47,45 @@ class Spread extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.favorite_border,
-                            color: Colors.green),
-                        Icon(Icons.info_outline,
-                            color: Colors.green),
+                        Obx(() {
+                          return GestureDetector(
+                            onTap: () {
+                              final item = {
+                                'name': text1[index],
+                                'price': Price1[index],  // Assuming you have a list of prices
+                                'image': imageUrls[index],  // Assuming you have a list of images
+                              };
+
+                              favoriteController.toggleFavorite(
+                                item['name']!,
+                                item['price']!,
+                                item['image']!,
+                              );
+
+                              Get.snackbar(
+                                favoriteController.isFavorite(item['name']!)
+                                    ? 'Added to Favorites'
+                                    : 'Removed from Favorites',
+                                '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            },
+                            child: Icon(
+                              favoriteController.isFavorite(text1[index])
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: favoriteController.isFavorite(text1[index])
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                          );
+                        }),
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.green.shade800,
+                        ),
                       ],
                     ),
                   ),
@@ -59,15 +94,15 @@ class Spread extends StatelessWidget {
                       imageUrls[
                       index], // Use imagePath from model
                       fit: BoxFit.cover,
-                      height: 100, // Image height
-                      width: 100, // Image width
+                      height: 80.h, // Image height
+                      width: 80.w, // Image width
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(7.0),
                     child: Text(
                       text1[index],
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
                           fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -76,7 +111,7 @@ class Spread extends StatelessWidget {
                       children: [
                         Text(
                           Price1[index],
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
                           ),

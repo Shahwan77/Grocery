@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 class CartController extends GetxController {
   var cartItems = <Map<String, dynamic>>[].obs;
+  int get uniqueItemCount => cartItems.length;
+
 
   int get itemCount => cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
 
@@ -26,6 +28,9 @@ class CartController extends GetxController {
 
       if (cartItems[itemIndex]['quantity'] <= 0) {
         cartItems.removeAt(itemIndex);
+      } else {
+        // Trigger an update to ensure the UI is refreshed
+        cartItems.refresh();
       }
     }
   }
@@ -44,4 +49,5 @@ class CartController extends GetxController {
       cartItems.removeAt(itemIndex);
     }
   }
+
 }

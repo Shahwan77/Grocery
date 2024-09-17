@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 50),
+                  padding:  EdgeInsets.only(right: 50),
                   child: Text(
                     'ORDER YOUR CUSTOMIZED CAKE !!!',
                     style: GoogleFonts.roboto(
@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                   child: Container(
                     height: 150.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       color: Colors.green,
                       image: DecorationImage(
                         image: AssetImage('assets/gro4.png'),

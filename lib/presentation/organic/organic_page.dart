@@ -24,14 +24,16 @@ class OrganicPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.white),
           backgroundColor: Colors.green.shade800,
-          title: Text('ORGANIC & HEALTHY FOOD'),
+          title: Text('ORGANIC & HEALTHY FOOD',style: TextStyle(color: Colors.white),),
         ),
         body: Column(
           children: [
             Container(
               color: Colors.white,
               child: TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
                 indicatorColor: Colors.green.shade800,
                 labelPadding: EdgeInsets.all(8),
                 isScrollable: true,
@@ -59,7 +61,7 @@ class OrganicPage extends StatelessWidget {
               child: TabBarView(
                 children: [
                   // First tab content
-                  AllOrganicFood(),
+                  AllOrganicFood(categoryId: 2,),
                   // Second tab content
                   RiceCakes(),
                   // Third tab content

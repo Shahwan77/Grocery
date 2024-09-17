@@ -23,14 +23,14 @@ class MostPopularPage extends StatelessWidget {
             children: [
               Text(
                 "Most Popular Categories",
-                style: GoogleFonts.roboto(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18.sp,
                 ),
               ),
               Text(
                 "See all",
-                style: GoogleFonts.roboto(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 14.sp,
                   color: Colors.green.shade800,
@@ -53,7 +53,7 @@ class MostPopularPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [BoxShadow(color: Colors.grey)],
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(15.r),
                   border: Border.all(color: Colors.grey.shade100),
                   image: DecorationImage(
                     image: AssetImage(item.imagePath1),
@@ -65,7 +65,7 @@ class MostPopularPage extends StatelessWidget {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(15.r),
                         ),
                       ),
                     ),
@@ -107,7 +107,7 @@ class MostPopularPage extends StatelessWidget {
                         color: Colors.grey.shade400,
                       )
                     ],
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15.r),
                     border: Border.all(color: Colors.grey.shade100),
                   ),
                   child: Column(
@@ -131,11 +131,11 @@ class MostPopularPage extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 8.0),
+                        padding:  EdgeInsets.symmetric(
+                            vertical: 8.h, horizontal: 8.w),
                         child: Text(
                           msttext[index],
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -143,8 +143,8 @@ class MostPopularPage extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
+                        padding:  EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 8.h),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

@@ -30,22 +30,22 @@ class TopDiscountView extends StatelessWidget {
             crossAxisCount: 2, // Number of columns in the grid
             crossAxisSpacing: 20.0, // Space between columns
             mainAxisSpacing: 40.0, // Space between rows
-            mainAxisExtent: 200
+            mainAxisExtent: 240
         ),
         itemCount:topImage.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               Container(
-                height: 200, // Container height
-                width: 160,  // Container width
+                height: 170.h, // Container height
+                width: 160.w,  // Container width
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
-                      blurRadius: 4.0,
+                      blurRadius: 4.r,
                       offset: Offset(0, 2),
                     ),
                   ],
@@ -77,7 +77,7 @@ class TopDiscountView extends StatelessWidget {
                                       ? 'Added to Favorites'
                                       : 'Removed from Favorites',
                                   '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                  snackPosition: SnackPosition.BOTTOM,
+                                  snackPosition: SnackPosition.TOP,
                                 );
                               },
                               child: Icon(
@@ -101,8 +101,8 @@ class TopDiscountView extends StatelessWidget {
                       child: Image.asset(
                         topImage[index],
                         fit: BoxFit.cover,
-                        height: 100, // Image height
-                        width: 100,  // Image width
+                        height: 80.h, // Image height
+                        width: 80.w,  // Image width
                       ),
                     ),
                     Text(
@@ -121,7 +121,7 @@ class TopDiscountView extends StatelessWidget {
                         children: [
                           Text(
                             topPrice[index],
-                            style: GoogleFonts.roboto(
+                            style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
                             ),
@@ -138,7 +138,7 @@ class TopDiscountView extends StatelessWidget {
                                       ? 'Added to Cart'
                                       : 'Removed from Cart',
                                   '${toptext[index]} has been ${cartController.isInCart(toptext[index]) ? 'added to' : 'removed from'} your cart.',
-                                  snackPosition: SnackPosition.BOTTOM,
+                                  snackPosition: SnackPosition.TOP,
                                 );
                               },
                               child: Icon(

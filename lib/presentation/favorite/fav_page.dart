@@ -12,11 +12,13 @@ class FavoritesPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Favorites',
           style: GoogleFonts.roboto(
             fontWeight: FontWeight.w600,
             fontSize: 18.sp,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.green.shade800,
@@ -42,10 +44,10 @@ class FavoritesPage extends StatelessWidget {
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: ListTile(
-                  leading: Image.asset(
+                  leading: Image.network(
                     item['image']!,
                     width: 50.w,
                     height: 50.h,

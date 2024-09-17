@@ -8,7 +8,8 @@ class SearchPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        toolbarHeight: 100.h,
+        backgroundColor: Colors.green.shade800,
         title: Column(
           children: [
             TextField(
@@ -16,7 +17,7 @@ class SearchPage extends StatelessWidget {
                 hintText: 'Search here...',
                 hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   borderSide: BorderSide.none,
                 ),
                 suffixIcon: Icon(Icons.search, color: Colors.green.shade800),

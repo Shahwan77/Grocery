@@ -29,7 +29,7 @@ class OrganicModel {
 // ice_cream_data.dart
 final List< OrganicModel> organicItems = [
   OrganicModel(name: 'Chocofun Coolchoc Coconut Bars 175Gm', imagePath: 'assets/org1.png', price: '9.50 AED'),
-  OrganicModel(name: 'Almarai Mixed Fruit Juice with Mango-no added...', imagePath: 'assets/org2.png', price: '9.95 AED'),
+  OrganicModel(name: 'Almarai Mixed Fruit Juice with Mango', imagePath: 'assets/org2.png', price: '9.95 AED'),
   OrganicModel(name: 'Organic Tattva Urad Dal White Split 1Kg', imagePath: 'assets/org3.png', price: '16.50 AED'),
   OrganicModel(name: 'Kelloggs Coco Pops 375Gm@ 20%Off', imagePath: 'assets/org4.png', price: '16.95 AED'),
   OrganicModel(name: 'Essentially Beet Aid Cold Pressed Juice 250 Ml', imagePath: 'assets/org5.png', price: '14.99 AED'),
@@ -142,4 +142,10 @@ final topPrice=[
 ];
 final toptext = [
   'Honey Cake 500GM'
+];
+
+final promo = [
+  'assets/gro2.png',
+  'assets/gro3.png',
+  'assets/gro4.png',
 ];

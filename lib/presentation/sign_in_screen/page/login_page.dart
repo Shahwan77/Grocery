@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
                   loginController.emailController.text = value!;
                 },
                 fillclr: Colors.grey.shade200,
-                bdrds: 10,
+                bdrds: 10.r,
                 preffix: Icon(Icons.mail_outline, color: Colors.green),
                 hint: 'Enter your email address',
               ),
@@ -72,7 +72,7 @@ class LoginPage extends StatelessWidget {
                   obsecuretext: loginController.obsecure.value,
 
                   fillclr: Colors.grey.shade200,
-                  bdrds: 10,
+                  bdrds: 10.r,
                   preffix: Icon(Icons.lock_outlined, color: Colors.green),
                   hint: 'Enter your password',
                   suffix: GestureDetector(

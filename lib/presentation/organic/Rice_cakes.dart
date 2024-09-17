@@ -19,25 +19,25 @@ class RiceCakes extends StatelessWidget {
     return GridView.builder(
       padding: EdgeInsets.all(9.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Number of columns in the grid
-        crossAxisSpacing: 20.0, // Space between columns
-        mainAxisSpacing: 40.0, // Space between rows
-        mainAxisExtent: 240,
+        crossAxisCount: 2,
+        crossAxisSpacing: 20.0,
+        mainAxisSpacing: 40.0,
+        mainAxisExtent: 250,
       ),
       itemCount: imageUrls.length,
       itemBuilder: (context, index) {
         return Column(
           children: [
             Container(
-              height: 240, // Container height
-              width: 190, // Container width
+              height: 200.h, // Container height
+              width: 190.w, // Container width
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(8.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,
-                    blurRadius: 4.0,
+                    blurRadius: 4.r,
                     offset: Offset(0, 2),
                   ),
                 ],
@@ -94,15 +94,15 @@ class RiceCakes extends StatelessWidget {
                       imageUrls[
                       index], // Use imagePath from model
                       fit: BoxFit.cover,
-                      height: 100, // Image height
-                      width: 100, // Image width
+                      height: 80.h, // Image height
+                      width: 80.w, // Image width
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(7.0),
                     child: Text(
                       text1[index],
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
                           fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -111,7 +111,7 @@ class RiceCakes extends StatelessWidget {
                       children: [
                         Text(
                           Price1[index],
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
                           ),
