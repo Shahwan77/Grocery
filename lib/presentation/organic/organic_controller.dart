@@ -1,81 +1,34 @@
 import 'package:get/get.dart';
-import 'package:grocery/data/models/fruits&veg_model.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../data/models/bakery_models.dart';
-import '../../data/models/organic_model.dart';
+import '../../data/models/models.dart';
 
 class OrganicFoodController extends GetxController {
-  var organicItems = <OrganicItem>[].obs;
-  var bakeryItems = <BakeryItem>[].obs;
-  var vegItems=<VegItem>[].obs;
+  var productItems = <Models>[].obs;
+  var isLoading = true.obs;
+
+
 
   @override
   void onInit() {
     super.onInit();
   }
 
-  Future<void> fetchOrganicFoods(int categoryId) async {
+  Future<void> fetchProducts(int categoryId) async {
     try {
-      final response = await http.get(Uri.parse('https://grocery-dev.greendomains.in/api/products?category_id=$categoryId'));
+      final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?category_id=$categoryId'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success']) {
-          organicItems.value = (data['data'] as List)
-              .map((item) => OrganicItem.fromJson(item))
+          productItems.value = (data['data'] as List)
+              .map((item) => Models.fromJson(item))
               .toList();
-        } else {
-
-          Get.snackbar('Error', 'Failed to load data');
         }
-      } else {
-
-        Get.snackbar('Error', 'Failed to load data');
       }
-    } catch (e) {
-
-      Get.snackbar('Error', 'An error occurred: $e');
     }
-  }
-  Future<void> fetchBakery(int categoryId) async {
-    try {
-      final response = await http.get(Uri.parse('https://grocery-dev.greendomains.in/api/products?category_id=$categoryId'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          bakeryItems.value = (data['data'] as List)
-              .map((item) => BakeryItem.fromJson(item))
-              .toList();
-        } else {
-
-          Get.snackbar('Error', 'Failed to load data');
-        }
-      } else {
-
-        Get.snackbar('Error', 'Failed to load data');
-      }
-    } catch (e) {
-
-      Get.snackbar('Error', 'An error occurred: $e');
-    }
-  }
-  Future<void> fetchVeg(int categoryId) async {
-    try {
-      final response = await http.get(Uri.parse('https://grocery-dev.greendomains.in/api/products?category_id=$categoryId'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          vegItems.value = (data['data'] as List)
-              .map((item) => VegItem.fromJson(item))
-              .toList();
-        } else {
-          Get.snackbar('Error', 'Failed to load data');
-        }
-      } else {
-        Get.snackbar('Error', 'Failed to load data');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+    finally {
+      isLoading.value = false; // Stop the loader once data is fetched
     }
   }
 }

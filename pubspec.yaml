@@ -47,6 +47,7 @@ dependencies:
   intl_phone_field:
   flutter_svg:
   pinput:
+  shimmer:
 
 
 

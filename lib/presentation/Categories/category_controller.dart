@@ -26,9 +26,6 @@ class CategoryController extends GetxController {
       } else {
         throw Exception('Failed to load categories');
       }
-    } catch (e) {
-      Get.snackbar('Error', e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false; // Stop the loader once data is fetched
     }

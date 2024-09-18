@@ -16,7 +16,7 @@ class BakeryProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    organicFoodController.fetchBakery(3);
+    organicFoodController.fetchProducts(3);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -26,10 +26,11 @@ class BakeryProductPage extends StatelessWidget {
         title: Text('BAKERY PRODUCTS', style: TextStyle(color: Colors.white)),
       ),
       body: Obx(() {
-        if (organicFoodController.bakeryItems.isEmpty) {
-          return Center(child: CircularProgressIndicator());
-        }
-
+      if (organicFoodController.isLoading.value) {
+        return Center(child: CircularProgressIndicator());
+      } else if (organicFoodController.productItems.isEmpty) {
+        return Center(child: Text("No categories found."));
+      } else {
         return GridView.builder(
           padding: EdgeInsets.all(8.0),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -38,9 +39,9 @@ class BakeryProductPage extends StatelessWidget {
             mainAxisSpacing: 40.0,
             mainAxisExtent: 200,
           ),
-          itemCount: organicFoodController.bakeryItems.length,
+          itemCount: organicFoodController.productItems.length,
           itemBuilder: (context, index) {
-            final item = organicFoodController.bakeryItems[index];
+            final item = organicFoodController.productItems[index];
             return Column(
               children: [
                 Container(
@@ -61,7 +62,7 @@ class BakeryProductPage extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child:Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Obx(() {
@@ -80,10 +81,14 @@ class BakeryProductPage extends StatelessWidget {
                                   );
 
                                   Get.snackbar(
-                                    favoriteController.isFavorite(itemData['name']!)
+                                    favoriteController.isFavorite(
+                                        itemData['name']!)
                                         ? 'Added to Favorites'
                                         : 'Removed from Favorites',
-                                    '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                    '${itemData['name']} has been ${favoriteController
+                                        .isFavorite(itemData['name']!)
+                                        ? 'added to'
+                                        : 'removed from'} your favorites.',
                                     snackPosition: SnackPosition.BOTTOM,
                                   );
                                 },
@@ -91,7 +96,8 @@ class BakeryProductPage extends StatelessWidget {
                                   favoriteController.isFavorite(item.name)
                                       ? Icons.favorite
                                       : Icons.favorite_border,
-                                  color: favoriteController.isFavorite(item.name)
+                                  color: favoriteController.isFavorite(
+                                      item.name)
                                       ? Colors.red
                                       : Colors.grey,
                                 ),
@@ -106,7 +112,8 @@ class BakeryProductPage extends StatelessWidget {
                       ),
                       Center(
                         child: Image.network(
-                          'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                          'https://grocery-dev.greendomains.in/storage/images/products/${item
+                              .image}',
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,
@@ -144,7 +151,10 @@ class BakeryProductPage extends StatelessWidget {
                                     cartController.isInCart(item.name)
                                         ? 'Added to Cart'
                                         : 'Removed from Cart',
-                                    '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                    '${item.name} has been ${cartController
+                                        .isInCart(item.name)
+                                        ? 'added to'
+                                        : 'removed from'} your cart.',
                                     snackPosition: SnackPosition.BOTTOM,
                                   );
                                 },
@@ -166,6 +176,7 @@ class BakeryProductPage extends StatelessWidget {
             );
           },
         );
+      }
       }),
     );
   }

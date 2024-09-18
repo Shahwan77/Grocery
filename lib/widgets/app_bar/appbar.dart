@@ -50,7 +50,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               SizedBox(width: 5.w),
               Image.asset(
-                'assets/gro1.png',
+                'assets/logo.png',
                 height: 40.h,
                 width: 40.w,
               ),

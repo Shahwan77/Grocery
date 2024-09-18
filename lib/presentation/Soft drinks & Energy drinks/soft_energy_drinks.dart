@@ -1,39 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // For responsive sizing
+import 'package:get/get_core/src/get_main.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import '../organic/organic_controller.dart'; // Adjust path as needed
+import '../organic/organic_controller.dart';
 
-class FruitsVegetables extends StatelessWidget {
-  const FruitsVegetables({super.key});
+class SoftEnergyDrinks extends StatelessWidget {
+  const SoftEnergyDrinks({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
-
-    organicFoodController.fetchProducts(4);
+    organicFoodController.fetchProducts(8);
 
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.green.shade800,
         title: Text(
-          'FRUITS & VEGETABLES',
+          'Soft Drinks & Energy Drinks',
           style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Colors.green.shade800,
       ),
       body: Obx(() {
         if (organicFoodController.isLoading.value) {
           return Center(child: CircularProgressIndicator());
         } else if (organicFoodController.productItems.isEmpty) {
-          return Center(child: Text("No categories found."));
+          return Center(child: Text("No products found."));
         } else {
           return GridView.builder(
             padding: EdgeInsets.all(8.0),

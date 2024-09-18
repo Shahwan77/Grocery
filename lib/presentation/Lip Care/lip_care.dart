@@ -1,33 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // For responsive sizing
+import 'package:get/get_core/src/get_main.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import '../organic/organic_controller.dart'; // Adjust path as needed
+import '../organic/organic_controller.dart';
 
-class FruitsVegetables extends StatelessWidget {
-  const FruitsVegetables({super.key});
+class LipCare extends StatelessWidget {
+  const LipCare({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
-
-    organicFoodController.fetchProducts(4);
-
+    organicFoodController.fetchProducts(13);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.green.shade800,
         title: Text(
-          'FRUITS & VEGETABLES',
+          'LIP CARE',
           style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Colors.green.shade800,
       ),
       body: Obx(() {
         if (organicFoodController.isLoading.value) {
@@ -41,7 +41,7 @@ class FruitsVegetables extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 20.0,
-              mainAxisExtent: 200,
+              mainAxisExtent: 220,
             ),
             itemCount: organicFoodController.productItems.length,
             itemBuilder: (context, index) {
@@ -49,7 +49,7 @@ class FruitsVegetables extends StatelessWidget {
               return Column(
                 children: [
                   Container(
-                    height: 200,
+                    height: 220,
                     width: 160,
                     decoration: BoxDecoration(
                       color: Colors.white,

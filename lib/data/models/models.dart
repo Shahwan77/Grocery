@@ -1,18 +1,20 @@
-class OrganicItem {
+import 'package:get/get.dart';
+
+class Models {
   final int id;
   final String name;
   final String image;
   final String price;
 
-  OrganicItem({
+  Models({
     required this.id,
     required this.name,
     required this.image,
     required this.price,
   });
 
-  factory OrganicItem.fromJson(Map<String, dynamic> json) {
-    return OrganicItem(
+  factory Models.fromJson(Map<String, dynamic> json) {
+    return Models(
       id: json['id'],
       name: json['name'],
       image: json['image'],

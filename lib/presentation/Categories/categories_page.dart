@@ -4,42 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/see%20all_page.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import '../../data/models/category_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'categories_detail.dart';
-import '../home_screen/models/categories_model.dart';
+import 'category_controller.dart';
 
-// Controller to manage the categories
-class CategoryController extends GetxController {
-  var categories = <Category>[].obs; // Observable list of categories
-  var isLoading = true.obs;
 
-  @override
-  void onInit() {
-    fetchCategories(); // Fetch categories when the controller is initialized
-    super.onInit();
-  }
-
-  Future<void> fetchCategories() async {
-    const url = 'https://grocery-dev.greendomains.in/api/product-categories';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body)['data'] as List;
-        categories.value = data.map((category) => Category.fromJson(category)).toList();
-      } else {
-        throw Exception('Failed to load categories');
-      }
-    } catch (e) {
-      Get.snackbar('Error', e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
-    } finally {
-      isLoading.value = false; // Stop the loader once data is fetched
-    }
-  }
-}
 
 class CategoriesPage extends StatelessWidget {
   final CategoryController categoryController = Get.put(CategoryController());
@@ -79,7 +48,44 @@ class CategoriesPage extends StatelessWidget {
         ),
         Obx(() {
           if (categoryController.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return GridView.builder(
+              padding: EdgeInsets.all(8.0),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10.w,
+                mainAxisSpacing: 10.h,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: 6, // Placeholder item count for shimmer
+              itemBuilder: (context, index) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 80.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Placeholder color
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Container(
+                        height: 10.h,
+                        width: 60.w,
+                        color: Colors.white, // Placeholder color for text
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
           } else if (categoryController.categories.isEmpty) {
             return Center(child: Text("No categories found."));
           } else {
@@ -98,7 +104,7 @@ class CategoriesPage extends StatelessWidget {
                 final category = categoryController.categories[index];
                 return GestureDetector(
                   onTap: () {
-                    Get.to(() => DetailPage( categoryId: category.id.toString(),)); // Pass the Category object
+                    Get.to(() => DetailPage(categoryId: category.id.toString()));
                   },
                   child: Column(
                     children: [
