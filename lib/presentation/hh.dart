@@ -1,48 +1,43 @@
-import 'package:flutter/material.dart';
-
-class BottomNavBar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onItemTapped;
-
-  BottomNavBar({required this.selectedIndex, required this.onItemTapped});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: 10.0), // Adjust padding as needed
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavItem(Icons.home_outlined, 0),
-              _buildNavItem(Icons.settings_outlined, 1),
-              _buildNavItem(Icons.person_outline_sharp, 2),
-              _buildNavItem(Icons.logout, 3),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, int index) {
-    return GestureDetector(
-      onTap: () => onItemTapped(index),
-      child: Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          color: selectedIndex == index ? Colors.white : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          icon,
-          size: 30,
-          color: selectedIndex == index ? Color(0xFF800000) : Colors.white,
-        ),
-      ),
-    );
-  }
-}
+// import 'dart:convert';
+// import 'package:get_storage/get_storage.dart';
+// import 'package:http/http.dart' as http;
+//
+// import '../data/apiClient/api.dart';
+// import '../data/models/category_model.dart';
+//
+//
+// class userdatas {
+//   final box = GetStorage();
+//   //final String token = Details().Token;
+//
+//   Future<Category?> fetchUser() async {
+//     final response = await http.get(
+//       Uri.parse("${Api.BaseUrl}/api/product-categories"),
+//       headers: {
+//         "Authorization": "Bearer",
+//       },
+//     );
+//
+//     if (response.statusCode == 200) {
+//       final data = json.decode(response.body);
+//       final user = Category.fromJson(data);
+//       box.write('id', user.id);
+//       box.write('name', user.name);
+//       // box.write('store_id', user.storeId);
+//       return user;
+//
+//     } else {
+//       print("Failed to fetch user data");
+//       return null;
+//     }
+//   }
+// }
+//
+// class Details {
+//   // final box = GetStorage();
+//
+//   int Id = GetStorage().read('id') ?? 0;
+//   String UserName = GetStorage().read('name') ?? '';
+//   // int StoreId = GetStorage().read('store_id') ?? 0;
+//   // String Token = GetStorage().read('authToken');
+// }

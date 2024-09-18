@@ -7,14 +7,14 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import '../organic/organic_controller.dart';
+import '../Products/products_controller.dart';
 
 class WaterDrink extends StatelessWidget {
   const WaterDrink({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
+    final ProductsController organicFoodController = Get.put(ProductsController());
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
     organicFoodController.fetchProducts(7);

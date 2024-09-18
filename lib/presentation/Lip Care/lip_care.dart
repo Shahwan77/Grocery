@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import '../organic/organic_controller.dart';
+import '../Products/products_controller.dart';
 
 class LipCare extends StatelessWidget {
   const LipCare({super.key});
@@ -14,7 +14,7 @@ class LipCare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
+    final ProductsController organicFoodController = Get.put(ProductsController());
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
     organicFoodController.fetchProducts(13);
@@ -38,133 +38,139 @@ class LipCare extends StatelessWidget {
           return GridView.builder(
             padding: EdgeInsets.all(8.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
               mainAxisSpacing: 20.0,
-              mainAxisExtent: 220,
+              mainAxisExtent: 200,
             ),
             itemCount: organicFoodController.productItems.length,
             itemBuilder: (context, index) {
               final item = organicFoodController.productItems[index];
               return Column(
                 children: [
-                  Container(
-                    height: 220,
-                    width: 160,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4.0,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Obx(() {
-                                return GestureDetector(
-                                  onTap: () {
-                                    final itemData = {
-                                      'name': item.name,
-                                      'price': item.price,
-                                      'image': item.image,
-                                    };
+                  IntrinsicHeight(
+                    child: Container(
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4.0,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Obx(() {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      final itemData = {
+                                        'name': item.name,
+                                        'price': item.price,
+                                        'image': item.image,
+                                      };
 
-                                    favoriteController.toggleFavorite(
-                                      itemData['name']!,
-                                      itemData['price']!,
-                                      itemData['image']!,
-                                    );
+                                      favoriteController.toggleFavorite(
+                                        itemData['name']!,
+                                        itemData['price']!,
+                                        itemData['image']!,
+                                      );
 
-                                    Get.snackbar(
-                                      favoriteController.isFavorite(itemData['name']!)
-                                          ? 'Added to Favorites'
-                                          : 'Removed from Favorites',
-                                      '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                      snackPosition: SnackPosition.BOTTOM,
-                                    );
-                                  },
-                                  child: Icon(
-                                    favoriteController.isFavorite(item.name)
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: favoriteController.isFavorite(item.name)
-                                        ? Colors.red
-                                        : Colors.grey,
-                                  ),
-                                );
-                              }),
-                              Icon(
-                                Icons.info_outline,
-                                color: Colors.green.shade800,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Center(
-                          child: Image.network(
-                            'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                          ),
-                        ),
-                        Text(
-                          item.name,
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                item.price,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w700,
+                                      Get.snackbar(
+                                        favoriteController.isFavorite(itemData['name']!)
+                                            ? 'Added to Favorites'
+                                            : 'Removed from Favorites',
+                                        '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    },
+                                    child: Icon(
+                                      favoriteController.isFavorite(item.name)
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: favoriteController.isFavorite(item.name)
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                  );
+                                }),
+                                Icon(
+                                  Icons.info_outline,
+                                  color: Colors.green.shade800,
                                 ),
-                              ),
-                              Obx(() {
-                                return GestureDetector(
-                                  onTap: () {
-                                    cartController.toggleCart(
-                                      item.name,
-                                      item.price,
-                                      item.image,
-                                    );
-                                    Get.snackbar(
-                                      cartController.isInCart(item.name)
-                                          ? 'Added to Cart'
-                                          : 'Removed from Cart',
-                                      '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
-                                      snackPosition: SnackPosition.BOTTOM,
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.shopping_cart_outlined,
-                                    color: cartController.isInCart(item.name)
-                                        ? Colors.green.shade800
-                                        : Colors.grey,
-                                  ),
-                                );
-                              }),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Center(
+                            child: Image.network(
+                              'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                              fit: BoxFit.cover,
+                              height: 100,
+                              width: 100,
+                            ),
+                          ),
+                          Padding(
+                            padding:  EdgeInsets.symmetric(horizontal: 6.w),
+                            child: Text(
+                              item.name,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item.price,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Obx(() {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      cartController.toggleCart(
+                                        item.name,
+                                        item.price,
+                                        item.image,
+                                      );
+                                      Get.snackbar(
+                                        cartController.isInCart(item.name)
+                                            ? 'Added to Cart'
+                                            : 'Removed from Cart',
+                                        '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.shopping_cart_outlined,
+                                      color: cartController.isInCart(item.name)
+                                          ? Colors.green.shade800
+                                          : Colors.grey,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

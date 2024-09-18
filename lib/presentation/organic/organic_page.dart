@@ -61,7 +61,7 @@ class OrganicPage extends StatelessWidget {
               child: TabBarView(
                 children: [
                   // First tab content
-                  AllOrganicFood(categoryId: 2,),
+                  AllOrganicFood(),
                   // Second tab content
                   RiceCakes(),
                   // Third tab content

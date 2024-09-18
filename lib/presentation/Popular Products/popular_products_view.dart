@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/organic/organic_model.dart';
-
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
 

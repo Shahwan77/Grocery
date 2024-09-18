@@ -2,24 +2,24 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 
 import '../../data/models/category_model.dart';
 
 class CategoryController extends GetxController {
-  var categories = <Category>[].obs; // Observable list of categories
+  var categories = <Category>[].obs;
   var isLoading = true.obs;
 
   @override
   void onInit() {
-    fetchCategories(); // Fetch categories when the controller is initialized
+    fetchCategories();
     super.onInit();
   }
 
   Future<void> fetchCategories() async {
-    const url = 'https://grocery-dev.greendomains.in/api/product-categories';
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse("${Api.BaseUrl}/api/product-categories"));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body)['data'] as List;
         categories.value = data.map((category) => Category.fromJson(category)).toList();
@@ -27,7 +27,7 @@ class CategoryController extends GetxController {
         throw Exception('Failed to load categories');
       }
     } finally {
-      isLoading.value = false; // Stop the loader once data is fetched
+      isLoading.value = false;
     }
   }
 }

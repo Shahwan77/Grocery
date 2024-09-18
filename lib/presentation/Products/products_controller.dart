@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../data/models/models.dart';
 
-class OrganicFoodController extends GetxController {
+class ProductsController extends GetxController {
   var productItems = <Models>[].obs;
   var isLoading = true.obs;
 
@@ -12,6 +12,7 @@ class OrganicFoodController extends GetxController {
 
   @override
   void onInit() {
+    // fetchPopularProducts();
     super.onInit();
   }
 
@@ -28,7 +29,27 @@ class OrganicFoodController extends GetxController {
       }
     }
     finally {
-      isLoading.value = false; // Stop the loader once data is fetched
+      isLoading.value = false;
     }
   }
+  Future<void> fetchPopularProducts() async {
+    try {
+      isLoading.value = true;
+      final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products/popular'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success']) {
+          productItems.value = (data['data'] as List)
+              .map((item) => Models.fromJson(item))
+              .toList();
+        }
+      }
+    } catch (e) {
+      print("Error fetching popular products: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 }

@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
-import '../organic/organic_controller.dart';
+import '../Products/products_controller.dart';
 
 class BiscuitsCrackers extends StatelessWidget {
   const BiscuitsCrackers({super.key});
@@ -14,7 +14,7 @@ class BiscuitsCrackers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final OrganicFoodController organicFoodController = Get.put(OrganicFoodController());
+    final ProductsController organicFoodController = Get.put(ProductsController());
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
     organicFoodController.fetchProducts(11);
