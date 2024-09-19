@@ -9,14 +9,14 @@ import '../favorite/fav_controller.dart';
 import '../Products/products_controller.dart';
 
 class BiscuitsCrackers extends StatelessWidget {
-  const BiscuitsCrackers({super.key});
+    BiscuitsCrackers({super.key});
+  final ProductsController organicFoodController = Get.put(ProductsController());
+  final CartController cartController = Get.put(CartController());
+  final FavoriteController favoriteController = Get.put(FavoriteController());
 
   @override
   Widget build(BuildContext context) {
 
-    final ProductsController organicFoodController = Get.put(ProductsController());
-    final CartController cartController = Get.put(CartController());
-    final FavoriteController favoriteController = Get.put(FavoriteController());
     organicFoodController.fetchProducts(11);
 
     return Scaffold(

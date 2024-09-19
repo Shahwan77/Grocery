@@ -6,17 +6,18 @@ import '../Cart/cart_controller.dart';
 import '../Cart/cart_page.dart';
 import '../Popular Products/popular_products_view.dart';
 import '../favorite/fav_controller.dart';
-import '../Products/products_controller.dart'; // Import your ProductsController
+import '../Products/products_controller.dart';
+import '../home_screen/controller/home_controller.dart';
 
 class PopularProductPage extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
-  final ProductsController productsController = Get.put(ProductsController());
+  final HomeController productsController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    // Fetch popular products from the API
-    productsController.fetchPopularProducts(); // Ensure this method is defined in ProductsController
+
+    //productsController.fetchPopularProducts();
 
     return Obx(() {
       if (productsController.isLoading.value) {

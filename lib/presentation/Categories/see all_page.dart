@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../home_screen/controller/home_controller.dart';
 import '../home_screen/models/categories_model.dart';
 import 'category_controller.dart';
 
@@ -11,7 +12,7 @@ class SeeAllPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryController categoryController = Get.put(CategoryController());
+    final HomeController categoryController = Get.put(HomeController());
 
 
     return Scaffold(

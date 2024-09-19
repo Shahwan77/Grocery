@@ -5,13 +5,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/see%20all_page.dart';
 import 'package:shimmer/shimmer.dart';
+import '../home_screen/controller/home_controller.dart';
 import 'categories_detail.dart';
 import 'category_controller.dart';
 
 
 
 class CategoriesPage extends StatelessWidget {
-  final CategoryController categoryController = Get.put(CategoryController());
+  final HomeController categoryController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {

@@ -2,54 +2,45 @@ import 'package:get/get.dart';
 import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../data/apiClient/api_service.dart';
 import '../../data/models/models.dart';
 
 class ProductsController extends GetxController {
   var productItems = <Models>[].obs;
   var isLoading = true.obs;
-
-
+  final ApiService apiService = ApiService();
 
   @override
   void onInit() {
-    // fetchPopularProducts();
     super.onInit();
   }
 
-  Future<void> fetchProducts(int categoryId) async {
-    try {
-      final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?category_id=$categoryId'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          productItems.value = (data['data'] as List)
-              .map((item) => Models.fromJson(item))
-              .toList();
-        }
-      }
-    }
-    finally {
-      isLoading.value = false;
-    }
-  }
-  Future<void> fetchPopularProducts() async {
+  Future<List<Models>> fetchProducts(int categoryId) async {
     try {
       isLoading.value = true;
-      final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products/popular'));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          productItems.value = (data['data'] as List)
-              .map((item) => Models.fromJson(item))
-              .toList();
-        }
-      }
+      productItems.value = await apiService.fetchCategoryProducts(categoryId);
+      return productItems;
     } catch (e) {
-      print("Error fetching popular products: $e");
+      print('Error: $e');
+      productItems.value = [];
+      return [];
     } finally {
       isLoading.value = false;
     }
   }
 
+  // Change the return type to Future<List<Models>>
+  Future<List<Models>> fetchRiceCakes(int subcategoryId) async {
+    try {
+      isLoading.value = true;
+      productItems.value = await apiService.fetchRiceCakes(subcategoryId);
+      return productItems; // Return the list of products
+    } catch (e) {
+      print('Error: $e');
+      productItems.value = [];
+      return [];
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

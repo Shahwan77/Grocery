@@ -15,10 +15,10 @@ class Models {
 
   factory Models.fromJson(Map<String, dynamic> json) {
     return Models(
-      id: json['id'],
-      name: json['name'],
-      image: json['image'],
-      price: json['price'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Unknown',
+      image: json['image'] ?? '',
+      price: json['price'] ?? '0.0',
     );
   }
 }

@@ -14,7 +14,7 @@ class BakeryProductPage extends StatelessWidget {
   final FavoriteController favoriteController = Get.put(FavoriteController());
 
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     organicFoodController.fetchProducts(3);
 

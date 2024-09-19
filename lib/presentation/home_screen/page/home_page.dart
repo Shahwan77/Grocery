@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           MostPopularPage(),
-         // PopularProductPage(),
+         PopularProductPage(),
           TopDiscountPage(),
           SizedBox(height: 20.h),
         ],

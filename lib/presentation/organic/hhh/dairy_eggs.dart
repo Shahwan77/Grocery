@@ -1,40 +1,39 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // For responsive sizing
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
-import '../Cart/cart_controller.dart';
-import '../favorite/fav_controller.dart';
-import '../Products/products_controller.dart'; // Adjust path as needed
+import '../../../data/apiClient/api.dart';
+import '../../../data/models/models.dart';
+import '../../Cart/cart_controller.dart';
+import '../../Products/products_controller.dart';
+import '../../favorite/fav_controller.dart';
+import '../organic_model.dart';
 
-class FruitsVegetables extends StatelessWidget {
-    FruitsVegetables({super.key});
-  final ProductsController organicFoodController = Get.put(ProductsController());
+class DairyEggs extends StatelessWidget {
+  DairyEggs({super.key});
+
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
+  final ProductsController productsController = Get.put(ProductsController());
+
   @override
   Widget build(BuildContext context) {
-
-
-    organicFoodController.fetchProducts(4);
-
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.green.shade800,
-        title: Text(
-          'FRUITS & VEGETABLES',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Obx(() {
-        if (organicFoodController.isLoading.value) {
+    return FutureBuilder<List<Models>>(
+      future: productsController.fetchRiceCakes(2), // Fetch products for Dairy & Eggs
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-        } else if (organicFoodController.productItems.isEmpty) {
-          return Center(child: Text("No categories found."));
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No dairy & eggs available'));
         } else {
+          final products = snapshot.data!;
+
           return GridView.builder(
             padding: EdgeInsets.all(8.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -43,21 +42,22 @@ class FruitsVegetables extends StatelessWidget {
               mainAxisSpacing: 20.0,
               mainAxisExtent: 200,
             ),
-            itemCount: organicFoodController.productItems.length,
+            itemCount: products.length,
             itemBuilder: (context, index) {
-              final item = organicFoodController.productItems[index];
+              final product = products[index];
+
               return Column(
                 children: [
                   IntrinsicHeight(
                     child: Container(
-                      width: 160,
+                      width: 160.w, // Keep the width fixed
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(8.r),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
-                            blurRadius: 4.0,
+                            blurRadius: 4.r,
                             offset: Offset(0, 2),
                           ),
                         ],
@@ -72,31 +72,31 @@ class FruitsVegetables extends StatelessWidget {
                                 Obx(() {
                                   return GestureDetector(
                                     onTap: () {
-                                      final itemData = {
-                                        'name': item.name,
-                                        'price': item.price,
-                                        'image': item.image,
+                                      final item = {
+                                        'name': product.name,
+                                        'price': product.price ?? '0', // Handle null price
+                                        'image': product.image ?? '', // Handle null image
                                       };
 
                                       favoriteController.toggleFavorite(
-                                        itemData['name']!,
-                                        itemData['price']!,
-                                        itemData['image']!,
+                                        item['name']!,
+                                        item['price']!,
+                                        item['image']!,
                                       );
 
                                       Get.snackbar(
-                                        favoriteController.isFavorite(itemData['name']!)
+                                        favoriteController.isFavorite(item['name']!)
                                             ? 'Added to Favorites'
                                             : 'Removed from Favorites',
-                                        '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                        '${item['name']} has been ${favoriteController.isFavorite(item['name']!) ? 'added to' : 'removed from'} your favorites.',
                                         snackPosition: SnackPosition.BOTTOM,
                                       );
                                     },
                                     child: Icon(
-                                      favoriteController.isFavorite(item.name)
+                                      favoriteController.isFavorite(product.name)
                                           ? Icons.favorite
                                           : Icons.favorite_border,
-                                      color: favoriteController.isFavorite(item.name)
+                                      color: favoriteController.isFavorite(product.name)
                                           ? Colors.red
                                           : Colors.grey,
                                     ),
@@ -110,33 +110,37 @@ class FruitsVegetables extends StatelessWidget {
                             ),
                           ),
                           Center(
-                            child: Image.network(
-                              'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                            child: (product.image != null && product.image!.isNotEmpty)
+                                ? Image.network(
+                              'https://grocery-dev.greendomains.in/storage/images/products/${product.image}',
                               fit: BoxFit.cover,
-                              height: 100,
-                              width: 100,
+                              height: 80.h, // Image height
+                              width: 80.w, // Image width
+                            )
+                                : Icon(
+                              Icons.image,
+                              size: 80.w,
+                              color: Colors.grey,
                             ),
                           ),
                           Padding(
-                            padding:  EdgeInsets.symmetric(horizontal: 6.w),
+                            padding: EdgeInsets.symmetric(horizontal: 6.w),
                             child: Text(
-                              item.name,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              textAlign: TextAlign.start,
+                              product.name,
+                              style: TextStyle(fontWeight: FontWeight.w600),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  item.price,
+                                  product.price != null && product.price!.isNotEmpty
+                                      ? product.price!
+                                      : '00', // Fallback for empty price
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w700,
@@ -146,21 +150,21 @@ class FruitsVegetables extends StatelessWidget {
                                   return GestureDetector(
                                     onTap: () {
                                       cartController.toggleCart(
-                                        item.name,
-                                        item.price,
-                                        item.image,
+                                        product.name,
+                                        product.price ?? '0', // Handle null price
+                                        product.image ?? '', // Handle null image
                                       );
                                       Get.snackbar(
-                                        cartController.isInCart(item.name)
+                                        cartController.isInCart(product.name)
                                             ? 'Added to Cart'
                                             : 'Removed from Cart',
-                                        '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                        '${product.name} has been ${cartController.isInCart(product.name) ? 'added to' : 'removed from'} your cart.',
                                         snackPosition: SnackPosition.BOTTOM,
                                       );
                                     },
                                     child: Icon(
                                       Icons.shopping_cart_outlined,
-                                      color: cartController.isInCart(item.name)
+                                      color: cartController.isInCart(product.name)
                                           ? Colors.green.shade800
                                           : Colors.grey,
                                     ),
@@ -178,7 +182,7 @@ class FruitsVegetables extends StatelessWidget {
             },
           );
         }
-      }),
+      },
     );
   }
 }
