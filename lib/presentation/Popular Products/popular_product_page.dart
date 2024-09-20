@@ -12,23 +12,23 @@ import '../home_screen/controller/home_controller.dart';
 class PopularProductPage extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
-  final HomeController productsController = Get.put(HomeController());
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-
-    //productsController.fetchPopularProducts();
+    // Fetch popular products (uncomment if needed)
+    // homeController.fetchPopularProducts();
 
     return Obx(() {
-      if (productsController.isLoading.value) {
+      if (homeController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
-      } else if (productsController.productItems.isEmpty) {
+      } else if (homeController.popularProducts.isEmpty) {
         return Center(child: Text("No popular products found."));
       } else {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:  EdgeInsets.symmetric(horizontal: 11.w,vertical: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -76,14 +76,14 @@ class PopularProductPage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10.h),
+              padding:  EdgeInsets.symmetric(horizontal: 4.w),
               child: SizedBox(
                 height: 220.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: productsController.productItems.length + 1,
+                  itemCount: homeController.popularProducts.length + 1,
                   itemBuilder: (context, index) {
-                    if (index == productsController.productItems.length) {
+                    if (index == homeController.popularProducts.length) {
                       return Container(
                         width: 50.w,
                         margin: EdgeInsets.symmetric(horizontal: 8.w),
@@ -132,7 +132,7 @@ class PopularProductPage extends StatelessWidget {
                       );
                     }
 
-                    final item = productsController.productItems[index];
+                    final item = homeController.popularProducts[index];
 
                     return Container(
                       width: 150.w,
@@ -190,24 +190,23 @@ class PopularProductPage extends StatelessWidget {
                               ],
                             ),
                             Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                              child: Image.network(
+                                'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w700,
+                              child: Center(
+                                child: Text(
+                                  item.name,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
@@ -217,7 +216,7 @@ class PopularProductPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    item.price,
+                             '\$${item.price}',
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,

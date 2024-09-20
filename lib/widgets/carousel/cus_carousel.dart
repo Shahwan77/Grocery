@@ -30,7 +30,7 @@ class CusCarousel extends StatelessWidget {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.w),
+                  margin: EdgeInsets.symmetric(horizontal: 8.w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(

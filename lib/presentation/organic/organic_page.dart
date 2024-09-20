@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../data/apiClient/api.dart';
@@ -9,25 +10,17 @@ import '../Products/products_controller.dart';
 import 'all_organic_food.dart';
 
 class OrganicPage extends StatelessWidget {
+
   final CartController cartController = Get.put(CartController());
   final ProductsController productsController = Get.put(ProductsController());
 
-  Future<List<Models>> fetchSubcategories() async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=2'));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      List<dynamic> subcategoriesJson = data['data'];
-      return subcategoriesJson.map((json) => Models.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load subcategories');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    int categoryId = 2;
     return FutureBuilder<List<Models>>(
-      future: fetchSubcategories(),
+      future: productsController.fetchSubcategories(categoryId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -92,7 +85,7 @@ class SubcategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Models>>(
-      future: productsController.fetchRiceCakes(subcategory.id),  // Fetch products for this subcategory
+      future: productsController.fetchRiceCakes(subcategory.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -108,7 +101,7 @@ class SubcategoryPage extends StatelessWidget {
               crossAxisCount: 3,
               crossAxisSpacing: 10,
               mainAxisSpacing: 20.0,
-              mainAxisExtent: 200,
+              mainAxisExtent: 194,
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
@@ -118,7 +111,7 @@ class SubcategoryPage extends StatelessWidget {
                 children: [
                   IntrinsicHeight(
                     child: Container(
-                      width: 160, // Adjust the width as needed
+                      width: 160.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -139,7 +132,7 @@ class SubcategoryPage extends StatelessWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    // Handle favorite toggle
+
                                   },
                                   child: Icon(
                                     Icons.favorite_border,
@@ -158,17 +151,17 @@ class SubcategoryPage extends StatelessWidget {
                                 ? Image.network(
                               'https://grocery-dev.greendomains.in/storage/images/products/${product.image}',
                               fit: BoxFit.cover,
-                              height: 80, // Adjust image size
-                              width: 80,
+                              height: 80.h,
+                              width: 80.w,
                             )
                                 : Icon(
                               Icons.image,
-                              size: 80,
+                              size: 80.sp,
                               color: Colors.grey,
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            padding:  EdgeInsets.symmetric(horizontal: 6.w),
                             child: Text(
                               product.name,
                               style: TextStyle(fontWeight: FontWeight.w600),
@@ -177,12 +170,12 @@ class SubcategoryPage extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                            padding:  EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  product.price.isNotEmpty ? product.price : '00', // Default price
+                                  product.price.isNotEmpty ? product.price : '00',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
@@ -190,7 +183,6 @@ class SubcategoryPage extends StatelessWidget {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    // Handle add to cart
                                   },
                                   child: Icon(
                                     Icons.shopping_cart_outlined,

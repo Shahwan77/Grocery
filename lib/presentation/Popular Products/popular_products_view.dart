@@ -26,7 +26,7 @@ class PopularProductsView extends StatelessWidget {
       body: Obx(() {
         if (productsController.isLoading.value) {
           return Center(child: CircularProgressIndicator());
-        } else if (productsController.productItems.isEmpty) {
+        } else if (productsController.popularProducts.isEmpty) {
           return Center(child: Text("No categories found."));
         } else {
           return GridView.builder(
@@ -37,9 +37,9 @@ class PopularProductsView extends StatelessWidget {
               mainAxisSpacing: 20.0,
               mainAxisExtent: 200,
             ),
-            itemCount: productsController.productItems.length,
+            itemCount: productsController.popularProducts.length,
             itemBuilder: (context, index) {
-              final item = productsController.productItems[index];
+              final item = productsController.popularProducts[index];
               return Column(
                 children: [
                   IntrinsicHeight(
@@ -107,8 +107,8 @@ class PopularProductsView extends StatelessWidget {
                             child: Image.network(
                               'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
                               fit: BoxFit.cover,
-                              height: 100,
-                              width: 100,
+                              height: 80.h,
+                              width: 80.w,
                             ),
                           ),
                           Padding(

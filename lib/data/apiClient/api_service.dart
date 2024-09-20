@@ -7,7 +7,7 @@ import '../models/models.dart';
 
 class ApiService {
   Future<List<Category>> fetchCategories() async {
-    final response = await http.get(Uri.parse("${Api.BaseUrl}/api/product-categories"));
+    final response = await http.get(Uri.parse(Api.Category));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['data'] as List;
@@ -18,7 +18,7 @@ class ApiService {
   }
 
   Future<List<Models>> fetchPopularProducts() async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products/popular'));
+    final response = await http.get(Uri.parse(Api.PopularProduct));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -66,4 +66,48 @@ class ApiService {
       throw Exception('Failed to fetch rice cakes');
     }
   }
+  Future<List<Models>> fetchSubcategories(int categoryId) async {
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      List<dynamic> subcategoriesJson = data['data'];
+      return subcategoriesJson.map((json) => Models.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load subcategories');
+    }
+  }
+  Future<List<Models>> fetchDiscountProducts() async {
+    final response = await http.get(Uri.parse(Api.DiscountProduct));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['success']) {
+        return (data['data'] as List)
+            .map((item) => Models.fromJson(item))
+            .toList();
+      } else {
+        throw Exception('Failed to load popular products');
+      }
+    } else {
+      throw Exception('Failed to fetch popular products');
+    }
+  }
+  Future<List<Models>> fetchPopularCategories() async {
+    final response = await http.get(Uri.parse(Api.PopularCategories));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['success']) {
+        return (data['data'] as List)
+            .map((item) => Models.fromJson(item))
+            .toList();
+      } else {
+        throw Exception('Failed to load popular products');
+      }
+    } else {
+      throw Exception('Failed to fetch popular products');
+    }
+  }
+
 }

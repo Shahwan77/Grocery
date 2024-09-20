@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:grocery/presentation/pending.dart';
-import 'package:grocery/presentation/shaw.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
 

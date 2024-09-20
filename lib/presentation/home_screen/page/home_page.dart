@@ -32,12 +32,12 @@ class HomePage extends StatelessWidget {
           SizedBox(height: 10.h),
           CategoriesPage(),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:  EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding:  EdgeInsets.only(right: 50),
+                  padding:  EdgeInsets.only(right: 40.w),
                   child: Text(
                     'ORDER YOUR CUSTOMIZED CAKE !!!',
                     style: GoogleFonts.roboto(
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: const EdgeInsets.all(9.0),
+                  padding:  EdgeInsets.symmetric(horizontal: 2.w),
                   child: Container(
                     height: 150.h,
                     decoration: BoxDecoration(

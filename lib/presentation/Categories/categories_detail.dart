@@ -1,92 +1,192 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grocery/presentation/Biscuits%20&%20Crackers/biscuits_crackers.dart';
-import 'package:grocery/presentation/Breakfast%20Cereals/breakfast_cereals.dart';
-import 'package:grocery/presentation/Chocolates%20&%20Candies/chocolates_candies.dart';
-import 'package:grocery/presentation/Cotton%20Buds%20&%20Pads/buds_pads.dart';
-import 'package:grocery/presentation/Juices/juices.dart';
-import 'package:grocery/presentation/Soft%20drinks%20&%20Energy%20drinks/soft_energy_drinks.dart';
-import 'package:grocery/presentation/Water%20&%20Drink/water_drink.dart';
-import '../Bakery Products/bakery_product_page.dart';
-import '../Dairy & Eggs/dairy_eggs.dart';
-import '../Fruits & Vegetables/fruits_vegetables.dart';
-import '../Lip Care/lip_care.dart';
-import '../Tea & Coffee/tea_coffee.dart';
-import '../ice cream/ice_page.dart';
-import '../organic/organic_page.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../data/models/models.dart';
+import '../Cart/cart_controller.dart';
+import '../Products/products_controller.dart';
+import '../favorite/fav_controller.dart';
 
 class DetailPage extends StatelessWidget {
   final String categoryId;
+  final String categoryName;
+  final ProductsController productController = Get.put(ProductsController());
+  final CartController cartController = Get.put(CartController());
+  final FavoriteController favoriteController = Get.put(FavoriteController());
 
-  DetailPage({required this.categoryId});
+  DetailPage({required this.categoryId, required this.categoryName,});
 
   @override
   Widget build(BuildContext context) {
-    // Define a mapping from categoryId to the respective page
-    Widget page;
-    switch (categoryId) {
-      case '1': // Assuming 1 is the ID for 'FROZEN ICE CREAM'
-        page = IceCreamPage();
-        break;
-      case '2': // Assuming 2 is the ID for 'ORGANIC & HEALTHY FOOD'
-        page = OrganicPage();
-        break;
-      case '3': // Assuming 3 is the ID for 'BAKERY PRODUCTS'
-        page = BakeryProductPage();
-        break;
-      case '4': // Assuming 4 is the ID for 'FRUITS & VEGETABLES'
-        page = FruitsVegetables();
-        break;
-      case '5': // Assuming 5 is the ID for 'DAIRY & EGGS'
-        page = DairyEggs();
-        break;
-      case '6': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = TeaCoffee();
-        break;
-      case '7': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = WaterDrink();
-        break;
-      case '8': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = SoftEnergyDrinks();
-        break;
-      case '9': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = Juices();
-        break;
-      case '10': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = BreakfastCereals();
-        break;
-      case '11': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = BiscuitsCrackers();
-        break;
-      case '12': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = ChocolatesCandies();
-        break;
-      case '13': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = LipCare();
-        break;
-      case '14': // Assuming 6 is the ID for 'TEA & COFFEE'
-        page = BudsPads();
-        break;
-      default:
-      // Default page for unknown categories
-        page = Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Unknown Category',
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-            ),
-            backgroundColor: Colors.green.shade800,
-          ),
-          body: Center(
-            child: Text(
-              'Category not found',
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w800),
-            ),
-          ),
-        );
-        break;
-    }
+    productController.fetchProducts(int.parse(categoryId));
 
-    return page;
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(categoryName,style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.green.shade800,
+      ),
+      backgroundColor: Colors.white,
+      body: Obx(() {
+        if (productController.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        } else if (productController.productItems.isEmpty) {
+          return Center(child: Text("No products found."));
+        } else {
+          return GridView.builder(
+            padding: EdgeInsets.all(8.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 20.0,
+              mainAxisExtent: 200,
+            ),
+            itemCount: productController.productItems.length,
+            itemBuilder: (context, index) {
+              final item = productController.productItems[index];
+              return Column(
+                children: [
+                  IntrinsicHeight(
+                    child: Container(
+                      width: 160.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4.0,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Obx(() {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      final itemData = {
+                                        'name': item.name,
+                                        'price': item.price,
+                                        'image': item.image,
+                                      };
+
+                                      favoriteController.toggleFavorite(
+                                        itemData['name']!,
+                                        itemData['price']!,
+                                        itemData['image']!,
+                                      );
+
+                                      Get.snackbar(
+                                        favoriteController.isFavorite(itemData['name']!)
+                                            ? 'Added to Favorites'
+                                            : 'Removed from Favorites',
+                                        '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    },
+                                    child: Icon(
+                                      favoriteController.isFavorite(item.name)
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: favoriteController.isFavorite(item.name)
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                  );
+                                }),
+                                Icon(
+                                  Icons.info_outline,
+                                  color: Colors.green.shade800,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Center(
+                            child: item.image.isNotEmpty
+                                ? Image.network(
+                              'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                              fit: BoxFit.cover,
+                              height: 80.h,
+                              width: 80.w,
+                              errorBuilder: (context, error, stackTrace) => Icon(
+                                Icons.hide_image_outlined,
+                                size: 90.sp,
+                                color: Colors.grey,
+                              ),
+                            )
+                                : Icon(
+                              Icons.hide_image_outlined,
+                              size: 90.sp,
+                              color: Colors.grey,
+                            ),
+                          ),
+
+
+                          Text(
+                            item.name,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item.price,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Obx(() {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      cartController.toggleCart(
+                                        item.name,
+                                        item.price,
+                                        item.image,
+                                      );
+                                      Get.snackbar(
+                                        cartController.isInCart(item.name)
+                                            ? 'Added to Cart'
+                                            : 'Removed from Cart',
+                                        '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.shopping_cart_outlined,
+                                      color: cartController.isInCart(item.name)
+                                          ? Colors.green.shade800
+                                          : Colors.grey,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }),
+    );
   }
 }

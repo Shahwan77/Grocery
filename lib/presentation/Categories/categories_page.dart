@@ -6,10 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/see%20all_page.dart';
 import 'package:shimmer/shimmer.dart';
 import '../home_screen/controller/home_controller.dart';
+import '../organic/organic_page.dart';
 import 'categories_detail.dart';
 import 'category_controller.dart';
-
-
 
 class CategoriesPage extends StatelessWidget {
   final HomeController categoryController = Get.put(HomeController());
@@ -19,7 +18,7 @@ class CategoriesPage extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:  EdgeInsets.symmetric(horizontal: 10.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -40,7 +39,7 @@ class CategoriesPage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // Navigate to the "See All" page
+
                   Get.to(SeeAllPage());
                 },
               ),
@@ -59,7 +58,7 @@ class CategoriesPage extends StatelessWidget {
                 mainAxisSpacing: 10.h,
                 childAspectRatio: 0.7,
               ),
-              itemCount: 6, // Placeholder item count for shimmer
+              itemCount: 6,
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
@@ -71,7 +70,7 @@ class CategoriesPage extends StatelessWidget {
                         child: Container(
                           height: 80.h,
                           decoration: BoxDecoration(
-                            color: Colors.white, // Placeholder color
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -80,7 +79,7 @@ class CategoriesPage extends StatelessWidget {
                       Container(
                         height: 10.h,
                         width: 60.w,
-                        color: Colors.white, // Placeholder color for text
+                        color: Colors.white,
                       ),
                     ],
                   ),
@@ -105,7 +104,14 @@ class CategoriesPage extends StatelessWidget {
                 final category = categoryController.categories[index];
                 return GestureDetector(
                   onTap: () {
-                    Get.to(() => DetailPage(categoryId: category.id.toString()));
+
+                    if (category.id == 2) {
+
+                      Get.to(() => OrganicPage());
+                    } else {
+
+                      Get.to(() => DetailPage(categoryId: category.id.toString(), categoryName: category.name,));
+                    }
                   },
                   child: Column(
                     children: [
@@ -118,7 +124,8 @@ class CategoriesPage extends StatelessWidget {
                               image: NetworkImage(
                                 'https://grocery-dev.greendomains.in/storage/images/categories/${category.image}',
                               ),
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
+                              //alignment: Alignment(2, 2)
                             ),
                           ),
                         ),
@@ -126,10 +133,13 @@ class CategoriesPage extends StatelessWidget {
                       SizedBox(height: 5.h),
                       Text(
                         category.name,
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w800,
                         ),
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
