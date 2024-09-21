@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 import 'most_popular_view.dart';
@@ -92,7 +93,7 @@ class MostPopularPage extends StatelessWidget {
                       border: Border.all(color: Colors.grey.shade100),
                       image: DecorationImage(
                         image: NetworkImage(
-                          'https://grocery-dev.greendomains.in/storage/images/categories/${item.image}',
+                          '${Api.ImageUrl}/categories/${item.image}',
                         ),
                         fit: BoxFit.contain,
                         alignment: Alignment(0, -1),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
 import '../favorite/fav_controller.dart';
 import '../home_screen/controller/home_controller.dart';
@@ -50,7 +51,7 @@ class MostPopularView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://grocery-dev.greendomains.in/storage/images/categories/${item.image}',
+                      '${Api.ImageUrl}/categories/${item.image}',
                     ),
                   ),
                 ),

@@ -24,11 +24,7 @@ class OrganicPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No subcategories available'));
-        } else {
+        }  else {
           final subcategories = snapshot.data!;
 
           return DefaultTabController(

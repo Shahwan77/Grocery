@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/see%20all_page.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../data/apiClient/api.dart';
 import '../home_screen/controller/home_controller.dart';
 import '../organic/organic_page.dart';
 import 'categories_detail.dart';
@@ -49,7 +50,7 @@ class CategoriesPage extends StatelessWidget {
         Obx(() {
           if (categoryController.isLoading.value) {
             return GridView.builder(
-              padding: EdgeInsets.all(8.0),
+              padding:  EdgeInsets.symmetric(horizontal: 5.w,vertical: 5.h),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -61,6 +62,7 @@ class CategoriesPage extends StatelessWidget {
               itemCount: 6,
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
+                  period: Duration(seconds: 60),
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Column(
@@ -90,7 +92,7 @@ class CategoriesPage extends StatelessWidget {
             return Center(child: Text("No categories found."));
           } else {
             return GridView.builder(
-              padding: EdgeInsets.all(8.0),
+              padding:  EdgeInsets.symmetric(horizontal: 5.w,vertical: 5.h),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -120,9 +122,18 @@ class CategoriesPage extends StatelessWidget {
                         child: Container(
                           height: 80.h,
                           decoration: BoxDecoration(
+                            color: Colors.white,
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //     color: Colors.black26,
+                            //     blurRadius: 4.0,
+                            //     offset: Offset(0, 2),
+                            //   ),
+                            // ],
+                            // borderRadius: BorderRadius.circular(8.r),
                             image: DecorationImage(
                               image: NetworkImage(
-                                'https://grocery-dev.greendomains.in/storage/images/categories/${category.image}',
+                                '${Api.ImageUrl}/categories/${category.image}',
                               ),
                               fit: BoxFit.contain,
                               //alignment: Alignment(2, 2)

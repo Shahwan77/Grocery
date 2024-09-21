@@ -101,19 +101,23 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.h),
-              Center(
-                child: Button(
-                  color: Colors.green.shade800,
-                  size: Size(340.w, 45.h),
-                  text: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 18.sp, color: Colors.white),
-                  ),
-                  ontap: () {
-
-                  },
+              Button(
+                color: Colors.green.shade800,
+                size: Size(340.w, 45.h),
+                text: Text(
+                  "Login",
+                  style: TextStyle(fontSize: 18.sp, color: Colors.white),
                 ),
+                ontap: () {
+                  if (loginController.validateEmail(loginController.emailController.text) == null &&
+                      loginController.validatePassword(loginController.passwordController.text) == null) {
+                    loginController.login();
+                  } else {
+                    Get.snackbar('Error', 'Please enter valid credentials');
+                  }
+                },
               ),
+
               SizedBox(
                 height: 10.h,
               ),

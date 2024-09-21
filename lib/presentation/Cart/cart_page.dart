@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
 import 'package:lottie/lottie.dart';
+import '../../data/apiClient/api.dart';
 import '../../widgets/button/button.dart';
 import '../bottomnav/controller/bottomnav_controller.dart';
 import 'cart_controller.dart';
@@ -93,8 +94,8 @@ class CartPage extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               child: Center(
-                                child: Image.asset(
-                                  item['image'],
+                                child: Image.network(
+                                  '${Api.ImageUrl}/products/${item['image']}',
                                   width: 80.w,
                                   height: 80.h,
                                 ),

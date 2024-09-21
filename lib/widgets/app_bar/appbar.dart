@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      // systemOverlayStyle: SystemUiOverlayStyle(
+      //   statusBarColor: Colors.green,
+      //   statusBarIconBrightness: Brightness.light,
+      // ),
       surfaceTintColor: Colors.white,
       backgroundColor: Colors.white,
       elevation: 0,
@@ -191,7 +196,7 @@ class CustomDrawerOverlay extends StatelessWidget {
           child: Container(
             width: 250.w,
             child: CusDrawer(), // Your custom drawer widget
-          ),
+          )
         ),
       ),
     );

@@ -138,22 +138,25 @@ class AllOrganicFood extends StatelessWidget {
                                 return GestureDetector(
                                   onTap: () {
                                     cartController.toggleCart(
+                                      item.id, // Ensure product ID is passed
                                       item.name,
                                       item.price,
                                       item.image,
                                     );
                                     Get.snackbar(
-                                      cartController.isInCart(item.name)
+                                      cartController.isInCart(item.id) // Use product ID to check cart
                                           ? 'Added to Cart'
                                           : 'Removed from Cart',
-                                      '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
-                                      snackPosition: SnackPosition.BOTTOM,
+                                      '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+                                      snackPosition: SnackPosition.TOP,
                                     );
                                   },
                                   child: Icon(
-                                    Icons.shopping_cart_outlined,
-                                    color: cartController.isInCart(item.name)
-                                        ? Colors.green.shade800
+                                    cartController.isInCart(item.id) // Use product ID to display icon
+                                        ? Icons.shopping_cart
+                                        : Icons.shopping_cart_outlined,
+                                    color: cartController.isInCart(item.id) // Use product ID to check cart
+                                        ? Colors.green
                                         : Colors.grey,
                                   ),
                                 );

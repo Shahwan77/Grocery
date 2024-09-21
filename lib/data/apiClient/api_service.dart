@@ -35,7 +35,7 @@ class ApiService {
   }
 
   Future<List<Models>> fetchCategoryProducts(int categoryId) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?category_id=$categoryId'));
+    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

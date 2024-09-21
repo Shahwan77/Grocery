@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../data/apiClient/api.dart';
 import '../home_screen/controller/home_controller.dart';
 import '../home_screen/models/categories_model.dart';
 import 'category_controller.dart';
@@ -61,7 +62,7 @@ class SeeAllPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
                             child: Image.network(
-                              'https://grocery-dev.greendomains.in/storage/images/categories/${category.image}',
+                              '${Api.ImageUrl}/categories/${category.image}',
                               fit: BoxFit.cover,
                               height: 100, // Image height
                               width: 100, // Image width

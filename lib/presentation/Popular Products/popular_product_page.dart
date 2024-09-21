@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
 import '../Cart/cart_page.dart';
 import '../Popular Products/popular_products_view.dart';
@@ -191,7 +192,7 @@ class PopularProductPage extends StatelessWidget {
                             ),
                             Expanded(
                               child: Image.network(
-                                'https://grocery-dev.greendomains.in/storage/images/products/${item.image}',
+                                '${Api.ImageUrl}/products/${item.image}',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
@@ -226,23 +227,24 @@ class PopularProductPage extends StatelessWidget {
                                     return GestureDetector(
                                       onTap: () {
                                         cartController.toggleCart(
+                                          item.id, // Ensure product ID is passed
                                           item.name,
                                           item.price,
                                           item.image,
                                         );
                                         Get.snackbar(
-                                          cartController.isInCart(item.name)
+                                          cartController.isInCart(item.id) // Use product ID to check cart
                                               ? 'Added to Cart'
                                               : 'Removed from Cart',
-                                          '${item.name} has been ${cartController.isInCart(item.name) ? 'added to' : 'removed from'} your cart.',
+                                          '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
                                           snackPosition: SnackPosition.TOP,
                                         );
                                       },
                                       child: Icon(
-                                        cartController.isInCart(item.name)
+                                        cartController.isInCart(item.id) // Use product ID to display icon
                                             ? Icons.shopping_cart
                                             : Icons.shopping_cart_outlined,
-                                        color: cartController.isInCart(item.name)
+                                        color: cartController.isInCart(item.id) // Use product ID to check cart
                                             ? Colors.green
                                             : Colors.grey,
                                       ),

@@ -70,7 +70,7 @@ class CusDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10), // Add some space between the container and the text
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Row(
@@ -153,11 +153,10 @@ class CusDrawer extends StatelessWidget {
                   drawerController.setSelectedIndex(index);
 
                   if (index == 3) {
-                    Get.to(() => FavoritesPage());  // Navigate to FavoritesPage
+                    Get.to(() => FavoritesPage());
                   } else if (index == 4) {
-                    Get.to(() => TrackHistory());  // Navigate to TrackHistory
+                    Get.to(() => TrackHistory());
                   }
-                  // Handle other navigation or logic
                 },
               ),
             ],

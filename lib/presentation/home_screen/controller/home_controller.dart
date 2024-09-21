@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
 import '../../../data/apiClient/api_service.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/models.dart';
@@ -9,7 +7,7 @@ class HomeController extends GetxController {
   var categories = <Category>[].obs;
   var popularProducts = <Models>[].obs;
   var discountProducts = <Models>[].obs;
-  var popularCategories= <Models>[].obs;
+  var popularCategories = <Models>[].obs;
   var isLoading = true.obs;
 
   final ApiService _apiService = ApiService();
@@ -55,17 +53,25 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> fetchPopularCategories() async {
     try {
       final popularCategoriesList = await _apiService.fetchPopularCategories();
       popularCategories.value = popularCategoriesList;
     } catch (e) {
-      print("Error fetching discount products: $e");
+      print("Error fetching popular categories: $e");
     } finally {
       isLoading.value = false;
     }
   }
 
-
-
+  Future<void> refreshData() async {
+    isLoading.value = true;
+    await fetchCategories();
+    await fetchPopularProducts();
+    await fetchDiscountProducts();
+    await fetchPopularCategories();
+    isLoading.value = false;
+    await Future.delayed(Duration(seconds: 0));
+  }
 }
