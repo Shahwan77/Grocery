@@ -226,14 +226,14 @@ class PopularProductPage extends StatelessWidget {
                                   Obx(() {
                                     return GestureDetector(
                                       onTap: () {
-                                        cartController.toggleCart(
+                                        cartController.posticonCartItems(
                                           item.id, // Ensure product ID is passed
                                           item.name,
                                           item.price,
                                           item.image,
                                         );
                                         Get.snackbar(
-                                          cartController.isInCart(item.id) // Use product ID to check cart
+                                          cartController.isInCart(item.id)
                                               ? 'Added to Cart'
                                               : 'Removed from Cart',
                                           '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
@@ -249,6 +249,7 @@ class PopularProductPage extends StatelessWidget {
                                             : Colors.grey,
                                       ),
                                     );
+
                                   }),
                                 ],
                               ),

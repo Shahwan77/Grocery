@@ -15,7 +15,8 @@ class LoginController extends GetxController {
   final TextEditingController passwordController = TextEditingController();
 
   final box = GetStorage();
-  final CartController cartController = Get.find<CartController>();
+  final CartController cartController =
+      Get.find<CartController>(); // Get CartController
 
   // Login method
   Future<void> login() async {
@@ -34,19 +35,15 @@ class LoginController extends GetxController {
 
         if (data.containsKey('access_token') && data['access_token'] != null) {
           String accessToken = data['access_token'];
-          String tokenType = data['token_type'];
-
-          print('Access Token: $accessToken');
-
           box.write('access_token', accessToken);
-          box.write('token_type', tokenType);
 
           Get.snackbar('Success', 'Login successful');
 
-          if (cartController.uniqueItemCount > 0) {
-            await cartController.postCartItems(accessToken);
+          if (cartController.cartItems.isNotEmpty) {
+            await cartController
+                .postCartItems(accessToken); // Post cart items after login
           }
-          // cartController.postCartItems(accessToken);
+          cartController.clearLocalCart();
           Get.offAll(CustomBottomNavBar());
         } else {
           Get.snackbar('Error', 'Login failed: Access token not found');

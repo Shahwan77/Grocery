@@ -143,6 +143,7 @@ class TopDiscountView extends StatelessWidget {
                                         item.name,
                                         item.price,
                                         item.image,
+
                                       );
                                       Get.snackbar(
                                         cartController.isInCart(item.id) // Use product ID to check cart

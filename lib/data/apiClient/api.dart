@@ -10,5 +10,5 @@ class Api {
   static String PopularCategories='$BaseUrl/api/product-categories/popular';
   static String Login = '$BaseUrl/api/login';
   static String CartPost = '$BaseUrl/api/cart';
-
+  static String CartGet = '$BaseUrl/api/cart';
 }

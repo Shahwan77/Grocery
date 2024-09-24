@@ -137,7 +137,7 @@ class AllOrganicFood extends StatelessWidget {
                               Obx(() {
                                 return GestureDetector(
                                   onTap: () {
-                                    cartController.toggleCart(
+                                    cartController.posticonCartItems(
                                       item.id, // Ensure product ID is passed
                                       item.name,
                                       item.price,
