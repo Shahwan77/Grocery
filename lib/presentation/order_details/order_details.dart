@@ -91,24 +91,29 @@ class OrderDetails extends StatelessWidget {
                                 fontSize: 13.sp,
                               ),
                             ),
-                            Container(
-                              height: 24.h,
-                              width: 100.w,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '62.47 AED',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12.sp,
+                            if (cartController.isLoggedIn() &&
+                                cartController.getCartItems().isNotEmpty) ...[
+                              Obx(() {
+                                return  Container(
+                                  height: 24.h,
+                                  //width: 100.w,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20.r),
                                   ),
-                                ),
-                              ),
-                            ),
+                                  child: Center(
+                                    child: Text(
+                                      "  \$${cartController.total.value}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.sp,
+                                        color: Colors.green.shade800,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ]
                           ],
                         ),
                       ],
@@ -186,19 +191,11 @@ class OrderDetails extends StatelessWidget {
                     itemCount: cartController.getCartItems().length,
                     itemBuilder: (context, index) {
                       final item = cartController.getCartItems()[index];
-                      return Container(
-                        height: 60.h,
-                        margin: EdgeInsets.symmetric(
-                            vertical: 8.h, horizontal: 1.w),
-                        padding: EdgeInsets.all(12.w),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
+                      return Column(
+                        children: [
+                          ListTile(
+                           // contentPadding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 12.w),
+                            leading: Container(
                               height: 50.h,
                               width: 50.w,
                               decoration: BoxDecoration(
@@ -210,37 +207,49 @@ class OrderDetails extends StatelessWidget {
                                   '${Api.ImageUrl}/products/${item['image']}',
                                   width: 80.w,
                                   height: 80.h,
+                                  fit: BoxFit.cover, // Ensure image fits within the container
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 10.w,
+                            title: Text(
+                              item['name'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.sp,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Column(
+                            subtitle: Row(
                               children: [
                                 Text(
-                                  item['name'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14.sp,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                                  item['price'],
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                                SizedBox(width: 5.w), // Add some spacing between price and quantity
+                                Text(
+                                  '*${item['quantity']}',
+                                  style: TextStyle(color: Colors.green),
                                 ),
                               ],
                             ),
-
-                            Text(
+                            trailing: Text(
                               item['price'],
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
                               ),
                             ),
-                          ],
-                        ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                            tileColor: Colors.grey.shade200, // Background color for the tile
+                          ),
+                          SizedBox(height: 15,)
+                        ],
                       );
                     },
                   ),
+
                   Divider(
                     thickness: 1.4,
                   ),
@@ -254,16 +263,24 @@ class OrderDetails extends StatelessWidget {
                             color: Colors.grey,
                             fontWeight: FontWeight.w500),
                       ),
-                      Text(
-                        '62.47 AED',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600),
-                      )
+                      if (cartController.isLoggedIn() &&
+                          cartController.getCartItems().isNotEmpty) ...[
+                        Obx(() {
+                          return Text(
+                            "\$${cartController.total.value}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                              color: Colors.black,
+                            ),
+                          );
+                        }),
+                      ],
                     ],
                   ),
-                  SizedBox(height: 100,)
+                  SizedBox(
+                    height: 100,
+                  )
                 ],
               ),
             ),

@@ -28,7 +28,9 @@ class CustomBottomNavBar extends StatelessWidget {
       ),
       bottomNavigationBar: Obx(
             () {
-          final cartItemCount = cartController.uniqueItemCount;
+          final cartItemCount = cartController.isLoggedIn()
+              ? cartController.serverCartItemCount
+              : cartController.localCartItemCount;
 
           return BottomNavigationBar(
             currentIndex: bottomNavController.selectedIndex.value,

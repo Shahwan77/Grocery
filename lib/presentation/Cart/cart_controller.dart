@@ -8,7 +8,7 @@ import '../../data/apiClient/bottom_api_services.dart';
 
 class CartController extends GetxController {
   var cartItems = <Map<String, dynamic>>[].obs;
-  var fetcedcartItems = <Map<String, dynamic>>[].obs;
+  var fetchedcartItems = <Map<String, dynamic>>[].obs;
   var products = <Map<String, dynamic>>[].obs;
   final BottomApiService apiService = BottomApiService();
   var total = "0.00".obs;
@@ -20,14 +20,12 @@ class CartController extends GetxController {
     loadCartItems();
   }
 
-  // Clear cart items both locally and from storage
   void clearLocalCart() {
-    cartItems.clear(); // Clear the local cart items
-    box.remove('cartItems'); // Remove the stored cart items from GetStorage
-    printStoredItems(); // Optionally print the state
+    cartItems.clear();
+    box.remove('cartItems');
+    printStoredItems();
   }
 
-  // Load cart items from local storage (GetStorage)
   void loadCartItems() {
     final savedCart = box.read('cartItems');
     if (savedCart != null) {
@@ -35,32 +33,28 @@ class CartController extends GetxController {
     }
   }
 
-  // Save cart items to local storage (GetStorage)
   void saveCartItems() {
     box.write('cartItems', cartItems);
-    printStoredItems(); // Optionally print the stored items
+    printStoredItems();
   }
 
-  // Get the count of unique items in the cart
   int get uniqueItemCount => cartItems.length;
 
-  // Get the total quantity of items in the cart
   int get itemCount =>
       cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
 
-  // Fetch product data from the API
   Future<void> loadProducts() async {
     final fetchedProducts = await apiService.fetchProducts();
     products.assignAll(fetchedProducts);
   }
 
-  // Add or remove items from the cart
   void toggleCart(
       int productId, String itemName, String itemPrice, String itemImage) {
     final itemIndex =
-        cartItems.indexWhere((item) => item['product_id'] == productId);
+    cartItems.indexWhere((item) => item['product_id'] == productId);
+
     if (itemIndex >= 0) {
-      cartItems.removeAt(itemIndex); // Remove if already in cart
+      cartItems.removeAt(itemIndex);
     } else {
       cartItems.add({
         'product_id': productId,
@@ -70,10 +64,15 @@ class CartController extends GetxController {
         'quantity': 1,
       });
     }
-    saveCartItems();
+
+    final token = box.read('access_token');
+    if (token != null) {
+      postCartItems(token);
+    } else {
+      saveCartItems();
+    }
   }
 
-  // Update item quantity in the cart
   void updateQuantity(String itemName, int change) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
@@ -88,34 +87,29 @@ class CartController extends GetxController {
     }
   }
 
-  // Check if an item is already in the cart
   bool isInCart(int productId) {
     return cartItems.any((item) => item['product_id'] == productId);
   }
 
-  // Get all cart items
   List<Map<String, dynamic>> getCartItems() {
     if (GetStorage().read('access_token') == null) {
       return cartItems;
     } else {
-      return fetcedcartItems;
+      return fetchedcartItems;
     }
   }
 
-
-  void posticonCartItems(int productId, String itemName, String itemPrice, String itemImage) {
+  void posticonCartItems(
+      int productId, String itemName, String itemPrice, String itemImage) {
     final token = box.read('access_token');
 
     if (token == null) {
-      // If the token is null, toggle the cart item
       toggleCart(productId, itemName, itemPrice, itemImage);
     } else {
-      // If the token is not null, post the cart items to the server
       postCartItems(token);
     }
   }
 
-  // Remove an item from the cart
   void removeFromCart(String itemName, String itemPrice, String itemImage) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
@@ -124,7 +118,6 @@ class CartController extends GetxController {
     }
   }
 
-  // Print stored cart items (for debugging)
   void printStoredItems() {
     final storedItems = box.read('cartItems');
     if (storedItems != null && storedItems.isNotEmpty) {
@@ -134,10 +127,8 @@ class CartController extends GetxController {
     }
   }
 
-  // Post cart items to the server
   Future<void> postCartItems(String token) async {
     try {
-      // Prepare the cart items for posting
       final formattedCartItems = cartItems.map((item) {
         return {
           'product_id': item['product_id'],
@@ -172,7 +163,6 @@ class CartController extends GetxController {
     }
   }
 
-  // Fetch cart items from the server
   Future<void> fetchCartItems(String token) async {
     try {
       final response = await http.get(
@@ -184,23 +174,39 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        if (data['items'] != null) {
-          fetcedcartItems
-              .assignAll(List<Map<String, dynamic>>.from(data['items']));
-          total.value = data['total'];
-          print('Fetched Cart Items: ${cartItems.toList()}');
-          print('Total Amount: ${total.value}');
+
+        if (data['success'] == true && data['data'] != null) {
+          // Access the items from the response
+          final items = data['data']['items'];
+          if (items != null) {
+            // Assign the fetched items to the observable list
+            fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
+            // Access the total from the response
+            total.value = data['data']['total'];
+            print('Fetched Cart Items: ${fetchedcartItems.toList()}');
+            print('Total Amount: ${total.value}');
+          }
         }
       } else {
-        Get.snackbar(
-            'Error', 'Failed to fetch cart items: ${response.reasonPhrase}');
+        // Handle the error response
+       // Get.snackbar('Error', 'Failed to fetch cart items: ${response.reasonPhrase}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
+      // Handle any exceptions
+     // Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
     }
   }
 
-  // Check if the user is logged in
+  int get localCartItemCount => cartItems.length;
+
+  int get serverCartItemCount => fetchedcartItems.length;
+
+  int get localItemCount =>
+      cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
+
+  int get serverItemCount =>
+      fetchedcartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
+
   bool isLoggedIn() {
     final accessToken = box.read('access_token');
     return accessToken != null && accessToken.isNotEmpty;

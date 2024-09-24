@@ -226,7 +226,7 @@ class PopularProductPage extends StatelessWidget {
                                   Obx(() {
                                     return GestureDetector(
                                       onTap: () {
-                                        cartController.posticonCartItems(
+                                        cartController.toggleCart(
                                           item.id, // Ensure product ID is passed
                                           item.name,
                                           item.price,

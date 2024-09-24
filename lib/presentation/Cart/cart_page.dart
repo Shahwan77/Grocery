@@ -42,7 +42,7 @@ class CartPage extends StatelessWidget {
           } else {
             return Obx(() {
               // Use Obx to reactively update the UI with fetched items
-              if (cartController.fetcedcartItems.isEmpty &&
+              if (cartController.fetchedcartItems.isEmpty &&
                   cartController.cartItems.isEmpty) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -257,13 +257,33 @@ class CartPage extends StatelessWidget {
                           );
                         },
                       ),
+                      if (cartController.isLoggedIn() &&
+                          cartController.getCartItems().isNotEmpty) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Total:', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18.sp)),
+                            SizedBox(width: 10),
+                            Obx(() {
+                              return Text(
+                                "\$${cartController.total.value}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.sp,
+                                  color: Colors.green.shade800,
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                        SizedBox(height: 6.h,),
+                      ],
                       Button(
                         color: Colors.green.shade800,
                         size: Size(340.w, 45.h),
                         text: Text(
                           "Continue",
-                          style:
-                              TextStyle(fontSize: 18.sp, color: Colors.white),
+                          style: TextStyle(fontSize: 18.sp, color: Colors.white),
                         ),
                         ontap: () async {
                           if (!cartController.isLoggedIn()) {
@@ -273,6 +293,7 @@ class CartPage extends StatelessWidget {
                           }
                         },
                       ),
+
                       SizedBox(
                         height: 20.h,
                       ),
