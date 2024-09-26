@@ -95,23 +95,25 @@ class OrderDetails extends StatelessWidget {
                                 cartController.getCartItems().isNotEmpty) ...[
                               Obx(() {
                                 return  Container(
-                                  height: 24.h,
-                                  //width: 100.w,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      "  \$${cartController.total.value}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.sp,
-                                        color: Colors.green.shade800,
+                                  child: IntrinsicWidth(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                      child: Text(
+                                        "\$${cartController.total.value}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.sp,
+                                          color: Colors.green.shade800,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                );
+                                )
+                                ;
                               }),
                             ]
                           ],
@@ -233,7 +235,7 @@ class OrderDetails extends StatelessWidget {
                               ],
                             ),
                             trailing: Text(
-                              item['price'],
+                              calculateTotalPrice(item['price'], item['quantity']),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
@@ -288,5 +290,18 @@ class OrderDetails extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+String calculateTotalPrice(dynamic price, dynamic quantity) {
+  try {
+    final double priceValue = price is int ? price.toDouble() : double.parse(price.toString());
+    final int quantityValue = quantity is int ? quantity : int.parse(quantity.toString());
+
+    final double total = priceValue * quantityValue;
+
+    return total.toStringAsFixed(2);
+  } catch (e) {
+
+    return '0.00';
   }
 }

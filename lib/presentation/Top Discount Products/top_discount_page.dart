@@ -168,16 +168,25 @@ class TopDiscountPage extends StatelessWidget {
                                     ),
                                   ),
                                   Obx(() {
+                                    final isInLocalCart = cartController.isInCart(item.id);
+                                    final isInServerCart = cartController.fetchedcartItems
+                                        .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+
+                                    final isInCart = isInLocalCart || isInServerCart; // Check if item is in local or server cart
+
                                     return GestureDetector(
-                                      onTap: () {
+                                      onTap: isInCart // Disable onTap if already in cart
+                                          ? null // Disable the action if item is already in the cart
+                                          : () {
                                         cartController.toggleCart(
-                                          item.id, // Ensure product ID is passed
+                                          item.id, // Product ID
                                           item.name,
                                           item.price,
                                           item.image,
                                         );
+
                                         Get.snackbar(
-                                          cartController.isInCart(item.id) // Use product ID to check cart
+                                          cartController.isInCart(item.id)
                                               ? 'Added to Cart'
                                               : 'Removed from Cart',
                                           '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
@@ -185,12 +194,10 @@ class TopDiscountPage extends StatelessWidget {
                                         );
                                       },
                                       child: Icon(
-                                        cartController.isInCart(item.id) // Use product ID to display icon
-                                            ? Icons.shopping_cart
-                                            : Icons.shopping_cart_outlined,
-                                        color: cartController.isInCart(item.id) // Use product ID to check cart
-                                            ? Colors.green
-                                            : Colors.grey,
+                                        isInCart
+                                            ? Icons.shopping_cart // Show filled cart if item is in cart
+                                            : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
+                                        color: isInCart ? Colors.green : Colors.grey, // Change icon color
                                       ),
                                     );
                                   }),

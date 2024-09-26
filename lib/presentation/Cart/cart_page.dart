@@ -91,6 +91,7 @@ class CartPage extends StatelessWidget {
                         itemCount: cartController.getCartItems().length,
                         itemBuilder: (context, index) {
                           final item = cartController.getCartItems()[index];
+                          final int productId = item['product_id'];
                           return Container(
                             height: 114.h,
                             margin: EdgeInsets.symmetric(
@@ -192,21 +193,16 @@ class CartPage extends StatelessWidget {
                                                             10.r),
                                                     color: Colors.white,
                                                   ),
-                                                  child: IconButton(
+                                                  child:IconButton(
                                                     icon: Icon(
                                                       Icons.remove,
-                                                      color: item['quantity'] >
-                                                              1
+                                                      color: (item['quantity'] ?? 0) > 1 // Check if quantity is not null
                                                           ? Colors.red.shade600
                                                           : Colors.grey,
                                                     ),
                                                     onPressed: () {
-                                                      if (item['quantity'] >
-                                                          1) {
-                                                        cartController
-                                                            .updateQuantity(
-                                                                item['name'],
-                                                                -1);
+                                                      if ((item['quantity'] ?? 0) > 1) { // Check if quantity is not null
+                                                        cartController.updateQuantity(item['name'], -1);
                                                       }
                                                     },
                                                   ),
@@ -231,16 +227,10 @@ class CartPage extends StatelessWidget {
                                                   child: IconButton(
                                                     icon: Icon(
                                                       Icons.add,
-                                                      color:
-                                                          item['quantity'] > 1
-                                                              ? Colors.green
-                                                                  .shade800
-                                                              : Colors.grey,
+                                                      color: Colors.green.shade800,
                                                     ),
                                                     onPressed: () {
-                                                      cartController
-                                                          .updateQuantity(
-                                                              item['name'], 1);
+                                                      cartController.updateQuantity(productId, 1);
                                                     },
                                                   ),
                                                 ),

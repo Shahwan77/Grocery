@@ -40,9 +40,12 @@ class LoginController extends GetxController {
           Get.snackbar('Success', 'Login successful');
 
           if (cartController.cartItems.isNotEmpty) {
-            await cartController
-                .postCartItems(accessToken); // Post cart items after login
+            // Post each cart item after login
+            for (var cartItem in cartController.cartItems) {
+              await cartController.postCartItems(accessToken, cartItem);
+            }
           }
+
           cartController.clearLocalCart();
           Get.offAll(CustomBottomNavBar());
         } else {
@@ -55,6 +58,7 @@ class LoginController extends GetxController {
       Get.snackbar('Error', 'An error occurred: $e');
     }
   }
+
 
   String? validateEmail(String value) {
     isEmailValid.value = GetUtils.isEmail(value);

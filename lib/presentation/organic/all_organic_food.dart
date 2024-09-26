@@ -135,31 +135,41 @@ class AllOrganicFood extends StatelessWidget {
                                 ),
                               ),
                               Obx(() {
+
+                                final isInLocalCart = cartController.isInCart(item.id);
+                                final isInServerCart = cartController.fetchedcartItems.any((fetchedItem) => fetchedItem['product_id'] == item.id);
+
                                 return GestureDetector(
                                   onTap: () {
                                     cartController.toggleCart(
-                                      item.id, // Ensure product ID is passed
+                                      item.id, // Product ID
                                       item.name,
                                       item.price,
                                       item.image,
                                     );
+
                                     Get.snackbar(
-                                      cartController.isInCart(item.id) // Use product ID to check cart
+                                      cartController.isInCart(item.id)
                                           ? 'Added to Cart'
                                           : 'Removed from Cart',
                                       '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
                                       snackPosition: SnackPosition.TOP,
                                     );
                                   },
-                                  child: Icon(
-                                    cartController.isInCart(item.id) // Use product ID to display icon
+                                  child:
+
+                                  Icon(
+                                    isInLocalCart || isInServerCart
                                         ? Icons.shopping_cart
                                         : Icons.shopping_cart_outlined,
-                                    color: cartController.isInCart(item.id) // Use product ID to check cart
+                                    color: isInLocalCart || isInServerCart
                                         ? Colors.green
                                         : Colors.grey,
                                   ),
+
                                 );
+
+
                               }),
                             ],
                           ),
