@@ -29,10 +29,10 @@ class ProductsController extends GetxController {
     }
   }
 
-  Future<List<Models>> fetchRiceCakes(int subcategoryId) async {
+  Future<List<Models>> fetchTabs(int subcategoryId) async {
     try {
       isLoading.value = true;
-      productItems.value = await apiService.fetchRiceCakes(subcategoryId);
+      productItems.value = await apiService.fetchTabs(subcategoryId);
       return productItems;
     } catch (e) {
       print('Error: $e');

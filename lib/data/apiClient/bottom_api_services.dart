@@ -10,7 +10,14 @@ class BottomApiService {
     try {
       final response = await http.get(Uri.parse(Api.Product));
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(json.decode(response.body));
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) {
+          // Return the list of products from the 'data2' field
+          return List<Map<String, dynamic>>.from(responseData['data']);
+        } else {
+          print('API returned an error');
+          return [];
+        }
       } else {
         print('Failed to load products');
         return [];

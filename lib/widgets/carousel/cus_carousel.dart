@@ -49,7 +49,7 @@ class CusCarousel extends StatelessWidget {
             activeIndex: carouselController.currentIndex.value,
             count: 3,
             effect: ScrollingDotsEffect(
-              activeDotColor: Colors.green.shade800,
+              activeDotColor: Colors.red,
               dotColor: Colors.grey.shade200,
               dotHeight: 5.h,
               dotWidth: 20.w,

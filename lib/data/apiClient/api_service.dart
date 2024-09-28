@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../data/models/category_model.dart';
@@ -6,6 +7,7 @@ import '../../../data/apiClient/api.dart';
 import '../models/models.dart';
 
 class ApiService {
+  final box = GetStorage();
   Future<List<Category>> fetchCategories() async {
     final response = await http.get(Uri.parse(Api.Category));
 
@@ -18,7 +20,15 @@ class ApiService {
   }
 
   Future<List<Models>> fetchPopularProducts() async {
-    final response = await http.get(Uri.parse(Api.PopularProduct));
+    final token = box.read('access_token');
+    final String apiUrl = token != null
+        ? 'https://grocery-dev.greendomains.in/api/products/popular/cart'
+        : Api.PopularProduct;
+
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Add token to headers if it exists
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -51,7 +61,7 @@ class ApiService {
     }
   }
 
-  Future<List<Models>> fetchRiceCakes(int subcategoryId) async {
+  Future<List<Models>> fetchTabs(int subcategoryId) async {
     final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId'));
 
     if (response.statusCode == 200) {
@@ -78,13 +88,23 @@ class ApiService {
     }
   }
   Future<List<Models>> fetchDiscountProducts() async {
-    final response = await http.get(Uri.parse(Api.DiscountProduct));
+    final token = box.read('access_token');
+    // Determine the API endpoint based on the token's presence
+    final String apiUrl = token != null
+        ? 'https://grocery-dev.greendomains.in/api/products/discount/cart'
+        : Api.DiscountProduct;
+
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Add token to headers if it exists
+    );
 
     if (response.statusCode == 200) {
+      print('Token: $token');
       final data = jsonDecode(response.body);
       if (data['success']) {
         return (data['data'] as List)
-            .map((item) => Models.fromJson(item))
+            .map((item) => Models.fromJson(item)) // Make sure to use the correct model
             .toList();
       } else {
         throw Exception('Failed to load popular products');

@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
          // return Center(child: CircularProgressIndicator(color: Colors.green,));
         }
         return RefreshIndicator(
-          color: Colors.green,
+          color: Colors.red,
           backgroundColor: Colors.white,
           //strokeWidth: 2,
           onRefresh: controller.refreshData,

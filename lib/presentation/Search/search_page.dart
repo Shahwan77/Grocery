@@ -9,7 +9,7 @@ class SearchPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 100.h,
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: Colors.red,
         title: Column(
           children: [
             TextField(

@@ -23,8 +23,8 @@ class CusDrawer extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.green.shade800,
-                    Colors.green.shade400,
+                    Colors.red.shade800,
+                    Colors.red.shade400,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -124,7 +124,7 @@ class CusDrawer extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: drawerController.selectedIndex.value == index
-                ? Colors.green.shade100
+                ? Colors.red.shade200
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(
@@ -137,14 +137,14 @@ class CusDrawer extends StatelessWidget {
           child: Column(
             children: [
               ListTile(
-                leading: Icon(icon, color: Colors.green.shade800),
+                leading: Icon(icon, color: Colors.red),
                 title: Text(
                   title,
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14.sp,
                   ),
-                  selectionColor: Colors.green.shade800,
+                  selectionColor: Colors.red,
                 ),
                 tileColor: drawerController.selectedIndex.value == index
                     ? Colors.green.shade100

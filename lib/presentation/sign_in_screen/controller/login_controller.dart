@@ -36,7 +36,7 @@ class LoginController extends GetxController {
         if (data.containsKey('access_token') && data['access_token'] != null) {
           String accessToken = data['access_token'];
           box.write('access_token', accessToken);
-
+           print('Access Token: $accessToken');
           Get.snackbar('Success', 'Login successful');
 
           if (cartController.cartItems.isNotEmpty) {
@@ -47,6 +47,9 @@ class LoginController extends GetxController {
           }
 
           cartController.clearLocalCart();
+
+          // Delay for 1 or 2 seconds before navigating
+          await Future.delayed(Duration(seconds: 1)); // Adjust duration as needed
           Get.offAll(CustomBottomNavBar());
         } else {
           Get.snackbar('Error', 'Login failed: Access token not found');

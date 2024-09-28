@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:grocery/widgets/button/button.dart';
 
 import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
@@ -20,17 +21,17 @@ class OrderDetails extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 180.h,
+              height: 156.h,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.green.shade800,
+                color: Colors.red,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 50.h, horizontal: 14.w),
+                padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 14.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -53,7 +54,7 @@ class OrderDetails extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 6.h),
                     Text(
                       'Ashique Mohammed',
                       style: TextStyle(
@@ -94,16 +95,17 @@ class OrderDetails extends StatelessWidget {
                             if (cartController.isLoggedIn() &&
                                 cartController.getCartItems().isNotEmpty) ...[
                               Obx(() {
-                                return  Container(
+                                return Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: IntrinsicWidth(
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8.w),
                                       child: Text(
-                                        "\$${cartController.total.value}",
+                                        "\$${cartController.total_amount.value}",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18.sp,
@@ -112,8 +114,7 @@ class OrderDetails extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                )
-                                ;
+                                );
                               }),
                             ]
                           ],
@@ -196,7 +197,7 @@ class OrderDetails extends StatelessWidget {
                       return Column(
                         children: [
                           ListTile(
-                           // contentPadding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 12.w),
+                            // contentPadding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 12.w),
                             leading: Container(
                               height: 50.h,
                               width: 50.w,
@@ -209,7 +210,8 @@ class OrderDetails extends StatelessWidget {
                                   '${Api.ImageUrl}/products/${item['image']}',
                                   width: 80.w,
                                   height: 80.h,
-                                  fit: BoxFit.cover, // Ensure image fits within the container
+                                  fit: BoxFit
+                                      .cover, // Ensure image fits within the container
                                 ),
                               ),
                             ),
@@ -227,7 +229,9 @@ class OrderDetails extends StatelessWidget {
                                   item['price'],
                                   style: TextStyle(color: Colors.green),
                                 ),
-                                SizedBox(width: 5.w), // Add some spacing between price and quantity
+                                SizedBox(
+                                    width: 5
+                                        .w), // Add some spacing between price and quantity
                                 Text(
                                   '*${item['quantity']}',
                                   style: TextStyle(color: Colors.green),
@@ -235,7 +239,8 @@ class OrderDetails extends StatelessWidget {
                               ],
                             ),
                             trailing: Text(
-                              calculateTotalPrice(item['price'], item['quantity']),
+                              calculateTotalPrice(
+                                  item['price'], item['quantity']),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
@@ -244,44 +249,146 @@ class OrderDetails extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.r),
                             ),
-                            tileColor: Colors.grey.shade200, // Background color for the tile
+                            tileColor: Colors
+                                .grey.shade200, // Background color for the tile
                           ),
-                          SizedBox(height: 15,)
+                          SizedBox(
+                            height: 15,
+                          )
                         ],
                       );
                     },
                   ),
-
                   Divider(
-                    thickness: 1.4,
+                    thickness: 1.6,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Subtotal',
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      if (cartController.isLoggedIn() &&
-                          cartController.getCartItems().isNotEmpty) ...[
-                        Obx(() {
-                          return Text(
-                            "\$${cartController.total.value}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.sp,
-                              color: Colors.black,
+                  Padding(
+                    padding: const EdgeInsets.all(9.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Subtotal',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500),
                             ),
-                          );
-                        }),
+                            if (cartController.isLoggedIn() &&
+                                cartController.getCartItems().isNotEmpty) ...[
+                              Obx(() {
+                                return Text(
+                                  "\$${cartController.total_amount.value}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                    color: Colors.black,
+                                  ),
+                                );
+                              }),
+                            ],
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1.4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Discount',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              "0.00",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.sp,
+                                color: Colors.black,
+                              ),
+                            )
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1.4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Delivery Charges',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              "0.00",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.sp,
+                                color: Colors.black,
+                              ),
+                            )
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1.4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total Amount',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            if (cartController.isLoggedIn() &&
+                                cartController.getCartItems().isNotEmpty) ...[
+                              Obx(() {
+                                return Text(
+                                  "\$${cartController.total_amount.value}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                    color: Colors.green,
+                                  ),
+                                );
+                              }),
+                            ]
+                          ],
+                        ),
                       ],
+                    ),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Button(
+                        size: Size(80.w, 44.h),
+                        color: Colors.red,
+                        text: Text('Prev',style: TextStyle(color: Colors.white),),
+                        ontap: () {
+                      },),
+                      SizedBox(width: 18.w,),
+                      Button(
+                        size: Size(80.w, 44.h),
+                        color: Colors.red,
+                        text: Text('Next',style: TextStyle(color: Colors.white),),
+                        ontap: () {
+                        },),
                     ],
                   ),
                   SizedBox(
-                    height: 100,
+                    height: 10,
                   )
                 ],
               ),
@@ -292,16 +399,18 @@ class OrderDetails extends StatelessWidget {
     );
   }
 }
+
 String calculateTotalPrice(dynamic price, dynamic quantity) {
   try {
-    final double priceValue = price is int ? price.toDouble() : double.parse(price.toString());
-    final int quantityValue = quantity is int ? quantity : int.parse(quantity.toString());
+    final double priceValue =
+        price is int ? price.toDouble() : double.parse(price.toString());
+    final int quantityValue =
+        quantity is int ? quantity : int.parse(quantity.toString());
 
     final double total = priceValue * quantityValue;
 
     return total.toStringAsFixed(2);
   } catch (e) {
-
     return '0.00';
   }
 }

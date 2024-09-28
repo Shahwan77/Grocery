@@ -21,7 +21,7 @@ class TrackHistory extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: Colors.white),
           ),
-          backgroundColor: Colors.green.shade800,
+          backgroundColor: Colors.red,
         ),
         body: Column(
           children: [
@@ -29,7 +29,7 @@ class TrackHistory extends StatelessWidget {
               height: 50.h,
               color: Colors.white,
               child:TabBar(
-                indicatorColor: Colors.green,
+                indicatorColor: Colors.red,
                 indicatorSize: TabBarIndicatorSize.tab,
                 tabs: [
                   Tab(text: 'Track',),

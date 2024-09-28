@@ -1,302 +1,295 @@
-// import 'package:get/get.dart';
-// import 'package:get_storage/get_storage.dart';
-// import 'package:http/http.dart' as http;
+// import 'package:flutter/material.dart';
 // import 'dart:convert';
+// import 'package:http/http.dart' as http;
 //
+// // Function to fetch product data without token
+// Future<Map<String, dynamic>?> fetchProduct() async {
+//   final response = await http.get(
+//     Uri.parse('https://grocery-dev.greendomains.in/api/products'),
+//   );
+//
+//   if (response.statusCode == 200) {
+//     final List<dynamic> products = json.decode(response.body);
+//     return products.isNotEmpty ? products[0] : null;
+//   } else {
+//     throw Exception('Failed to load products');
+//   }
+// }
+//
+// class ProductPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Product Page'),
+//       ),
+//       body: FutureBuilder<Map<String, dynamic>?>(
+//         future: fetchProduct(),
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return Center(child: CircularProgressIndicator());
+//           } else if (snapshot.hasError) {
+//             return Center(child: Text('Error: ${snapshot.error}'));
+//           } else if (!snapshot.hasData) {
+//             return Center(child: Text('No products found.'));
+//           }
+//
+//           final product = snapshot.data!;
+//           final cart = product['cart'];
+//
+//           return Center(
+//             child: Icon(
+//               Icons.shopping_cart,
+//               color: cart != null ? Colors.green : Colors.grey,
+//               size: 50,
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+//
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:shimmer/shimmer.dart';
 // import '../../data/apiClient/api.dart';
-// import '../../data/apiClient/bottom_api_services.dart';
+// import '../../data/models/models.dart';
+// import '../Cart/cart_controller.dart';
+// import '../Products/products_controller.dart';
+// import '../favorite/fav_controller.dart';
+// import '../organic/organic_page.dart';
 //
-// class CartController extends GetxController {
-//   var cartItems = <Map<String, dynamic>>[].obs;
-//   var fetchedcartItems = <Map<String, dynamic>>[].obs;
-//   var products = <Map<String, dynamic>>[].obs;
-//   final BottomApiService apiService = BottomApiService();
-//   var total = "0.00".obs;
-//   final box = GetStorage();
+// class DetailPage extends StatelessWidget {
+//   final String categoryId;
+//   final String categoryName;
+//   final ProductsController productController = Get.put(ProductsController());
+//   final CartController cartController = Get.put(CartController());
+//   final FavoriteController favoriteController = Get.put(FavoriteController());
+//
+//   DetailPage({required this.categoryId, required this.categoryName,});
+//
+//   Future<List<Models>> _fetchSubcategories() async {
+//     return await productController.fetchSubcategories(int.parse(categoryId));
+//   }
 //
 //   @override
-//   void onInit() {
-//     super.onInit();
-//     loadCartItems();
-//     if (isLoggedIn()) {
-//       final token = box.read('access_token');
-//       if (token != null) {
-//         fetchCartItems(token); // Fetch existing cart items from server
-//       }
-//     }
-//   }
-//
-//   // Fetch existing cart items from local storage
-//   void loadCartItems() {
-//     final savedCart = box.read('cartItems');
-//     if (savedCart != null) {
-//       cartItems.assignAll(List<Map<String, dynamic>>.from(savedCart));
-//     }
-//   }
-//
-//   // Post each cart item that is not already on the server
-//   Future<void> postLoginCartItems() async {
-//     final token = box.read('access_token');
-//     if (token != null) {
-//       for (var localItem in cartItems) {
-//         // Check if the item is not already fetched from the server
-//         final isAlreadyPosted = fetchedcartItems.any(
-//               (item) => item['product_id'] == localItem['product_id'],
-//         );
-//         if (!isAlreadyPosted) {
-//           await postSingleCartItem(localItem, token);
-//         }
-//       }
-//     }
-//   }
-//
-//   // Post a single cart item to the server
-//   Future<void> postSingleCartItem(Map<String, dynamic> item, String token) async {
-//     try {
-//       final response = await http.post(
-//         Uri.parse(Api.CartPost),
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//         body: jsonEncode({
-//           'product_id': item['product_id'],
-//           'quantity': item['quantity'],
-//         }),
-//       );
-//
-//       if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//         if (data['success']) {
-//           Get.snackbar('Success', '${item['name']} added to the server cart.');
-//           await fetchCartItems(token); // Optionally fetch updated cart items from server after posting
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<List<Models>>(
+//       future: _fetchSubcategories(), // Fetch subcategories here
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Center(child: CircularProgressIndicator());
+//         } else if (snapshot.hasError) {
+//           return Center(child: Text("Error: ${snapshot.error}"));
 //         } else {
-//           Get.snackbar('Error', 'Failed to add ${item['name']} to cart.');
+//           final subcategories = snapshot.data!;
+//           return DefaultTabController(
+//             length: subcategories.length , // +2 for Products and Favorites
+//             child: Scaffold(
+//               appBar: AppBar(
+//                 iconTheme: IconThemeData(color: Colors.white),
+//                 title: Text(categoryName, style: TextStyle(color: Colors.white)),
+//                 backgroundColor: Colors.red,
+//                 bottom: TabBar(
+//                   tabs: [
+//                     //Tab(text: 'Products'),
+//                     ...subcategories.map((subcategory) => Tab(text: subcategory.name)).toList(),
+//                     //Tab(text: 'Favorites'), // Add favorites tab
+//                   ],
+//                 ),
+//               ),
+//               backgroundColor: Colors.white,
+//               body: TabBarView(
+//                 children: [
+//                   FutureBuilder(
+//                     future: productController.fetchProducts(int.parse(categoryId)), // Fetch products based on categoryId
+//                     builder: (context, snapshot) {
+//                       if (snapshot.connectionState == ConnectionState.waiting) {
+//                         return Center(child: CircularProgressIndicator());
+//                       } else if (snapshot.hasError) {
+//                         return Center(child: Text("Error: ${snapshot.error}"));
+//                       } else {
+//                         return Obx(() {
+//                           if (productController.isLoading.value) {
+//                             return Center(child: CircularProgressIndicator());
+//                           } else if (productController.productItems.isEmpty) {
+//                             return Center(child: Text("No products found."));
+//                           } else {
+//                             return GridView.builder(
+//                               padding: EdgeInsets.all(8.0),
+//                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                                 crossAxisCount: 3,
+//                                 crossAxisSpacing: 10.0,
+//                                 mainAxisSpacing: 20.0,
+//                                 mainAxisExtent: 200,
+//                               ),
+//                               itemCount: productController.productItems.length,
+//                               itemBuilder: (context, index) {
+//                                 final item = productController.productItems[index];
+//                                 return Column(
+//                                   children: [
+//                                     IntrinsicHeight(
+//                                       child: Container(
+//                                         width: 160.w,
+//                                         decoration: BoxDecoration(
+//                                           color: Colors.white,
+//                                           borderRadius: BorderRadius.circular(8.r),
+//                                           boxShadow: [
+//                                             BoxShadow(
+//                                               color: Colors.black26,
+//                                               blurRadius: 4.0,
+//                                               offset: Offset(0, 2),
+//                                             ),
+//                                           ],
+//                                         ),
+//                                         child: Column(
+//                                           children: [
+//                                             Padding(
+//                                               padding: const EdgeInsets.all(8.0),
+//                                               child: Row(
+//                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                                 children: [
+//                                                   Obx(() {
+//                                                     return GestureDetector(
+//                                                       onTap: () {
+//                                                         final itemData = {
+//                                                           'name': item.name,
+//                                                           'price': item.price,
+//                                                           'image': item.image,
+//                                                         };
+//
+//                                                         favoriteController.toggleFavorite(
+//                                                           itemData['name']!,
+//                                                           itemData['price']!,
+//                                                           itemData['image']!,
+//                                                         );
+//
+//                                                         Get.snackbar(
+//                                                           favoriteController.isFavorite(itemData['name']!)
+//                                                               ? 'Added to Favorites'
+//                                                               : 'Removed from Favorites',
+//                                                           '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+//                                                           snackPosition: SnackPosition.BOTTOM,
+//                                                         );
+//                                                       },
+//                                                       child: Icon(
+//                                                         favoriteController.isFavorite(item.name)
+//                                                             ? Icons.favorite
+//                                                             : Icons.favorite_border,
+//                                                         color: favoriteController.isFavorite(item.name)
+//                                                             ? Colors.red
+//                                                             : Colors.grey,
+//                                                       ),
+//                                                     );
+//                                                   }),
+//                                                   Icon(
+//                                                     Icons.info_outline,
+//                                                     color: Colors.green.shade800,
+//                                                   ),
+//                                                 ],
+//                                               ),
+//                                             ),
+//                                             Center(
+//                                               child: item.image.isNotEmpty
+//                                                   ? Image.network(
+//                                                 '${Api.ImageUrl}/products/${item.image}',
+//                                                 fit: BoxFit.cover,
+//                                                 height: 80.h,
+//                                                 width: 80.w,
+//                                                 errorBuilder: (context, error, stackTrace) => Icon(
+//                                                   Icons.hide_image_outlined,
+//                                                   size: 90.sp,
+//                                                   color: Colors.grey,
+//                                                 ),
+//                                               )
+//                                                   : Icon(
+//                                                 Icons.hide_image_outlined,
+//                                                 size: 90.sp,
+//                                                 color: Colors.grey,
+//                                               ),
+//                                             ),
+//                                             Text(
+//                                               item.name,
+//                                               style: TextStyle(
+//                                                 fontSize: 12.sp,
+//                                                 fontWeight: FontWeight.w700,
+//                                               ),
+//                                               textAlign: TextAlign.center,
+//                                               overflow: TextOverflow.ellipsis,
+//                                             ),
+//                                             Padding(
+//                                               padding: const EdgeInsets.all(8.0),
+//                                               child: Row(
+//                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                                 children: [
+//                                                   Text(
+//                                                     item.price,
+//                                                     style: TextStyle(
+//                                                       fontSize: 12.sp,
+//                                                       fontWeight: FontWeight.w700,
+//                                                     ),
+//                                                   ),
+//                                                   Obx(() {
+//                                                     final isInLocalCart = cartController.isInCart(item.id);
+//                                                     final isInServerCart = cartController.fetchedcartItems
+//                                                         .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+//
+//                                                     final isInCart = isInLocalCart || isInServerCart;
+//
+//                                                     return GestureDetector(
+//                                                       onTap: isInCart
+//                                                           ? null // Disable the action if item is already in the cart
+//                                                           : () {
+//                                                         cartController.toggleCart(
+//                                                           item.id,
+//                                                           item.name,
+//                                                           item.price,
+//                                                           item.image,
+//                                                         );
+//
+//                                                         Get.snackbar(
+//                                                           cartController.isInCart(item.id)
+//                                                               ? 'Added to Cart'
+//                                                               : 'Removed from Cart',
+//                                                           '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+//                                                           snackPosition: SnackPosition.TOP,
+//                                                         );
+//                                                       },
+//                                                       child: Icon(
+//                                                         isInCart
+//                                                             ? Icons.shopping_cart // Show filled cart if item is in cart
+//                                                             : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
+//                                                         color: isInCart ? Colors.green : Colors.grey,
+//                                                       ),
+//                                                     );
+//                                                   }),
+//                                                 ],
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 );
+//                               },
+//                             );
+//                           }
+//                         });
+//                       }
+//                     },
+//                   ),
+//                   // Create a SubcategoryPage for each subcategory
+//                   ...subcategories.map((subcategory) => SubcategoryPage(subcategory: subcategory)).toList(),
+//                   // Placeholder for Favorites Tab
+//                 ],
+//               ),
+//             ),
+//           );
 //         }
-//       } else {
-//         Get.snackbar('Error', 'Failed to post cart item: ${response.reasonPhrase}');
-//       }
-//     } catch (e) {
-//       Get.snackbar('Error', 'An error occurred while posting cart items: $e');
-//     }
-//   }
-//
-//   // Method to toggle cart item (add/remove)
-//   void toggleCart(int productId, String itemName, String itemPrice, String itemImage) {
-//     final isAlreadyInServerCart = fetchedcartItems.any((item) => item['product_id'] == productId);
-//
-//     if (isAlreadyInServerCart) {
-//       Get.snackbar('Info', '$itemName is already in the cart.');
-//       return;
-//     }
-//
-//     final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
-//
-//     if (itemIndex >= 0) {
-//       cartItems.removeAt(itemIndex);
-//     } else {
-//       final newItem = {
-//         'product_id': productId,
-//         'name': itemName,
-//         'price': itemPrice,
-//         'image': itemImage,
-//         'quantity': 1,
-//       };
-//       cartItems.add(newItem);
-//
-//       final token = box.read('access_token');
-//       if (token != null) {
-//         // Post only the newly added item
-//         postCartItems(token);      } else {
-//         saveCartItems(); // Save locally if not logged in
-//       }
-//     }
-//   }
-//
-//   // Update the quantity of items in the cart
-//   void updateQuantity(String itemName, int change) {
-//     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
-//     if (itemIndex >= 0) {
-//       cartItems[itemIndex]['quantity'] += change;
-//
-//       if (cartItems[itemIndex]['quantity'] <= 0) {
-//         cartItems.removeAt(itemIndex);
-//       } else {
-//         cartItems.refresh();
-//       }
-//       saveCartItems();
-//     }
-//   }
-//
-//   // Check if an item is in the cart
-//   bool isInCart(int productId) {
-//     return cartItems.any((item) => item['product_id'] == productId);
-//   }
-//
-//   // Get cart items from local storage or server
-//   List<Map<String, dynamic>> getCartItems() {
-//     if (GetStorage().read('access_token') == null) {
-//       return cartItems;
-//     } else {
-//       return fetchedcartItems;
-//     }
-//   }
-//
-//   // Save cart items locally
-//   void saveCartItems() {
-//     box.write('cartItems', cartItems);
-//     printStoredItems();
-//   }
-//
-//   // Print stored cart items for debugging
-//   void printStoredItems() {
-//     final storedItems = box.read('cartItems');
-//     if (storedItems != null && storedItems.isNotEmpty) {
-//       print('Stored Cart Items: $storedItems');
-//     } else {
-//       print('No items found in local storage.');
-//     }
-//   }
-//
-//   // Post cart items to server after login
-//   void afterLogin() {
-//     final token = box.read('access_token');
-//     if (token != null) {
-//       fetchCartItems(token);
-//       postLoginCartItems(); // Post local cart items to server
-//     }
-//   }
-//
-//   // Remove item from cart
-//   void removeFromCart(String itemName, String itemPrice, String itemImage) {
-//     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
-//     if (itemIndex >= 0) {
-//       cartItems.removeAt(itemIndex);
-//       saveCartItems();
-//     }
-//   }
-//
-//   // Post all cart items to the server
-//   Future<void> postCartItems(String token) async {
-//     try {
-//
-//       for (var item in cartItems) {
-//         await postSingleCartItem(item, token);
-//       }
-//
-//       final formattedCartItems = cartItems.map((item) {
-//         return {
-//           'product_id': item['product_id'],
-//           'quantity': item['quantity'],
-//         };
-//       }).toList();
-//
-//       final response = await http.post(
-//         Uri.parse(Api.CartPost),
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//         body: jsonEncode(formattedCartItems),
-//       );
-//
-//       if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//         if (data['success']) {
-//           Get.snackbar('Success', data['message']);
-//           await fetchCartItems(token); // Fetch updated cart from server
-//         } else {
-//           Get.snackbar('Error', 'Failed to add items to cart');
-//         }
-//       } else {
-//         Get.snackbar(
-//             'Error', 'Failed to post cart items: ${response.reasonPhrase}');
-//       }
-//     } catch (e) {
-//       Get.snackbar('Error', 'An error occurred while posting cart items: $e');
-//     }
-//   }
-//
-//   // Fetch cart items from the server
-//   Future<void> fetchCartItems(String token) async {
-//     try {
-//       final response = await http.get(
-//         Uri.parse(Api.CartGet),
-//         headers: {
-//           'Authorization': 'Bearer $token',
-//         },
-//       );
-//
-//       if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//
-//         if (data['success'] == true && data['data'] != null) {
-//           final items = data['data']['items'];
-//           if (items != null) {
-//             fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
-//             total.value = data['data']['total'];
-//             print('Fetched Cart Items: ${fetchedcartItems.toList()}');
-//             print('Total Amount: ${total.value}');
-//           }
-//         }
-//       }
-//     } catch (e) {
-//       Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
-//     }
-//   }
-//   void clearLocalCart() {
-//     cartItems.clear();
-//     box.remove('cartItems');
-//     printStoredItems();
-//   }
-//   // Check if the user is logged in
-//   bool isLoggedIn() {
-//     final accessToken = box.read('access_token');
-//     return accessToken != null && accessToken.isNotEmpty;
-//   }
-//
-//   int get localCartItemCount => cartItems.length;
-//
-//   int get serverCartItemCount => fetchedcartItems.length;
-//
-//   int get localItemCount =>
-//       cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
-//
-//   int get serverItemCount =>
-//       fetchedcartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
-// }
-
-
-
-
-// void updateQuantity(String itemName, int change) {
-//   if (isLoggedIn()) {
-//     final itemIndex = fetchedcartItems.indexWhere((item) => item['name'] == itemName);
-//     if (itemIndex >= 0) {
-//       fetchedcartItems[itemIndex]['quantity'] += change;
-//
-//       if (fetchedcartItems[itemIndex]['quantity'] <= 0) {
-//         fetchedcartItems.removeAt(itemIndex);
-//       } else {
-//         fetchedcartItems.refresh();
-//       }
-//       saveCartItems();
-//       final token = box.read('access_token');
-//       if (token != null) {
-//         saveCartItems(); // Post updated cart to server
-//       }
-//     }
-//   } else {
-//     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
-//     if (itemIndex >= 0) {
-//       cartItems[itemIndex]['quantity'] += change;
-//
-//       if (cartItems[itemIndex]['quantity'] <= 0) {
-//         cartItems.removeAt(itemIndex);
-//       } else {
-//         cartItems.refresh();
-//       }
-//       saveCartItems();
-//     }
+//       },
+//     );
 //   }
 // }

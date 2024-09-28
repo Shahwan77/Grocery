@@ -14,10 +14,10 @@ import '../bottomnav/controller/bottomnav_controller.dart';
 import 'cart_controller.dart';
 
 class CartPage extends StatelessWidget {
-  final CartController cartController = Get.put(CartController());
-  final token = GetStorage().read('access_token');
   @override
   Widget build(BuildContext context) {
+    final CartController cartController = Get.put(CartController());
+    final token = GetStorage().read('access_token');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -29,7 +29,7 @@ class CartPage extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.white),
         ),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: Colors.red,
       ),
       body: FutureBuilder<void>(
         future:
@@ -60,7 +60,7 @@ class CartPage extends StatelessWidget {
                     SizedBox(height: 20.h),
                     Button(
                       size: Size(164, 54),
-                      color: Colors.green.shade800,
+                      color: Colors.red,
                       text: Text(
                         'Start Shopping',
                         style: TextStyle(
@@ -144,13 +144,20 @@ class CartPage extends StatelessWidget {
                                             color: Colors.red.shade600,
                                           ),
                                           onPressed: () {
-                                            cartController.removeFromCart(
-                                              item['name'],
-                                              item['price'],
-                                              item['image'],
-                                            );
+                                            final productId = item['product_id'];
+
+                                            if (token != null) {
+                                              cartController.removeItemFromCart(productId);
+                                            } else {
+                                              cartController.removeFromCart(
+                                                item['name'],
+                                                item['price'],
+                                                item['image'],
+                                              );
+                                            }
                                           },
                                         ),
+
                                       ),
                                     ),
                                   ],
@@ -182,46 +189,49 @@ class CartPage extends StatelessWidget {
                                           ),
                                           Expanded(
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
+                                                // Decrement Button
                                                 Container(
                                                   height: 30.h,
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
+                                                    borderRadius: BorderRadius.circular(10.r),
                                                     color: Colors.white,
                                                   ),
-                                                  child:IconButton(
+                                                  child: IconButton(
                                                     icon: Icon(
                                                       Icons.remove,
-                                                      color: (item['quantity'] ?? 0) > 1 // Check if quantity is not null
+                                                      color: (item['quantity'] ?? 0) > 1 // Check if quantity is greater than 1
                                                           ? Colors.red.shade600
                                                           : Colors.grey,
                                                     ),
                                                     onPressed: () {
-                                                      if ((item['quantity'] ?? 0) > 1) { // Check if quantity is not null
-                                                        cartController.updateQuantity(item['name'], -1);
+                                                      // Allow decrement only if quantity is greater than 1
+                                                      if ((item['quantity'] ?? 0) > 1) {
+                                                        cartController.updateQuantity(productId, -1);
                                                       }
                                                     },
                                                   ),
                                                 ),
+
                                                 SizedBox(width: 5.w),
+
+                                                // Display Quantity
                                                 Text(
-                                                  '${item['quantity']}',
+                                                  '${item['quantity'] ?? 0}', // Handle null values safely
                                                   style: GoogleFonts.roboto(
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 14.sp,
                                                   ),
                                                 ),
+
                                                 SizedBox(width: 5.w),
+
+                                                // Increment Button
                                                 Container(
                                                   height: 30.h,
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
+                                                    borderRadius: BorderRadius.circular(10.r),
                                                     color: Colors.white,
                                                   ),
                                                   child: IconButton(
@@ -230,6 +240,7 @@ class CartPage extends StatelessWidget {
                                                       color: Colors.green.shade800,
                                                     ),
                                                     onPressed: () {
+                                                      // Increment the quantity by 1
                                                       cartController.updateQuantity(productId, 1);
                                                     },
                                                   ),
@@ -237,6 +248,7 @@ class CartPage extends StatelessWidget {
                                               ],
                                             ),
                                           ),
+
                                         ],
                                       ),
                                     ],
@@ -256,7 +268,7 @@ class CartPage extends StatelessWidget {
                             SizedBox(width: 10),
                             Obx(() {
                               return Text(
-                                "\$${cartController.total.value}",
+                                "\$${cartController.total_amount.value}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.sp,
@@ -269,7 +281,7 @@ class CartPage extends StatelessWidget {
                         SizedBox(height: 6.h,),
                       ],
                       Button(
-                        color: Colors.green.shade800,
+                        color: Colors.red,
                         size: Size(340.w, 45.h),
                         text: Text(
                           "Continue",

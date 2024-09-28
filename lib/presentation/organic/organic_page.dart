@@ -9,79 +9,82 @@ import '../Cart/cart_controller.dart';
 import '../Products/products_controller.dart';
 import 'all_organic_food.dart';
 
-class OrganicPage extends StatelessWidget {
-
-  final CartController cartController = Get.put(CartController());
-  final ProductsController productsController = Get.put(ProductsController());
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    int categoryId = 2;
-    return FutureBuilder<List<Models>>(
-      future: productsController.fetchSubcategories(categoryId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }  else {
-          final subcategories = snapshot.data!;
-
-          return DefaultTabController(
-            length: subcategories.length + 1,
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              appBar: AppBar(
-                iconTheme: IconThemeData(color: Colors.white),
-                backgroundColor: Colors.green.shade800,
-                title: Text('ORGANIC & HEALTHY FOOD', style: TextStyle(color: Colors.white)),
-              ),
-              body: Column(
-                children: [
-                  Container(
-                    color: Colors.white,
-                    child: TabBar(
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorColor: Colors.green.shade800,
-                      labelPadding: EdgeInsets.all(8),
-                      isScrollable: true,
-                      tabs: [
-                        Tab(text: 'All'),
-                        ...subcategories.map((subcategory) => Tab(text: subcategory.name)).toList(),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        AllOrganicFood(),
-                        ...subcategories.map((subcategory) {
-                          return SubcategoryPage(subcategory: subcategory);
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
-}
+// class OrganicPage extends StatelessWidget {
+//
+//   final CartController cartController = Get.put(CartController());
+//   final ProductsController productsController = Get.put(ProductsController());
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     int categoryId = 2;
+//     return FutureBuilder<List<Models>>(
+//       future: productsController.fetchSubcategories(categoryId),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Center(child: CircularProgressIndicator());
+//         }  else {
+//           final subcategories = snapshot.data!;
+//
+//           return DefaultTabController(
+//             length: subcategories.length + 1,
+//             child: Scaffold(
+//               backgroundColor: Colors.white,
+//               appBar: AppBar(
+//                 iconTheme: IconThemeData(color: Colors.white),
+//                 backgroundColor: Colors.red,
+//                 title: Text('ORGANIC & HEALTHY FOOD', style: TextStyle(color: Colors.white)),
+//               ),
+//               body: Column(
+//                 children: [
+//                   Container(
+//                     color: Colors.white,
+//                     child: TabBar(
+//                       indicatorSize: TabBarIndicatorSize.tab,
+//                       indicatorColor: Colors.red,
+//                       unselectedLabelColor: Colors.grey,
+//                       labelStyle: TextStyle(color: Colors.black),
+//                       labelPadding: EdgeInsets.all(8),
+//                       isScrollable: true,
+//                       tabs: [
+//                         Tab(text: 'All'),
+//                         ...subcategories.map((subcategory) => Tab(text: subcategory.name)).toList(),
+//                       ],
+//                     ),
+//                   ),
+//                   Expanded(
+//                     child: TabBarView(
+//                       children: [
+//                         AllOrganicFood(),
+//                         ...subcategories.map((subcategory) {
+//                           return SubcategoryPage(subcategory: subcategory);
+//                         }).toList(),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
 
 class SubcategoryPage extends StatelessWidget {
   final Models subcategory;
 
   SubcategoryPage({required this.subcategory});
   final ProductsController productsController = Get.put(ProductsController());
+  final CartController cartController = Get.put(CartController());
 
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Models>>(
-      future: productsController.fetchRiceCakes(subcategory.id),
+      future: productsController.fetchTabs(subcategory.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -177,14 +180,40 @@ class SubcategoryPage extends StatelessWidget {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                  },
-                                  child: Icon(
-                                    Icons.shopping_cart_outlined,
-                                    color: Colors.grey,
-                                  ),
-                                ),
+                                Obx(() {
+                                  final isInLocalCart = cartController.isInCart(product.id);
+                                  final isInServerCart = cartController.fetchedcartItems
+                                      .any((fetchedItem) => fetchedItem['product_id'] == product.id);
+
+                                  final isInCart = isInLocalCart || isInServerCart; // Check if item is in local or server cart
+
+                                  return GestureDetector(
+                                    onTap: isInCart // Disable onTap if already in cart
+                                        ? null // Disable the action if item is already in the cart
+                                        : () {
+                                      cartController.toggleCart(
+                                        product.id, // Product ID
+                                        product.name,
+                                        product.price,
+                                        product.image,
+                                      );
+
+                                      Get.snackbar(
+                                        cartController.isInCart(product.id)
+                                            ? 'Added to Cart'
+                                            : 'Removed from Cart',
+                                        '${product.name} has been ${cartController.isInCart(product.id) ? 'added to' : 'removed from'} your cart.',
+                                        snackPosition: SnackPosition.TOP,
+                                      );
+                                    },
+                                    child: Icon(
+                                      isInCart
+                                          ? Icons.shopping_cart // Show filled cart if item is in cart
+                                          : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
+                                      color: isInCart ? Colors.green : Colors.grey, // Change icon color
+                                    ),
+                                  );
+                                }),
                               ],
                             ),
                           ),

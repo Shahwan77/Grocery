@@ -29,7 +29,7 @@ class CustomBottomNavBar extends StatelessWidget {
       bottomNavigationBar: Obx(
             () {
           final cartItemCount = cartController.isLoggedIn()
-              ? cartController.serverCartItemCount
+              ? int.tryParse(cartController.total_quantity.value) ?? 0
               : cartController.localCartItemCount;
 
           return BottomNavigationBar(
@@ -63,7 +63,8 @@ class CustomBottomNavBar extends StatelessWidget {
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.green.shade800,
+                            color: Colors.yellow.shade800,
+                            border: Border.all(color: Colors.red,width: 2.w)
                           ),
                           constraints: BoxConstraints(
                             minWidth: 18.w,
@@ -73,7 +74,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             child: Text(
                               '$cartItemCount',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.red,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10.h,
                               ),
@@ -86,8 +87,8 @@ class CustomBottomNavBar extends StatelessWidget {
                 label: 'Cart',
               ),
             ],
-            selectedItemColor: Colors.green.shade800,
-            unselectedItemColor: Colors.green.shade800,
+            selectedItemColor: Colors.transparent,
+            unselectedItemColor: Colors.red,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
@@ -104,14 +105,14 @@ class CustomBottomNavBar extends StatelessWidget {
       width: 40.w,
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.green.shade800 : Colors.transparent,
+        color: isSelected ? Colors.red : Colors.transparent,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: SvgPicture.asset(
         imagePath,
         width: 22.w,
         height: 22.h,
-        color: isSelected ? Colors.white : Colors.green.shade800,
+        color: isSelected ? Colors.white : Colors.red,
       ),
     );
   }

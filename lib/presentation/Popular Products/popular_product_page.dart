@@ -11,14 +11,12 @@ import '../Products/products_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 
 class PopularProductPage extends StatelessWidget {
-  final CartController cartController = Get.put(CartController());
-  final FavoriteController favoriteController = Get.put(FavoriteController());
-  final HomeController homeController = Get.put(HomeController());
-
   @override
   Widget build(BuildContext context) {
-    // Fetch popular products (uncomment if needed)
-    // homeController.fetchPopularProducts();
+    final CartController cartController = Get.put(CartController());
+    final FavoriteController favoriteController = Get.put(FavoriteController());
+    final HomeController homeController = Get.put(HomeController());
+
 
     return Obx(() {
       if (homeController.isLoading.value) {
@@ -29,7 +27,7 @@ class PopularProductPage extends StatelessWidget {
         return Column(
           children: [
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 11.w,vertical: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -52,7 +50,7 @@ class PopularProductPage extends StatelessWidget {
                               height: 50.w,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.green.shade800,
+                                color: Colors.red,
                               ),
                             ),
                           );
@@ -66,10 +64,10 @@ class PopularProductPage extends StatelessWidget {
                     },
                     child: Text(
                       'See all',
-                      style: GoogleFonts.roboto(
+                      style:TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14.sp,
-                        color: Colors.green.shade800,
+                        color: Colors.red,
                       ),
                     ),
                   ),
@@ -77,7 +75,7 @@ class PopularProductPage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 4.w),
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: SizedBox(
                 height: 220.h,
                 child: ListView.builder(
@@ -101,7 +99,7 @@ class PopularProductPage extends StatelessWidget {
                                     height: 50.w,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2.w,
-                                      color: Colors.green.shade800,
+                                      color: Colors.red,
                                     ),
                                   ),
                                 );
@@ -119,14 +117,14 @@ class PopularProductPage extends StatelessWidget {
                               color: Colors.white,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.green.shade800,
+                                color: Colors.red,
                                 width: 2.w,
                               ),
                             ),
                             child: Icon(
                               size: 40.sp,
                               Icons.arrow_forward_ios,
-                              color: Colors.green.shade800,
+                              color: Colors.red,
                             ),
                           ),
                         ),
@@ -167,7 +165,8 @@ class PopularProductPage extends StatelessWidget {
                                       );
 
                                       Get.snackbar(
-                                        favoriteController.isFavorite(itemData['name']!)
+                                        favoriteController
+                                                .isFavorite(itemData['name']!)
                                             ? 'Added to Favorites'
                                             : 'Removed from Favorites',
                                         '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
@@ -178,7 +177,8 @@ class PopularProductPage extends StatelessWidget {
                                       favoriteController.isFavorite(item.name)
                                           ? Icons.favorite
                                           : Icons.favorite_border,
-                                      color: favoriteController.isFavorite(item.name)
+                                      color: favoriteController
+                                              .isFavorite(item.name)
                                           ? Colors.red
                                           : Colors.grey,
                                     ),
@@ -214,36 +214,39 @@ class PopularProductPage extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
+
                                   Text(
-                             '\$${item.price}',
+                                    '\$${item.price}',
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   Obx(() {
-                                    // Check if the item is in either the local or server-side cart
                                     final isInLocalCart = cartController.isInCart(item.id);
                                     final isInServerCart = cartController.fetchedcartItems
                                         .any((fetchedItem) => fetchedItem['product_id'] == item.id);
 
-                                    final isInCart = isInLocalCart || isInServerCart; // Determine if the item is in the cart
+                                    final isInCart = isInLocalCart || isInServerCart; // Check if item is in local or server cart
 
                                     return GestureDetector(
-                                      onTap: isInCart
-                                          ? null // Disable onTap if already in cart
+                                      onTap: isInCart // Disable onTap if already in cart
+                                          ? null // Disable the action if item is already in the cart
                                           : () {
                                         cartController.toggleCart(
-                                          item.id,
+                                          item.id, // Product ID
                                           item.name,
                                           item.price,
                                           item.image,
                                         );
 
                                         Get.snackbar(
-                                          cartController.isInCart(item.id) ? 'Added to Cart' : 'Removed from Cart',
+                                          cartController.isInCart(item.id)
+                                              ? 'Added to Cart'
+                                              : 'Removed from Cart',
                                           '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
                                           snackPosition: SnackPosition.TOP,
                                         );
@@ -256,7 +259,6 @@ class PopularProductPage extends StatelessWidget {
                                       ),
                                     );
                                   }),
-
                                 ],
                               ),
                             ),

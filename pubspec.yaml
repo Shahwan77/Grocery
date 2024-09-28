@@ -48,6 +48,7 @@ dependencies:
   flutter_svg:
   pinput:
   shimmer:
+  animated_bottom_navigation_bar:
 
 
 

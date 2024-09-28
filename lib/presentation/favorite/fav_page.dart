@@ -15,13 +15,13 @@ class FavoritesPage extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Favorites',
-          style: GoogleFonts.roboto(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 18.sp,
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: Colors.red,
       ),
       body: Obx(() {
         if (favoriteController.favoriteItems.isEmpty) {
@@ -70,7 +70,7 @@ class FavoritesPage extends StatelessWidget {
                   trailing: IconButton(
                     icon: Icon(
                       Icons.remove_circle_outline_rounded,
-                      color: Colors.green.shade800,
+                      color: Colors.red,
                     ),
                     onPressed: () {
                       favoriteController.toggleFavorite(

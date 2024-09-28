@@ -11,4 +11,5 @@ class Api {
   static String Login = '$ApiUrl/login';
   static String CartPost = '$ApiUrl/cart';
   static String CartGet = '$ApiUrl/cart';
+  static String CartRemove = '$ApiUrl/cart/remove';
 }

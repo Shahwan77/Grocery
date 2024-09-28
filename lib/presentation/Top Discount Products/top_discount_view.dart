@@ -19,8 +19,9 @@ class TopDiscountView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('Top Discount Products'),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.red,
+        title: Text('Top Discount Products',style: TextStyle(color: Colors.white),),
       ),
       body: Obx(() {
         if (productsController.isLoading.value) {

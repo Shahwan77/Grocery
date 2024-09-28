@@ -24,7 +24,7 @@ class TopDiscountPage extends StatelessWidget {
             children: [
               Text(
                 'Top Discount Products',
-                style: GoogleFonts.roboto(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18.sp,
                 ),
@@ -41,7 +41,7 @@ class TopDiscountPage extends StatelessWidget {
                           height: 50.w,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.w,
-                            color: Colors.green.shade800,
+                            color: Colors.red,
                           ),
                         ),
                       );
@@ -55,10 +55,10 @@ class TopDiscountPage extends StatelessWidget {
                 },
                 child: Text(
                   'See all',
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
-                    color: Colors.green.shade800,
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -201,6 +201,7 @@ class TopDiscountPage extends StatelessWidget {
                                       ),
                                     );
                                   }),
+
                                 ],
                               ),
                             ),

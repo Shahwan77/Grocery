@@ -33,10 +33,10 @@ class CategoriesPage extends StatelessWidget {
               GestureDetector(
                 child: Text(
                   "See all",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14.sp,
-                    color: Colors.green.shade800,
+                    color: Colors.red,
                   ),
                 ),
                 onTap: () {
@@ -96,10 +96,11 @@ class CategoriesPage extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10.w,
-                mainAxisSpacing: 10.h,
+                crossAxisCount: 4,
+                crossAxisSpacing: 15.w,
+                mainAxisSpacing: 15.h,
                 childAspectRatio: 0.7,
+                mainAxisExtent: 140
               ),
               itemCount: categoryController.categories.length,
               itemBuilder: (context, index) {
@@ -107,13 +108,13 @@ class CategoriesPage extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
 
-                    if (category.id == 2) {
-
-                      Get.to(() => OrganicPage());
-                    } else {
+                    // if (category == 2) {
+                    //
+                    //   Get.to(() => OrganicPage());
+                    // } else {
 
                       Get.to(() => DetailPage(categoryId: category.id.toString(), categoryName: category.name,));
-                    }
+                    // }
                   },
                   child: Column(
                     children: [

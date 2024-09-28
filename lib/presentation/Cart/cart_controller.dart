@@ -11,7 +11,8 @@ class CartController extends GetxController {
   var fetchedcartItems = <Map<String, dynamic>>[].obs;
   var products = <Map<String, dynamic>>[].obs;
   final BottomApiService apiService = BottomApiService();
-  var total = "0.00".obs;
+  var total_amount = "0.00".obs;
+  var total_quantity="0".obs;
   final box = GetStorage();
 
   @override
@@ -44,6 +45,7 @@ class CartController extends GetxController {
     printStoredItems();
   }
 
+
   int get uniqueItemCount => cartItems.length;
 
   int get itemCount =>
@@ -61,7 +63,7 @@ class CartController extends GetxController {
     }
   }
 
-  void toggleCart(int productId, String itemName, String itemPrice, String itemImage) {
+  Future<void> toggleCart(int productId, String itemName, String itemPrice, String itemImage) async {
     final isAlreadyInFetchedCart = fetchedcartItems.any((item) => item['product_id'] == productId);
 
     if (isAlreadyInFetchedCart) {
@@ -80,7 +82,7 @@ class CartController extends GetxController {
       'quantity': 1,
     };
 
-    // Add or remove the item from the local cart
+
     if (itemIndex >= 0) {
       cartItems.removeAt(itemIndex);
     } else {
@@ -100,6 +102,7 @@ class CartController extends GetxController {
     } else {
       saveCartItems(); // Save locally if no token
     }
+
   }
 
 
@@ -107,18 +110,18 @@ class CartController extends GetxController {
     if (isLoggedIn()) {
       final itemIndex = fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
       if (itemIndex >= 0) {
-        fetchedcartItems[itemIndex]['quantity'] += change;
+        fetchedcartItems[itemIndex]['quantity'] = change;
 
         // Remove the item if quantity becomes zero or less
-        if (fetchedcartItems[itemIndex]['quantity'] <= 0) {
-          fetchedcartItems.removeAt(itemIndex);
-        } else {
-          fetchedcartItems.refresh();
-        }
+        // if (fetchedcartItems[itemIndex]['quantity'] <= 0) {
+        //   fetchedcartItems.removeAt(itemIndex);
+        // } else {
+        //   fetchedcartItems.refresh();
+        // }
         saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
-          saveCartItems();
+          postCartItems(token,fetchedcartItems[itemIndex]);
         }
       }
     } else {
@@ -162,6 +165,52 @@ class CartController extends GetxController {
   //     postCartItems(token);
   //   }
   // }
+
+  Future<void> removeItemFromCart(int productId) async {
+    final token = box.read('access_token');
+    if (token != null) {
+      try {
+        final response = await http.post(
+          Uri.parse(Api.CartRemove),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            "product_id": productId,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          if (data['success']) {
+            print(data['message']);
+            removeItemLocally(productId);
+            int currentQuantity = int.tryParse(total_quantity.value) ?? 0;
+            if (currentQuantity > 0) {
+              total_quantity.value = (currentQuantity - 1).toString();
+            }
+          } else {
+            print("Failed to remove item from cart: ${data['message']}");
+          }
+        }  else {
+          print("Failed to remove item. Status code: ${response.statusCode}");
+        }
+      } catch (e) {
+        print("Error removing item: $e");
+      }
+    }
+  }
+
+
+  void removeItemLocally(int productId) {
+    final itemIndex = fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
+    if (itemIndex >= 0) {
+      fetchedcartItems.removeAt(itemIndex);
+      fetchedcartItems.refresh(); // Refresh the observable list
+      //saveCartItems(); // Save updated cart locally
+    }
+  }
 
   void removeFromCart(String itemName, String itemPrice, String itemImage) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
@@ -233,15 +282,14 @@ class CartController extends GetxController {
         final data = jsonDecode(response.body);
 
         if (data['success'] == true && data['data'] != null) {
-          // Access the items from the response
           final items = data['data']['items'];
           if (items != null) {
-            // Assign the fetched items to the observable list
             fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
-            // Access the total from the response
-            total.value = data['data']['total'];
+
+            total_amount.value = data['data']['total_amount'];
+            total_quantity.value = data['data']['total_quantity'].toString();
             print('Fetched Cart Items: ${fetchedcartItems.toList()}');
-            print('Total Amount: ${total.value}');
+            print('Total Amount: ${total_amount.value}');
           }
         }
       } else {
@@ -253,7 +301,6 @@ class CartController extends GetxController {
       // Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
     }
   }
-
   int get localCartItemCount => cartItems.length;
 
   int get serverCartItemCount => fetchedcartItems.length;
@@ -268,4 +315,6 @@ class CartController extends GetxController {
     final accessToken = box.read('access_token');
     return accessToken != null && accessToken.isNotEmpty;
   }
+
+
 }

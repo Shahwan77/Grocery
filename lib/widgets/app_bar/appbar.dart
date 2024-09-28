@@ -19,10 +19,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // systemOverlayStyle: SystemUiOverlayStyle(
-      //   statusBarColor: Colors.green,
-      //   statusBarIconBrightness: Brightness.light,
-      // ),
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.red,
+        statusBarIconBrightness: Brightness.light,
+      ),
       surfaceTintColor: Colors.white,
       backgroundColor: Colors.white,
       elevation: 0,
@@ -42,7 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     return IconButton(
                       icon: SvgPicture.asset(
                         'assets/menu1.svg',
-                        color: Colors.green.shade800,
+                        color: Colors.red,
                         height: 30,
                         width: 30,
                       ),
@@ -61,7 +61,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               Icon(
                 Icons.location_on,
-                color: Colors.green.shade800,
+                color: Colors.red,
                 size: 34.sp,
               ),
               Column(
@@ -117,7 +117,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       borderSide: BorderSide.none,
                     ),
                     suffixIcon:
-                        Icon(Icons.search, color: Colors.green.shade800),
+                        Icon(Icons.search, color: Colors.red),
                     filled: true,
                     fillColor: Colors.grey.shade100,
                     contentPadding: EdgeInsets.symmetric(
@@ -147,7 +147,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   child: Icon(
                     Icons.document_scanner_rounded,
-                    color: Colors.green.shade800,
+                    color: Colors.red,
                   ),
                 ),
               ),

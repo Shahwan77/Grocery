@@ -21,8 +21,9 @@ class PopularProductsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('Popular Products'),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.red,
+        title: Text('Popular Products',style: TextStyle(color: Colors.white),),
       ),
       body: Obx(() {
         if (productsController.isLoading.value) {

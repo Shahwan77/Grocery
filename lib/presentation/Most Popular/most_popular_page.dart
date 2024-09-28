@@ -64,10 +64,10 @@ class MostPopularPage extends StatelessWidget {
                   },
                   child: Text(
                     'See all',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14.sp,
-                      color: Colors.green.shade800,
+                      color: Colors.red,
                     ),
                   ),
                 ),

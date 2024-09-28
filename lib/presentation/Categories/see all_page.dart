@@ -18,7 +18,7 @@ class SeeAllPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: Colors.red,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'See All',

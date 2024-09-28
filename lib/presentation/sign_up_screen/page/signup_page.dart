@@ -28,7 +28,7 @@ class SignupPage extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.white),
         ),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: Colors.red,
       ),
       body: Stack(
         children: [
@@ -212,7 +212,7 @@ class SignupPage extends StatelessWidget {
                     height: 10.h,
                   ),
                   Button(
-                    color: Colors.green.shade800,
+                    color: Colors.red,
                     size: Size(340.w, 45.h),
                     text: Text(
                       "Register",
