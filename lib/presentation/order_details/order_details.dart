@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:grocery/presentation/Cart/cart_page.dart';
+import 'package:grocery/presentation/Delivery%20Time%20Slots/delivery_time_slots.dart';
+import 'package:grocery/presentation/home_screen/page/home_page.dart';
 import 'package:grocery/widgets/button/button.dart';
 
 import '../../data/apiClient/api.dart';
+import '../../tstts.dart';
 import '../Cart/cart_controller.dart';
 
 class OrderDetails extends StatelessWidget {
@@ -16,12 +20,38 @@ class OrderDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        leading:  IconButton(
+          icon: Container(
+              height: 22.h,width: 26.w,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.r)
+              ),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        title:  Padding(
+          padding:  EdgeInsets.symmetric(horizontal: 70.w),
+          child: Text(
+            'Order Details',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 17.sp,
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         // Wrap Column in SingleChildScrollView
         child: Column(
           children: [
             Container(
-              height: 156.h,
+              height: 96.h,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.red,
@@ -31,29 +61,10 @@ class OrderDetails extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 14.w),
+                padding: EdgeInsets.symmetric( horizontal: 14.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          child: Icon(Icons.arrow_back, color: Colors.white),
-                          onTap: () {
-                            Get.back();
-                          },
-                        ),
-                        SizedBox(width: 90.w),
-                        Text(
-                          'Order Details',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 17.sp,
-                          ),
-                        ),
-                      ],
-                    ),
                     SizedBox(height: 6.h),
                     Text(
                       'Ashique Mohammed',
@@ -109,7 +120,7 @@ class OrderDetails extends StatelessWidget {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18.sp,
-                                          color: Colors.green.shade800,
+                                          color: Colors. black,
                                         ),
                                       ),
                                     ),
@@ -377,14 +388,32 @@ class OrderDetails extends StatelessWidget {
                         color: Colors.red,
                         text: Text('Prev',style: TextStyle(color: Colors.white),),
                         ontap: () {
+                          Get.to(CartPage());
                       },),
                       SizedBox(width: 18.w,),
                       Button(
                         size: Size(80.w, 44.h),
                         color: Colors.red,
-                        text: Text('Next',style: TextStyle(color: Colors.white),),
+                        text: Text('Next', style: TextStyle(color: Colors.white)),
                         ontap: () {
-                        },),
+                          // List<dynamic> cartItems = cartController.getCartItems();
+                          // if (cartItems.isNotEmpty) {
+                          //   print('Order Details:');
+                          //   for (var item in cartItems) {
+                          //     print(item);
+                          //     print(cartController.total_amount);
+                          //     print(cartController.total_quantity);
+                          //   }
+                          // } else {
+                          //   print('No items in the cart.');
+                          // }
+
+                          // Navigate to DeliveryTimeSlots
+                          List<dynamic> cartItems = cartController.getCartItems();
+                          Get.to(DeliveryTimeSlots(cartItems: cartItems,));
+                        },
+                      ),
+
                     ],
                   ),
                   SizedBox(

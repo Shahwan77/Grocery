@@ -9,6 +9,7 @@ import 'package:grocery/presentation/Top%20Discount%20Products/top_discount_page
 import 'package:grocery/widgets/carousel/cus_carousel.dart';
 import 'package:get/get.dart';
 import '../../../widgets/app_bar/appbar.dart';
+import '../../Scanner/scanner_page.dart';
 import '../controller/home_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,16 +19,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeController controller = Get.put(HomeController());
 
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.green,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(toolbarHeight: 120.h),
+      appBar: CustomAppBar(toolbarHeight: 110.h),
       body: Obx(() {
         if (controller.isLoading.value) {
          // return Center(child: CircularProgressIndicator(color: Colors.green,));
@@ -39,6 +33,58 @@ class HomePage extends StatelessWidget {
           onRefresh: controller.refreshData,
           child: ListView(
             children: [
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search here...',
+                          hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon:
+                          Icon(Icons.search, color: Colors.red),
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 12.h,
+                            horizontal: 15.w,
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    // SizedBox(width: 10.w),
+                    // InkWell(
+                    //   onTap: () async {
+                    //     String? scannedData = await Get.to(() => ScannerPage());
+                    //     if (scannedData != null) {
+                    //       print("Scanned data: $scannedData");
+                    //       // Handle the scanned data here
+                    //     }
+                    //   },
+                    //   borderRadius: BorderRadius.circular(10.r),
+                    //   child: Container(
+                    //     height: 46.h,
+                    //     width: 48.w,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(10.r),
+                    //       color: Colors.grey.shade100,
+                    //     ),
+                    //     child: Icon(
+                    //       Icons.document_scanner_rounded,
+                    //       color: Colors.red,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
               SizedBox(height: 10.h),
               CusCarousel(),
               SizedBox(height: 10.h),

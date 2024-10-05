@@ -6,6 +6,7 @@ import '../../Cart/cart_controller.dart';
 import '../../Cart/cart_page.dart';
 import '../../Promotions/promotions_page.dart';
 import '../../Search/search_page.dart';
+import '../../account.dart';
 import '../../home_screen/page/home_page.dart';
 import '../controller/bottomnav_controller.dart';
 
@@ -14,6 +15,7 @@ class CustomBottomNavBar extends StatelessWidget {
     HomePage(),
     SearchPage(),
     PromotionsPage(),
+    Account(),
     CartPage(),
   ];
 
@@ -43,18 +45,22 @@ class CustomBottomNavBar extends StatelessWidget {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: _buildIcon('assets/search.svg', 1, bottomNavController),
-                label: 'Search',
+                icon: _buildIcon('assets/categories.svg', 1, bottomNavController),
+                label: 'Categories',
               ),
               BottomNavigationBarItem(
                 icon: _buildIcon('assets/offer.svg', 2, bottomNavController),
-                label: 'Promotions',
+                label: 'Deals',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildIcon('assets/account.svg', 3, bottomNavController),
+                label: 'Account',
               ),
               BottomNavigationBarItem(
                 icon: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    _buildIcon('assets/cart.svg', 3, bottomNavController),
+                    _buildIcon('assets/cart3.svg', 4, bottomNavController),
                     if (cartItemCount > 0)
                       Positioned(
                         right: -4,
@@ -87,8 +93,8 @@ class CustomBottomNavBar extends StatelessWidget {
                 label: 'Cart',
               ),
             ],
-            selectedItemColor: Colors.transparent,
-            unselectedItemColor: Colors.red,
+            selectedItemColor: Colors.red,
+            unselectedItemColor: Colors.black,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
@@ -112,7 +118,7 @@ class CustomBottomNavBar extends StatelessWidget {
         imagePath,
         width: 22.w,
         height: 22.h,
-        color: isSelected ? Colors.white : Colors.red,
+        color: isSelected ? Colors.white : Colors.black,
       ),
     );
   }

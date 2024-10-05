@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
                 },
                 fillclr: Colors.grey.shade200,
                 bdrds: 10.r,
-                preffix: Icon(Icons.mail_outline, color: Colors.green),
+                preffix: Icon(Icons.mail_outline, color: Colors.red),
                 hint: 'Enter your email address',
               ),
               SizedBox(height: 20.h),
@@ -73,7 +73,7 @@ class LoginPage extends StatelessWidget {
 
                   fillclr: Colors.grey.shade200,
                   bdrds: 10.r,
-                  preffix: Icon(Icons.lock_outlined, color: Colors.green),
+                  preffix: Icon(Icons.lock_outlined, color: Colors.red),
                   hint: 'Enter your password',
                   suffix: GestureDetector(
                     onTap: (){

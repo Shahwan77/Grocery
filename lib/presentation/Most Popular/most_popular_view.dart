@@ -18,8 +18,20 @@ class MostPopularView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('Most Popular Categories'),
+        leading:  IconButton(
+          icon: Container(
+              height: 22.h,width: 26.w,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.r)
+              ),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        backgroundColor: Colors.red,
+        title: Text('Most Popular Categories',style: TextStyle(color: Colors.white),),
       ),
       body: Obx(() {
         if (homeController.isLoading.value) {

@@ -24,131 +24,104 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         statusBarIconBrightness: Brightness.light,
       ),
       surfaceTintColor: Colors.white,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.red,
       elevation: 0,
       toolbarHeight: toolbarHeight,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+                height: 64.h,
+                width: 74.w,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.r),
-                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Builder(
-                  builder: (context) {
-                    return IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/menu1.svg',
-                        color: Colors.red,
-                        height: 30,
-                        width: 30,
-                      ),
-                      onPressed: () {
-                        _openCustomDrawer(context);
-                      },
-                    );
-                  },
-                ),
-              ),
-              SizedBox(width: 5.w),
-              Image.asset(
-                'assets/logo.png',
-                height: 40.h,
-                width: 40.w,
-              ),
-              Icon(
-                Icons.location_on,
-                color: Colors.red,
-                size: 34.sp,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '24 | United Arab Emirates |',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    '13 | 4',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              Column(
-                children: [
-                  Text(
-                    '0.00',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'AED',
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search here...',
-                    hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon:
-                        Icon(Icons.search, color: Colors.red),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 15.w,
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.black),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/logo.png',width: 40.w,),
+                    Text('Grocery',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                  ],
                 ),
               ),
-              SizedBox(width: 10.w),
-              InkWell(
-                onTap: () async {
-                  String? scannedData = await Get.to(() => ScannerPage());
-                  if (scannedData != null) {
-                    print("Scanned data: $scannedData");
-                    // Handle the scanned data here
-                  }
-                },
-                borderRadius: BorderRadius.circular(10.r),
-                child: Container(
-                  height: 46.h,
-                  width: 48.w,
-                  decoration: BoxDecoration(
+              Container(
+                height: 64.h,
+                width: 74.w,
+                decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: Icon(
-                    Icons.document_scanner_rounded,
-                    color: Colors.red,
-                  ),
+                    color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/laundry2.png',width: 40.w,),
+                    Text('Laundry',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                  ],
+                ),
+              ),
+              Container(
+                height: 64.h,
+                width: 74.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.r),
+                    color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/offers2.png',width: 40.w,),
+                    Text('Offers',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                  ],
+                ),
+              ),
+              Container(
+                height: 64.h,
+                width: 74.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.r),
+                    color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/aj3.png',width: 70.w,height: 50,),
+                    Padding(
+                      padding:  EdgeInsets.only(bottom: 6),
+                      child: Text('AJ',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),),
+                    )
+                  ],
                 ),
               ),
             ],
@@ -158,47 +131,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  void _openCustomDrawer(BuildContext context) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (BuildContext context, _, __) {
-          return CustomDrawerOverlay();
-        },
-      ),
-    );
-  }
-
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
 }
 
-void _openCustomDrawer(BuildContext context) {
-  Navigator.of(context).push(
-    PageRouteBuilder(
-      opaque: false,
-      pageBuilder: (BuildContext context, _, __) {
-        return CustomDrawerOverlay();
-      },
-    ),
-  );
-}
 
-class CustomDrawerOverlay extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Container(
-        color: Colors.black54, // Background shade
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            width: 250.w,
-            child: CusDrawer(), // Your custom drawer widget
-          )
-        ),
-      ),
-    );
-  }
-}
+

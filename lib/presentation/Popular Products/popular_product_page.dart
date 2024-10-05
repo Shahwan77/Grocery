@@ -255,7 +255,7 @@ class PopularProductPage extends StatelessWidget {
                                         isInCart
                                             ? Icons.shopping_cart // Show filled cart if item is in cart
                                             : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
-                                        color: isInCart ? Colors.green : Colors.grey, // Change icon color
+                                        color: isInCart ? Colors.red : Colors.grey, // Change icon color
                                       ),
                                     );
                                   }),

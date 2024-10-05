@@ -97,10 +97,10 @@ class CategoriesPage extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                crossAxisSpacing: 15.w,
-                mainAxisSpacing: 15.h,
+                crossAxisSpacing: 12.w,
+                mainAxisSpacing: 12.h,
                 childAspectRatio: 0.7,
-                mainAxisExtent: 140
+                mainAxisExtent: 120
               ),
               itemCount: categoryController.categories.length,
               itemBuilder: (context, index) {
@@ -118,40 +118,37 @@ class CategoriesPage extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 80.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Colors.black26,
-                            //     blurRadius: 4.0,
-                            //     offset: Offset(0, 2),
-                            //   ),
-                            // ],
-                            // borderRadius: BorderRadius.circular(8.r),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                '${Api.ImageUrl}/categories/${category.image}',
-                              ),
-                              fit: BoxFit.contain,
-                              //alignment: Alignment(2, 2)
+                      Container(
+                        height: 70.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: Colors.black26,
+                          //     blurRadius: 4.0,
+                          //     offset: Offset(0, 2),
+                          //   ),
+                          // ],
+                          // borderRadius: BorderRadius.circular(8.r),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              '${Api.ImageUrl}/categories/${category.image}',
                             ),
+                            fit: BoxFit.contain,
+                            //alignment: Alignment(2, 2)
                           ),
                         ),
                       ),
-                      SizedBox(height: 5.h),
+                      //SizedBox(height: 5.h),
                       Text(
                         category.name,
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w800,
                         ),
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        //overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

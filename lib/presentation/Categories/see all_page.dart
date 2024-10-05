@@ -18,6 +18,18 @@ class SeeAllPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading:  IconButton(
+          icon: Container(
+              height: 22.h,width: 26.w,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.r)
+              ),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         backgroundColor: Colors.red,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
@@ -52,7 +64,7 @@ class SeeAllPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border:
-                          Border.all(color: Colors.green.shade800, width: 1),
+                          Border.all(color: Colors.red, width: 1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -61,12 +73,23 @@ class SeeAllPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
-                            child: Image.network(
+                            child:category.image != null && category.image!.isNotEmpty
+                            ?Image.network(
                               '${Api.ImageUrl}/categories/${category.image}',
                               fit: BoxFit.cover,
                               height: 100, // Image height
                               width: 100, // Image width
-                            ),
+                              errorBuilder: (context, error, stackTrace) => Icon(
+                                Icons.hide_image_outlined,
+                                size: 94.sp,
+                                color: Colors.grey,
+                              ),
+                            )
+                                : Icon(
+                          Icons.hide_image_outlined,
+                          size: 90.sp,
+                            color: Colors.grey,
+                          ),
                           ),
                         ),
                         Padding(
@@ -75,7 +98,7 @@ class SeeAllPage extends StatelessWidget {
                               height: 24.2.h,
                               width: 140.w,
                               decoration: BoxDecoration(
-                                  color: Colors.green.shade800,
+                                  color: Colors.red,
                                   borderRadius: BorderRadius.vertical(
                                       bottom: Radius.circular(18))),
                               child: Center(
