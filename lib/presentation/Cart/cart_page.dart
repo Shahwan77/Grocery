@@ -29,7 +29,7 @@ class CartPage extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.white),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
       ),
       body: FutureBuilder<void>(
         future:
@@ -60,7 +60,7 @@ class CartPage extends StatelessWidget {
                     SizedBox(height: 20.h),
                     Button(
                       size: Size(164, 54),
-                      color: Colors.red,
+                      color: Color(0xFFEB1C23),
                       text: Text(
                         'Start Shopping',
                         style: TextStyle(
@@ -141,7 +141,7 @@ class CartPage extends StatelessWidget {
                                             'assets/dlt.png',
                                             width: 20.w,
                                             height: 20.h,
-                                            color: Colors.red.shade600,
+                                            color: Color(0xFFEB1C23),
                                           ),
                                           onPressed: () {
                                             final productId = item['product_id'];
@@ -281,7 +281,7 @@ class CartPage extends StatelessWidget {
                         SizedBox(height: 6.h,),
                       ],
                       Button(
-                        color: Colors.red,
+                        color:Color(0xFFEB1C23),
                         size: Size(340.w, 45.h),
                         text: Text(
                           "Continue",

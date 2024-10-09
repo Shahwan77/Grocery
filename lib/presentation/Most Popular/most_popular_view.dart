@@ -25,12 +25,12 @@ class MostPopularView extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30.r)
               ),
-              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Color(0xFFEB1C23),size: 20.sp,))),
           onPressed: () {
             Get.back();
           },
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
         title: Text('Most Popular Categories',style: TextStyle(color: Colors.white),),
       ),
       body: Obx(() {

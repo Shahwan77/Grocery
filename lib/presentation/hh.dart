@@ -283,3 +283,158 @@
 //     Get.snackbar('Error', 'There was a problem processing your cart items. Please check and try again.');
 //   }
 // }
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:get/get.dart';
+// import 'package:grocery/presentation/sign_up_screen/controller/signup_controller.dart';
+// import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
+// import 'package:lottie/lottie.dart';
+//
+// import '../widgets/button/button.dart';
+//
+// class Account extends StatelessWidget {
+//   Account({super.key});
+//
+//   final List<String> account = [
+//     'Notification',
+//     'Add Address',
+//     'Change Email Address',
+//     'Edit Profile',
+//     'Change Password',
+//     'Change Mobile Number',
+//   ];
+//
+//   final List<IconData> accounticon = [
+//     Icons.notifications_outlined,
+//     Icons.location_on_outlined,
+//     Icons.email_outlined,
+//     Icons.edit_outlined,
+//     Icons.more_horiz,
+//     Icons.phone_android_outlined,
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final SignupController signupController = Get.put(SignupController());
+//
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         toolbarHeight: 8.h,
+//         systemOverlayStyle: SystemUiOverlayStyle(
+//           statusBarColor: Color(0xFFEB1C23),
+//           statusBarIconBrightness: Brightness.light,
+//         ),
+//         backgroundColor: Color(0xFFEB1C23),
+//       ),
+//       body: Padding(
+//         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+//         child: Obx(() {
+//           return signupController.isRegistrationSuccessful.value
+//               ? Column(
+//             children: [
+//               Container(
+//                 height: 110.h,
+//                 width: 320.w,
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(26.r),
+//                   color: Color(0xFFEB1C23),
+//                 ),
+//                 child: Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+//                   child: Row(
+//                     children: [
+//                       Container(
+//                         height: 84.h,
+//                         width: 90.w,
+//                         decoration: BoxDecoration(
+//                           borderRadius: BorderRadius.circular(18.r),
+//                           color: Colors.white,
+//                         ),
+//                         child: CircleAvatar(
+//                           backgroundColor: Colors.transparent,
+//                           child: Icon(Icons.person, size: 50.sp),
+//                         ),
+//                       ),
+//                       SizedBox(width: 10.w),
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Text(
+//                             signupController.nameController.text,
+//                             style: TextStyle(
+//                               color: Colors.white,
+//                               fontSize: 16.sp,
+//                               fontWeight: FontWeight.w800,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               SizedBox(height: 20.h),
+//               // Account list
+//               ListView.builder(
+//                 itemCount: account.length,
+//                 scrollDirection: Axis.vertical,
+//                 physics: BouncingScrollPhysics(),
+//                 shrinkWrap: true,
+//                 itemBuilder: (context, index) {
+//                   return Padding(
+//                     padding: EdgeInsets.symmetric(vertical: 8.0),
+//                     child: Container(
+//                       decoration: BoxDecoration(
+//                         color: Colors.grey.shade200,
+//                         borderRadius: BorderRadius.circular(12.r),
+//                       ),
+//                       child: ListTile(
+//                         leading: Container(
+//                           width: 34.w,
+//                           height: 30.h,
+//                           decoration: BoxDecoration(
+//                             color: Colors.white,
+//                             borderRadius: BorderRadius.circular(30.r),
+//                           ),
+//                           child: Icon(accounticon[index]),
+//                         ),
+//                         title: Text(account[index]),
+//                         trailing: Icon(Icons.arrow_forward_ios_rounded),
+//                         onTap: () {
+//                           print('Tapped on ${account[index]}');
+//                         },
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ],
+//           )
+//               :Center(
+//                 child: Column(
+//                             mainAxisAlignment:MainAxisAlignment.center,
+//                             children: [
+//                 Lottie.asset(
+//                   'assets/fvAprcvfUX.json',  // Path to your Lottie file
+//                   width: 140.w,                     // Adjust width as needed
+//                   height: 140.h,                    // Adjust height as needed
+//                   fit: BoxFit.fill,
+//                 ),
+//                 Button(
+//                   color: Color(0xFFEB1C23),
+//                   text: Text("Sign Up",style: TextStyle(color: Colors.white),), ontap: () {
+//                   Get.to(SignupPage());
+//                 },
+//
+//                 ),
+//                             ],
+//                           ),
+//               );
+//         }),
+//       ),
+//     );
+//   }
+// }

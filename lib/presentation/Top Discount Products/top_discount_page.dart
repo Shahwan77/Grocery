@@ -41,7 +41,7 @@ class TopDiscountPage extends StatelessWidget {
                           height: 50.w,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.w,
-                            color: Colors.red,
+                            color: Color(0xFFEB1C23),
                           ),
                         ),
                       );
@@ -58,7 +58,7 @@ class TopDiscountPage extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
-                    color: Colors.red,
+                    color: Color(0xFFEB1C23),
                   ),
                 ),
               ),
@@ -123,7 +123,7 @@ class TopDiscountPage extends StatelessWidget {
                                           ? Icons.favorite
                                           : Icons.favorite_border,
                                       color: favoriteController.isFavorite(item.name)
-                                          ? Colors.red
+                                          ? Color(0xFFEB1C23)
                                           : Colors.grey,
                                     ),
                                   );
@@ -197,7 +197,7 @@ class TopDiscountPage extends StatelessWidget {
                                         isInCart
                                             ? Icons.shopping_cart // Show filled cart if item is in cart
                                             : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
-                                        color: isInCart ? Colors.red : Colors.grey, // Change icon color
+                                        color: isInCart ? Color(0xFFEB1C23) : Colors.grey, // Change icon color
                                       ),
                                     );
                                   }),

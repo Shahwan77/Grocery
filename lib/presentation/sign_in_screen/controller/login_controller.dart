@@ -8,10 +8,10 @@ import '../../Cart/cart_controller.dart';
 import '../../bottomnav/page/bottom_nav.dart';
 
 class LoginController extends GetxController {
-  var isEmailValid = false.obs;
+  var isNumberValid = false.obs;
   var isPasswordValid = false.obs;
   RxBool obsecure = true.obs;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController numberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   final box = GetStorage();
@@ -25,7 +25,7 @@ class LoginController extends GetxController {
         Uri.parse(Api.Login),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': emailController.text,
+          'mobile_no': numberController.text,
           'password': passwordController.text,
         }),
       );
@@ -45,11 +45,8 @@ class LoginController extends GetxController {
               await cartController.postCartItems(accessToken, cartItem);
             }
           }
-
           cartController.clearLocalCart();
-
-          // Delay for 1 or 2 seconds before navigating
-          await Future.delayed(Duration(seconds: 1)); // Adjust duration as needed
+          await Future.delayed(Duration(seconds: 1));
           Get.offAll(CustomBottomNavBar());
         } else {
           Get.snackbar('Error', 'Login failed: Access token not found');
@@ -64,9 +61,9 @@ class LoginController extends GetxController {
 
 
   String? validateEmail(String value) {
-    isEmailValid.value = GetUtils.isEmail(value);
-    return isEmailValid.value ? null : 'Please enter a valid email';
-  }
+    // isMobileValid.value = GetUtils.isEmail(value);
+    isNumberValid.value = value.isNotEmpty && value.length == 10;
+    return isNumberValid.value ? null : 'Please enter a valid phone number';  }
 
   String? validatePassword(String value) {
     isPasswordValid.value = value.length >= 6;
@@ -77,7 +74,7 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
+    numberController.dispose();
     passwordController.dispose();
     super.onClose();
   }

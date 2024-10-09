@@ -33,12 +33,12 @@ class DeliveryTimeSlots extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30.r)),
               child: Center(
                   child: Icon(Icons.arrow_back_ios_rounded,
-                      color: Colors.red, size: 20.sp))),
+                      color: Color(0xFFEB1C23), size: 20.sp))),
           onPressed: () {
             Get.back();
           },
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
         title: Text(
           'Delivery Time Slots',
           style: TextStyle(color: Colors.white),

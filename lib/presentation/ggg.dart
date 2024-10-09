@@ -613,3 +613,62 @@
 //     );
 //   }
 // }
+
+
+// Future<void> registerUser() async {
+//   isLoading.value = true;
+//
+//   const String url = 'https://grocery-dev.greendomains.in/api/register';
+//   try {
+//     final response = await http.post(
+//       Uri.parse(url),
+//       headers: <String, String>{
+//         'Content-Type': 'application/json',
+//       },
+//       body: jsonEncode({
+//         'name': nameController.text,
+//         'mobile_no': mobileNoController.text,
+//         'password': passwordController.text,
+//         'password_confirmation': passwordConfirmController.text,
+//       }),
+//     );
+//
+//     if (response.statusCode == 201) {
+//       // Parse the response
+//       final registerResponse = RegisterResponse.fromJson(jsonDecode(response.body));
+//
+//       // Access the token
+//       String accessToken = registerResponse.user.accessToken;
+//
+//       // Store the access token (you can use GetStorage for this)
+//       await GetStorage().write('access_token', accessToken);
+//
+//       Get.snackbar('Success', 'Registration successful!',
+//           snackPosition: SnackPosition.BOTTOM);
+//
+//       if (cartController.cartItems.isNotEmpty) {
+//         // Post each cart item after login
+//         for (var cartItem in cartController.cartItems) {
+//           await cartController.postCartItems(accessToken, cartItem);
+//         }
+//       }
+//
+//       // Add mobile number to registered list
+//       registeredMobileNumbers.add(mobileNoController.text);
+//
+//       print('Registered User Details:');
+//       print('Name: ${registerResponse.user.name}');
+//       print('Mobile No: ${registerResponse.user.mobileNo}');
+//       Get.offAll(() => CustomBottomNavBar()); // Replace HomePage with your desired page
+//     } else {
+//       Get.snackbar('Error', 'Failed to register user: ${response.body}',
+//           snackPosition: SnackPosition.BOTTOM);
+//     }
+//   } catch (e) {
+//     Get.snackbar('Error', 'An error occurred: $e',
+//         snackPosition: SnackPosition.BOTTOM);
+//     print('Error: $e');
+//   } finally {
+//     isLoading.value = false;
+//   }
+// }

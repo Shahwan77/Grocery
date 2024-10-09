@@ -38,7 +38,7 @@ class DeliveryTimeSection extends StatelessWidget {
                 height: 40.h,
                 decoration: BoxDecoration(
                   color: deliveryTimeController.selectedIndex.value == 0
-                      ? Colors.red
+                      ? Color(0xFFEB1C23)
                       : Colors.white,
                   border: Border.all(
                     color: deliveryTimeController.selectedIndex.value == 0
@@ -83,7 +83,7 @@ class DeliveryTimeSection extends StatelessWidget {
                 height: 40.h,
                 decoration: BoxDecoration(
                   color: deliveryTimeController.selectedIndex.value == 1
-                      ? Colors.red
+                      ? Color(0xFFEB1C23)
                       : Colors.white,
                   border: Border.all(
                     color: deliveryTimeController.selectedIndex.value == 1
@@ -155,7 +155,7 @@ class DeliveryTimeSection extends StatelessWidget {
                               deliveryTimeController.toggleCheckbox(index);
                             },
                             activeColor: Colors.transparent,
-                            checkColor: Colors.red,
+                            checkColor:Color(0xFFEB1C23),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.r)),
                             side: MaterialStateBorderSide.resolveWith(
@@ -183,7 +183,7 @@ class DeliveryTimeSection extends StatelessWidget {
           children: [
             Button(
               size: Size(80.w, 44.h),
-              color: Colors.red,
+              color: Color(0xFFEB1C23),
               text: Text(
                 'Prev',
                 style: TextStyle(color: Colors.white),
@@ -197,7 +197,7 @@ class DeliveryTimeSection extends StatelessWidget {
             ),
             Button(
               size: Size(80.w, 44.h),
-              color: Colors.red,
+              color: Color(0xFFEB1C23),
               text: Text(
                 'Next',
                 style: TextStyle(color: Colors.white),

@@ -44,14 +44,14 @@ class DetailPage extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30.r)
                       ),
-                      child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+                      child: Center(child: Icon(Icons.arrow_back_ios_rounded,color:Color(0xFFEB1C23),size: 20.sp,))),
                   onPressed: () {
                     Get.back();
                   },
                 ),
                 iconTheme: IconThemeData(color: Colors.white),
                 title: Text(categoryName, style: TextStyle(color: Colors.white)),
-                backgroundColor: Colors.red,
+                backgroundColor: Color(0xFFEB1C23),
                 bottom: TabBar(labelStyle: TextStyle(color: Colors.black),isScrollable: true,
                   tabs: [
                     Tab(text: "",),
@@ -139,7 +139,7 @@ class DetailPage extends StatelessWidget {
                                                             ? Icons.favorite
                                                             : Icons.favorite_border,
                                                         color: favoriteController.isFavorite(item.name)
-                                                            ? Colors.red
+                                                            ? Color(0xFFEB1C23)
                                                             : Colors.grey,
                                                       ),
                                                     );
@@ -221,7 +221,7 @@ class DetailPage extends StatelessWidget {
                                                         isInCart
                                                             ? Icons.shopping_cart // Show filled cart if item is in cart
                                                             : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
-                                                        color: isInCart ? Colors.red : Colors.grey,
+                                                        color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
                                                       ),
                                                     );
                                                   }),

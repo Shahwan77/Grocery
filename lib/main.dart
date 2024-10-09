@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -6,10 +7,19 @@ import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
+import 'package:grocery/tst12.dart';
 import 'package:grocery/tstts.dart';
 
 Future<void> main() async {
   await GetStorage.init();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyCz-cOyLCXi6EcdJT9ZVKSO3IBOUnz8LqU",
+        appId:  "1:923637485364:android:65ee82c180a36893045f61",
+        messagingSenderId: "923637485364",
+        projectId: "grocery-4a4ff",)
+  );
   runApp(const MyApp());
 }
 
@@ -25,7 +35,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: GetMaterialApp(
         title: 'Flutter Demo',
-        //home: MyHomePage(),
+        // home: MyAppstatata(),
         initialRoute:AppRoutes.Splash,
        getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,

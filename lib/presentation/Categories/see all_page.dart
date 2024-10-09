@@ -25,12 +25,12 @@ class SeeAllPage extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30.r)
               ),
-              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Color(0xFFEB1C23),size: 20.sp,))),
           onPressed: () {
             Get.back();
           },
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'See All',
@@ -64,7 +64,7 @@ class SeeAllPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border:
-                          Border.all(color: Colors.red, width: 1),
+                          Border.all(color: Color(0xFFEB1C23), width: 1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -98,7 +98,7 @@ class SeeAllPage extends StatelessWidget {
                               height: 24.2.h,
                               width: 140.w,
                               decoration: BoxDecoration(
-                                  color: Colors.red,
+                                  color:Color(0xFFEB1C23),
                                   borderRadius: BorderRadius.vertical(
                                       bottom: Radius.circular(18))),
                               child: Center(

@@ -28,7 +28,7 @@ class SignupPage extends StatelessWidget {
                   color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
               child: Center(
                   child: Icon(Icons.arrow_back_ios_rounded,
-                      color: Colors.red, size: 20.sp))),
+                      color: Color(0xFFEB1C23), size: 20.sp))),
           onPressed: () {
             Get.back();
           },
@@ -39,7 +39,7 @@ class SignupPage extends StatelessWidget {
           style: TextStyle(
               fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.white),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor:Color(0xFFEB1C23),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
@@ -51,7 +51,7 @@ class SignupPage extends StatelessWidget {
                 controller: signupController.nameController,
                 fillclr: Colors.grey.shade200,
                 bdrds: 10.r,
-                preffix: Icon(Icons.person_outline_sharp, color: Colors.red),
+                preffix: Icon(Icons.person_outline_sharp, color: Color(0xFFEB1C23)),
                 hint: 'Name',
               ),
               SizedBox(height: 24.h),
@@ -76,7 +76,7 @@ class SignupPage extends StatelessWidget {
               CustomTextfield(
                 fillclr: Colors.grey.shade200,
                 bdrds: 10.r,
-                preffix: Icon(Icons.mail_outline, color: Colors.red),
+                preffix: Icon(Icons.mail_outline, color: Color(0xFFEB1C23)),
                 hint: 'Enter your email address',
               ),
               SizedBox(height: 24.h),
@@ -85,7 +85,7 @@ class SignupPage extends StatelessWidget {
                   controller: signupController.passwordController,
                   fillclr: Colors.grey.shade200,
                   bdrds: 10.r,
-                  preffix: Icon(Icons.lock_outlined, color: Colors.red),
+                  preffix: Icon(Icons.lock_outlined, color: Color(0xFFEB1C23)),
                   hint: 'Enter your password',
                   obsecuretext: signupController.obsecure.value,
                   suffix: GestureDetector(
@@ -94,7 +94,7 @@ class SignupPage extends StatelessWidget {
                       signupController.obsecure.value
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      color: Colors.red,
+                      color: Color(0xFFEB1C23),
                     ),
                   ),
                 ),
@@ -105,7 +105,7 @@ class SignupPage extends StatelessWidget {
                   controller: signupController.passwordConfirmController,
                   fillclr: Colors.grey.shade200,
                   bdrds: 10.r,
-                  preffix: Icon(Icons.lock_outlined, color: Colors.red),
+                  preffix: Icon(Icons.lock_outlined, color: Color(0xFFEB1C23)),
                   hint: 'Confirm your password',
                   obsecuretext: signupController.obsecureConfirm.value,
                   suffix: GestureDetector(
@@ -114,7 +114,7 @@ class SignupPage extends StatelessWidget {
                       signupController.obsecureConfirm.value
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      color: Colors.red,
+                      color: Color(0xFFEB1C23),
                     ),
                   ),
                 ),
@@ -133,7 +133,7 @@ class SignupPage extends StatelessWidget {
                         value: signupController.isChecked.value,
                         onChanged: signupController.toggleCheckbox,
                         activeColor: Colors.transparent,
-                        checkColor: Colors.red,
+                        checkColor: Color(0xFFEB1C23),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.r)),
                         side: MaterialStateBorderSide.resolveWith(
@@ -197,18 +197,23 @@ class SignupPage extends StatelessWidget {
               ),
               SizedBox(height: 14.h),
               Obx(() => Button(
-                color: Colors.red,
+                color: Color(0xFFEB1C23),
                 size: Size(340.w, 45.h),
                 text: signupController.isLoading.value
                     ? CircularProgressIndicator()
                     : Text(
                   "Register",
-                  style:
-                  TextStyle(fontSize: 18.sp, color: Colors.white),
+                  style: TextStyle(fontSize: 18.sp, color: Colors.white),
                 ),
                 ontap: signupController.isLoading.value
                     ? null
-                    : signupController.registerUser,
+                    : () {
+                  // Print message when the button is clicked
+                  print("Register button clicked, starting OTP verification.");
+
+                  // Call startOtpVerification instead of registerUser directly
+                  signupController.startOtpVerification();
+                },
               )),
               // SizedBox(height: 10.h),
               // Obx(() {

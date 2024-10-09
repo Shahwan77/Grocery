@@ -52,7 +52,7 @@ class PaymentSection extends StatelessWidget {
                 height: 40.h,
                 decoration: BoxDecoration(
                   color: paymentMethodController.selectedIndex.value == 0
-                      ? Colors.red
+                      ? Color(0xFFEB1C23)
                       : Colors.white,
                   border: Border.all(
                       color:
@@ -96,7 +96,7 @@ class PaymentSection extends StatelessWidget {
                 height: 40.h,
                 decoration: BoxDecoration(
                   color: paymentMethodController.selectedIndex.value == 1
-                      ? Colors.red
+                      ? Color(0xFFEB1C23)
                       : Colors.white,
                   border: Border.all(
                       color:
@@ -164,7 +164,7 @@ class PaymentSection extends StatelessWidget {
                             paymentMethodController.toggleCheckbox(index);
                           },
                           activeColor: Colors.transparent,
-                          checkColor: Colors.red,
+                          checkColor: Color(0xFFEB1C23),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.r)),
                           side: MaterialStateBorderSide.resolveWith(
@@ -188,7 +188,7 @@ class PaymentSection extends StatelessWidget {
           children: [
             Button(
               size: Size(80.w, 44.h),
-              color: Colors.red,
+              color:Color(0xFFEB1C23),
               text: Text('Prev', style: TextStyle(color: Colors.white)),
               ontap: () {
                 deliveryTimeController.backToDeliveryTime();
@@ -197,7 +197,7 @@ class PaymentSection extends StatelessWidget {
             SizedBox(width: 18.w),
             Button(
               size: Size(100.w, 44.h),
-              color: Colors.red,
+              color: Color(0xFFEB1C23),
               text: Text('Confirm', style: TextStyle(color: Colors.white)),
               ontap: () {
                 paymentMethodController.postOrder();

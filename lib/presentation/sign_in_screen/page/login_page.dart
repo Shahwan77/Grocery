@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery/presentation/OTP%20Field/otp_field.dart';
 import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
 import '../../../widgets/button/button.dart';
 import '../../../widgets/textfield/custom_textfield.dart';
@@ -34,25 +35,25 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 40.h),
               Text(
-                'Email',
+                'Phone no:',
                 style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16.sp),
               ),
               SizedBox(height: 8.h),
-              CustomTextfield(
-                controller: loginController.emailController,
-                isValid: loginController.isEmailValid.value, obsecuretext: false,
+              CustomTextfield(keytype: TextInputType.number,
+                controller: loginController.numberController,
+                isValid: loginController.isNumberValid.value, obsecuretext: false,
                 onchange: (value) {
                   loginController.validateEmail(value);
                 },
                 validator: (value)=>loginController.validateEmail(value!),
 
                 on_saveds: (value) {
-                  loginController.emailController.text = value!;
+                  loginController.numberController.text = value!;
                 },
                 fillclr: Colors.grey.shade200,
                 bdrds: 10.r,
-                preffix: Icon(Icons.mail_outline, color: Colors.red),
-                hint: 'Enter your email address',
+                preffix: Icon(Icons.mail_outline, color: Color(0xFFEB1C23)),
+                hint: 'Enter your phone number',
               ),
               SizedBox(height: 20.h),
               Text(
@@ -73,7 +74,7 @@ class LoginPage extends StatelessWidget {
 
                   fillclr: Colors.grey.shade200,
                   bdrds: 10.r,
-                  preffix: Icon(Icons.lock_outlined, color: Colors.red),
+                  preffix: Icon(Icons.lock_outlined, color: Color(0xFFEB1C23)),
                   hint: 'Enter your password',
                   suffix: GestureDetector(
                     onTap: (){
@@ -82,8 +83,8 @@ class LoginPage extends StatelessWidget {
                     },
                     child: Icon(
                       loginController.obsecure.value
-                          ? Icons.remove_red_eye_outlined
-                          : Icons.remove_red_eye,
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.black,
                     ),
                   ),
@@ -102,14 +103,14 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Button(
-                color: Colors.red,
+                color: Color(0xFFEB1C23),
                 size: Size(340.w, 45.h),
                 text: Text(
                   "Login",
                   style: TextStyle(fontSize: 18.sp, color: Colors.white),
                 ),
                 ontap: () {
-                  if (loginController.validateEmail(loginController.emailController.text) == null &&
+                  if (loginController.validateEmail(loginController.numberController.text) == null &&
                       loginController.validatePassword(loginController.passwordController.text) == null) {
                     loginController.login();
                   } else {

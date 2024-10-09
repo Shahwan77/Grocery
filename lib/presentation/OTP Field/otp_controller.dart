@@ -1,35 +1,27 @@
-import 'dart:async';
 import 'package:get/get.dart';
+import 'dart:async';
 
 class OtpController extends GetxController {
-  RxInt remainingTime = 60.obs; // 60 seconds
-  Timer? timer;
-
-  @override
-  void onInit() {
-    startTimer();
-    super.onInit();
-  }
+  var isTimerRunning = false.obs;
+  var remainingTime = 60.obs; // OTP valid for 30 seconds
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    isTimerRunning.value = true;
+    remainingTime.value = 60;
+
+    Timer.periodic(Duration(seconds: 1), (timer) {
       if (remainingTime.value > 0) {
         remainingTime.value--;
       } else {
         timer.cancel();
+        isTimerRunning.value = false;
       }
     });
   }
 
-  void resendOtp() {
-    remainingTime.value = 60; // Reset the timer
-    startTimer(); // Restart the timer
-    // Add your OTP resend logic here
-  }
-
   @override
-  void onClose() {
-    timer?.cancel();
-    super.onClose();
+  void onInit() {
+    super.onInit();
+    startTimer();
   }
 }

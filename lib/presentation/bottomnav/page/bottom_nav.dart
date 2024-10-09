@@ -70,7 +70,10 @@ class CustomBottomNavBar extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.yellow.shade800,
-                            border: Border.all(color: Colors.red,width: 2.w)
+                            border: Border.all(
+                              color: Color(0xFFEB1C23),
+                              width: 2.w,
+                            ),
                           ),
                           constraints: BoxConstraints(
                             minWidth: 18.w,
@@ -80,7 +83,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             child: Text(
                               '$cartItemCount',
                               style: TextStyle(
-                                color: Colors.red,
+                                color: Color(0xFFEB1C23),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10.h,
                               ),
@@ -93,7 +96,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 label: 'Cart',
               ),
             ],
-            selectedItemColor: Colors.red,
+            selectedItemColor: Color(0xFFEB1C23),
             unselectedItemColor: Colors.black,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
@@ -111,7 +114,7 @@ class CustomBottomNavBar extends StatelessWidget {
       width: 40.w,
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.red : Colors.transparent,
+        color: isSelected ? Color(0xFFEB1C23) : Colors.transparent,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: SvgPicture.asset(

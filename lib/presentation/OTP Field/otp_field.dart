@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/widgets/button/button.dart';
 import 'package:pinput/pinput.dart';
 
@@ -14,11 +17,12 @@ class OtpField extends StatelessWidget {
   OtpField({super.key});
   final SignupController signupController = Get.put(SignupController());
   final OtpController otpTimerController = Get.put(OtpController());
+  final TextEditingController otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor:Color(0xFFEB1C23),
       appBar: AppBar(
         leading: IconButton(
           icon: Container(
@@ -28,7 +32,7 @@ class OtpField extends StatelessWidget {
                 color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
             child: Center(
               child: Icon(Icons.arrow_back_ios_rounded,
-                  color: Colors.red, size: 20.sp),
+                  color: Color(0xFFEB1C23), size: 20.sp),
             ),
           ),
           onPressed: () {
@@ -36,7 +40,7 @@ class OtpField extends StatelessWidget {
           },
         ),
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
       ),
       body: Center(
         child: Column(
@@ -73,16 +77,15 @@ class OtpField extends StatelessWidget {
             Obx(() {
               return Text(
                 '00:${otpTimerController.remainingTime.value} secs',
-                style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               );
             }),
-            SizedBox(
-              height: 20.h,
-            ),
+            SizedBox(height: 20.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.w),
               child: Pinput(
                 length: 6,
+                controller: signupController.otpController,
               ),
             ),
             SizedBox(height: 20.h),
@@ -98,10 +101,7 @@ class OtpField extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
-            SizedBox(
-              height: 20.h,
-            ),
+            SizedBox(height: 20.h),
             Button(
               text: Text(
                 'Verify',
@@ -111,30 +111,49 @@ class OtpField extends StatelessWidget {
                     color: Colors.white),
               ),
               size: Size(280.w, 46.h),
-              color: Colors.red,
-              ontap: () {},
+              color: Color(0xFFEB1C23),
+              ontap: () {
+                // Debugging: Check if the otpController is capturing the OTP
+                final otp = signupController.otpController.text.trim();
+
+                print("OTP Entered: $otp");
+                print("OTP Controller Value: ${otpController.text}");
+
+                if (otp.isNotEmpty) {
+                  // Proceed to verify the OTP
+                  signupController.verifyOtpAndRegister();
+                } else {
+                  // Show error if OTP is not entered
+                  Get.snackbar('Error', 'Please enter the OTP',
+                      snackPosition: SnackPosition.BOTTOM);
+                }
+              },
             ),
+
             SizedBox(height: 20.h),
-            Text("Didn't receive the OTP?"),
-            GestureDetector(
-              onTap: otpTimerController.remainingTime.value == 0
-                  ? () {
-                      otpTimerController.resendOtp();
-                    }
-                  : null, // Disable button while timer is running
-              child: Text(
-                'RESEND',
-                style: TextStyle(
-                    color: Colors.grey.shade600,
+            Obx(() {
+              return TextButton(
+                onPressed: otpTimerController.isTimerRunning.value
+                    ? null
+                    : () {
+                  // Resend OTP logic here
+                  signupController.sendOtp();
+                },
+                child: Text(
+                  'Resend OTP',
+                  style: TextStyle(
                     fontSize: 16.sp,
+                    color: Color(0xFFEB1C23),
                     fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),
     );
   }
 }
+
+

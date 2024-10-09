@@ -140,7 +140,15 @@ class CartController extends GetxController {
     }
   }
 
-
+  // Future<void> placeOrder() async {
+  //   // Logic to place the order...
+  //   // Assume order is placed successfully
+  //
+  //   // After successful order placement
+  //   clearLocalCart(); // Clear the cart
+  //   // Show success message or navigate to a different page if needed
+  //   Get.snackbar("Success", "Your order has been placed!");
+  // }
 
 
   bool isInCart(int productId) {

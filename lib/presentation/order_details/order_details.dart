@@ -3,25 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Cart/cart_page.dart';
 import 'package:grocery/presentation/Delivery%20Time%20Slots/delivery_time_slots.dart';
 import 'package:grocery/presentation/home_screen/page/home_page.dart';
+import 'package:grocery/tst12.dart';
 import 'package:grocery/widgets/button/button.dart';
 
 import '../../data/apiClient/api.dart';
 import '../../tstts.dart';
 import '../Cart/cart_controller.dart';
+import '../sign_up_screen/controller/signup_controller.dart';
 
 class OrderDetails extends StatelessWidget {
   OrderDetails({super.key});
   final CartController cartController = Get.put(CartController());
+  final SignupController signupController = Get.put(SignupController());
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+    final SignupController signupController = Get.put(SignupController());
+    final token = box.read('access_token');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
         leading:  IconButton(
           icon: Container(
               height: 22.h,width: 26.w,
@@ -29,7 +36,7 @@ class OrderDetails extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30.r)
               ),
-              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color: Colors.red,size: 20.sp,))),
+              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color:Color(0xFFEB1C23),size: 20.sp,))),
           onPressed: () {
             Get.back();
           },
@@ -54,7 +61,7 @@ class OrderDetails extends StatelessWidget {
               height: 96.h,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Color(0xFFEB1C23),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -67,7 +74,7 @@ class OrderDetails extends StatelessWidget {
                   children: [
                     SizedBox(height: 6.h),
                     Text(
-                      'Ashique Mohammed',
+                      Details().name,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -385,7 +392,7 @@ class OrderDetails extends StatelessWidget {
                     children: [
                       Button(
                         size: Size(80.w, 44.h),
-                        color: Colors.red,
+                        color: Color(0xFFEB1C23),
                         text: Text('Prev',style: TextStyle(color: Colors.white),),
                         ontap: () {
                           Get.to(CartPage());
@@ -393,7 +400,7 @@ class OrderDetails extends StatelessWidget {
                       SizedBox(width: 18.w,),
                       Button(
                         size: Size(80.w, 44.h),
-                        color: Colors.red,
+                        color: Color(0xFFEB1C23),
                         text: Text('Next', style: TextStyle(color: Colors.white)),
                         ontap: () {
                           // List<dynamic> cartItems = cartController.getCartItems();

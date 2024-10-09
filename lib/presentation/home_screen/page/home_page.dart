@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
          // return Center(child: CircularProgressIndicator(color: Colors.green,));
         }
         return RefreshIndicator(
-          color: Colors.red,
+          color: Color(0xFFEB1C23),
           backgroundColor: Colors.white,
           //strokeWidth: 2,
           onRefresh: controller.refreshData,
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                           suffixIcon:
-                          Icon(Icons.search, color: Colors.red),
+                          Icon(Icons.search, color: Color(0xFFEB1C23)),
                           filled: true,
                           fillColor: Colors.grey.shade100,
                           contentPadding: EdgeInsets.symmetric(

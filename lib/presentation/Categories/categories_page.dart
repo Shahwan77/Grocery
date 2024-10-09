@@ -36,7 +36,7 @@ class CategoriesPage extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14.sp,
-                    color: Colors.red,
+                    color: Color(0xFFEB1C23),
                   ),
                 ),
                 onTap: () {

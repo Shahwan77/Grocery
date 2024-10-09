@@ -19,7 +19,7 @@ class PromotionsPage extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.white),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFEB1C23),
       ),
       body: ListView.builder(
         itemCount: 3,

@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Cart/cart_controller.dart';
+import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:http/http.dart' as http;
 import '../../../data/models/order_model.dart';
+import '../../bottomnav/controller/bottomnav_controller.dart';
 import '../DeliveryTimeSection/delivery_time_controller.dart';
 
 class PaymentMethodController extends GetxController {
@@ -156,6 +158,8 @@ class PaymentMethodController extends GetxController {
       // Check the response
       if (response.statusCode == 200) {
         print('Order placed successfully: ${response.body}');
+        // cartController.clearLocalCart();
+        Get.offAll(() => CustomBottomNavBar());
         Get.snackbar(
           'Order Success', // Title of the Snackbar
           'Your order has been placed successfully!', // Message of the Snackbar

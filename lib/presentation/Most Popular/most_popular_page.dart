@@ -50,7 +50,7 @@ class MostPopularPage extends StatelessWidget {
                             height: 50.w,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.green.shade800,
+                              color:Color(0xFFEB1C23),
                             ),
                           ),
                         );
@@ -67,7 +67,7 @@ class MostPopularPage extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14.sp,
-                      color: Colors.red,
+                      color: Color(0xFFEB1C23),
                     ),
                   ),
                 ),
