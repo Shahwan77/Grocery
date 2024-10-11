@@ -201,7 +201,7 @@ class CartController extends GetxController {
           } else {
             print("Failed to remove item from cart: ${data['message']}");
           }
-        }  else {
+        } else {
           print("Failed to remove item. Status code: ${response.statusCode}");
         }
       } catch (e) {
@@ -210,13 +210,21 @@ class CartController extends GetxController {
     }
   }
 
-
   void removeItemLocally(int productId) {
-    final itemIndex = fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
+    final itemIndex =
+    fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
     if (itemIndex >= 0) {
+      print("Deleted item from local cart: ${fetchedcartItems[itemIndex]}");
       fetchedcartItems.removeAt(itemIndex);
-      fetchedcartItems.refresh(); // Refresh the observable list
-      //saveCartItems(); // Save updated cart locally
+      fetchedcartItems.refresh();
+    }
+
+    final localItemIndex =
+    cartItems.indexWhere((item) => item['product_id'] == productId);
+    if (localItemIndex >= 0) {
+      print("Deleted item from fetched cart: ${cartItems[itemIndex]}");
+      cartItems.removeAt(localItemIndex);
+      saveCartItems();
     }
   }
 

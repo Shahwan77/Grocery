@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
@@ -58,6 +59,7 @@ class SignupController extends GetxController {
       await sendOtp();
       showOtpField.value = true; // Show OTP field after sending OTP
       isLoading.value = false;
+      GetStorage().write('status', '4');
       Get.to(() => OtpField());
     }
   }
@@ -122,10 +124,10 @@ class SignupController extends GetxController {
   Future<void> registerUser() async {
     isLoading.value = true;
 
-    const String url = 'https://grocery-dev.greendomains.in/api/register';
+    //const String url = 'https://grocery-dev.greendomains.in/api/register';
     try {
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse(Api.Register),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },

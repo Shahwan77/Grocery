@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:grocery/presentation/Cart/cart_controller.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:http/http.dart' as http;
@@ -71,11 +72,11 @@ class PaymentMethodController extends GetxController {
 
 
   double convertToDouble(String amount) {
-    // Extract the numeric part of the string
+
     final numericString = amount.replaceAll(
-        RegExp(r'[^0-9.]'), ''); // Remove non-numeric characters
+        RegExp(r'[^0-9.]'), '');
     return double.tryParse(numericString) ??
-        0.0; // Convert to double, default to 0.0 if parsing fails
+        0.0;
   }
 
   void backToDeliveryTime() {
@@ -83,11 +84,10 @@ class PaymentMethodController extends GetxController {
   }
 
   void saveSelectedPaymentMethod() {
-    // Store the selected payment method based on the selected index
     if (selectedIndex.value == 0) {
-      selectedPaymentMethod.value = 'Cash'; // Payment method
+      selectedPaymentMethod.value = 'Cash';
     } else {
-      selectedPaymentMethod.value = 'Card'; // Payment method
+      selectedPaymentMethod.value = 'Card';
     }
 
     print('Selected Payment Method: ${selectedPaymentMethod.value}');
@@ -97,6 +97,7 @@ class PaymentMethodController extends GetxController {
   Future<void> postOrder() async {
     final DeliveryTimeController controller = Get.find<DeliveryTimeController>();
     final CartController cartcontroller = Get.find<CartController>();
+    final BottomNavController bottomNavController = Get.find<BottomNavController>();
     final String token = box.read('access_token');
 
     print('Selected Day : ${controller.selectedIndex.value == 0 ? controller.today : controller.tomorrow}');
@@ -106,20 +107,20 @@ class PaymentMethodController extends GetxController {
     print('method: $selectedPaymentMethod');
 
 
-    // Convert selected amount to double
+
     double changeAmount = convertToDouble(selectedAmount.value);
     double totalAmount = convertToDouble(cartcontroller.total_amount.value);
     print('Change needed: $changeAmount');
     print('amount: $totalAmount');
 
 
-    // If changeAmount is null, set it to 0 or any default value
+
     if (changeAmount == null) {
-      changeAmount = 0.0; // Set default value
+      changeAmount = 0.0;
       print('Change amount is null, setting to $changeAmount');
     }
 
-    // Build items list dynamically from cart
+
     List<Map<String, dynamic>> items = cartcontroller.getCartItems().map((item) {
       return {
         "product_id": item['product_id'],
@@ -130,27 +131,27 @@ class PaymentMethodController extends GetxController {
 
     final Map<String, dynamic> body = {
       "delivery": {
-        "date": controller.selectedIndex.value == 0 ? controller.today : controller.tomorrow, // Based on selected index
-        "time_slot": controller.selectedTimeSlot.value, // Use the selected time slot
+        "date": controller.selectedIndex.value == 0 ? controller.today : controller.tomorrow,
+        "time_slot": controller.selectedTimeSlot.value,
       },
       "payment": {
-        "method": selectedPaymentMethod.value.toLowerCase(), // or "card"
-        "change": changeAmount == 0 ? null : changeAmount  // This will now always be a double
+        "method": selectedPaymentMethod.value.toLowerCase(),
+        "change": changeAmount == 0 ? null : changeAmount
       },
       "total": {
-        "count": cartcontroller.total_quantity.value, // item count
-        "amount": totalAmount, // Adjust this as needed
+        "count": cartcontroller.total_quantity.value,
+        "amount": totalAmount,
       },
-      "items": items // Add the dynamically generated items list
+      "items": items
     };
 
     try {
-      // Make the POST request
+
       final response = await http.post(
-        Uri.parse("https://grocery-dev.greendomains.in/api/order"),
+        Uri.parse(Api.Order),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token' // Add the token to the header
+          'Authorization': 'Bearer $token'
         },
         body: json.encode(body),
       );
@@ -158,13 +159,14 @@ class PaymentMethodController extends GetxController {
       // Check the response
       if (response.statusCode == 200) {
         print('Order placed successfully: ${response.body}');
-        // cartController.clearLocalCart();
+        cartController.clearLocalCart();
+GetStorage().remove('status');
         Get.offAll(() => CustomBottomNavBar());
         Get.snackbar(
-          'Order Success', // Title of the Snackbar
-          'Your order has been placed successfully!', // Message of the Snackbar
-          snackPosition: SnackPosition.BOTTOM, // Position of the Snackbar
-          duration: Duration(seconds: 1), // Duration to show the Snackbar
+          'Order Success',
+          'Your order has been placed successfully!',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 1),
         );
       } else {
         print('Failed to place order: ${response.statusCode} - ${response.body}');
@@ -173,6 +175,5 @@ class PaymentMethodController extends GetxController {
       print('Error: $e');
     }
   }
-
 
 }

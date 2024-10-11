@@ -11,8 +11,10 @@ import 'package:grocery/tst12.dart';
 import 'package:grocery/widgets/button/button.dart';
 
 import '../../data/apiClient/api.dart';
+import '../../data/models/register_model.dart';
 import '../../tstts.dart';
 import '../Cart/cart_controller.dart';
+import '../account/user_data.dart';
 import '../sign_up_screen/controller/signup_controller.dart';
 
 class OrderDetails extends StatelessWidget {
@@ -29,20 +31,25 @@ class OrderDetails extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFFEB1C23),
-        leading:  IconButton(
+        leading: IconButton(
           icon: Container(
-              height: 22.h,width: 26.w,
+              height: 22.h,
+              width: 26.w,
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(30.r)
-              ),
-              child: Center(child: Icon(Icons.arrow_back_ios_rounded,color:Color(0xFFEB1C23),size: 20.sp,))),
+                  borderRadius: BorderRadius.circular(30.r)),
+              child: Center(
+                  child: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Color(0xFFEB1C23),
+                size: 20.sp,
+              ))),
           onPressed: () {
             Get.back();
           },
         ),
-        title:  Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 70.w),
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 70.w),
           child: Text(
             'Order Details',
             style: TextStyle(
@@ -54,7 +61,6 @@ class OrderDetails extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        // Wrap Column in SingleChildScrollView
         child: Column(
           children: [
             Container(
@@ -68,79 +74,108 @@ class OrderDetails extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric( horizontal: 14.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 6.h),
-                    Text(
-                      Details().name,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.sp,
-                      ),
-                    ),
-                    Text(
-                      '+9699023784',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13.sp,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '24 United Arab Emirates 13 4 Mai Tower-\nOffice No 701 -\nالنهدة - دبي - United Arab Emirates',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 10.sp,
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              'Total Amount',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13.sp,
-                              ),
-                            ),
-                            if (cartController.isLoggedIn() &&
-                                cartController.getCartItems().isNotEmpty) ...[
-                              Obx(() {
-                                return Container(
-                                  decoration: BoxDecoration(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: token != null
+                    ? FutureBuilder<User?>(
+                        future: UserData().fetchUser(), // Fetch user data
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (snapshot.hasData) {
+                            final user = snapshot.data;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 6.h),
+                                Text(
+                                  user?.name??'Name',
+                                  style: TextStyle(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20.r),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.sp,
                                   ),
-                                  child: IntrinsicWidth(
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8.w),
-                                      child: Text(
-                                        "\$${cartController.total_amount.value}",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.sp,
-                                          color: Colors. black,
-                                        ),
+                                ),
+                                Text(
+                                  user?.mobileNo??'Ph no:',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13.sp,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '24 United Arab Emirates 13 4 Mai Tower-\nOffice No 701 -\nالنهدة - دبي - United Arab Emirates',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 10.sp,
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                            ]
-                          ],
+                                    Column(
+                                      children: [
+                                        Text(
+                                          'Total Amount',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13.sp,
+                                          ),
+                                        ),
+                                        if (cartController.isLoggedIn() &&
+                                            cartController
+                                                .getCartItems()
+                                                .isNotEmpty) ...[
+                                          Obx(() {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(20.r),
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8.w),
+                                                  child: Text(
+                                                    "\$${cartController.total_amount.value}",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.sp,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        ]
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Center(child: Text('No user data found.'));
+                          }
+                        },
+                      )
+                    : Center(
+                        child: Text(
+                          'Please login to access your account',
+                          style: TextStyle(
+                              fontSize: 18.sp, fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
               ),
             ),
             SizedBox(
@@ -386,22 +421,28 @@ class OrderDetails extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Button(
                         size: Size(80.w, 44.h),
                         color: Color(0xFFEB1C23),
-                        text: Text('Prev',style: TextStyle(color: Colors.white),),
+                        text: Text(
+                          'Prev',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         ontap: () {
                           Get.to(CartPage());
-                      },),
-                      SizedBox(width: 18.w,),
+                        },
+                      ),
+                      SizedBox(
+                        width: 18.w,
+                      ),
                       Button(
                         size: Size(80.w, 44.h),
                         color: Color(0xFFEB1C23),
-                        text: Text('Next', style: TextStyle(color: Colors.white)),
+                        text:
+                            Text('Next', style: TextStyle(color: Colors.white)),
                         ontap: () {
                           // List<dynamic> cartItems = cartController.getCartItems();
                           // if (cartItems.isNotEmpty) {
@@ -416,11 +457,13 @@ class OrderDetails extends StatelessWidget {
                           // }
 
                           // Navigate to DeliveryTimeSlots
-                          List<dynamic> cartItems = cartController.getCartItems();
-                          Get.to(DeliveryTimeSlots(cartItems: cartItems,));
+                          List<dynamic> cartItems =
+                              cartController.getCartItems();
+                          Get.to(DeliveryTimeSlots(
+                            cartItems: cartItems,
+                          ));
                         },
                       ),
-
                     ],
                   ),
                   SizedBox(

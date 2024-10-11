@@ -4,14 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
+import 'package:grocery/presentation/account/user_data.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/presentation/home_screen/page/home_page.dart';
 import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
 import 'package:grocery/presentation/sign_up_screen/controller/signup_controller.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../data/models/register_model.dart';
-import '../tst12.dart';
+
+import '../../data/models/register_model.dart';
+import '../../tst12.dart';
 
 class Account extends StatelessWidget {
   Account({super.key});
@@ -40,7 +43,7 @@ class Account extends StatelessWidget {
     final box = GetStorage();
     final token = box.read('access_token');
     final response = await http.post(
-      Uri.parse('https://grocery-dev.greendomains.in/api/logout'),
+      Uri.parse(Api.Logout),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -79,7 +82,16 @@ class Account extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         child: token != null
-            ?  Column(
+            ? FutureBuilder<User?>(
+          future: UserData().fetchUser(), // Fetch user data
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              final user = snapshot.data;
+              return Column(
                 children: [
                   Container(
                     height: 110.h,
@@ -114,14 +126,13 @@ class Account extends StatelessWidget {
                                 width: 10.w,
                               ),
                               Text(
-                                Details().name, // Displaying the user's name or placeholder
+                                user?.name ?? 'NAME', // Displaying the user's name or placeholder
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
-                              //Text(Details().mobileNo)
                             ],
                           ),
                         ],
@@ -189,7 +200,12 @@ class Account extends StatelessWidget {
                     },
                   ),
                 ],
-              )
+              );
+            } else {
+              return Center(child: Text('No user data found.'));
+            }
+          },
+        )
             : Center(
           child: Text(
             'Please login to access your account',

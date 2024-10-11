@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery/presentation/home_screen/controller/home_controller.dart';
 import 'package:grocery/widgets/drawer/cus_drawer.dart';
 
 import '../../presentation/Scanner/scanner_page.dart';
@@ -18,6 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.put(HomeController());
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Color(0xFFEB1C23),
@@ -47,12 +49,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/logo.png',width: 40.w,),
-                    Text('Grocery',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    homeController.fetchCategories();
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/logo.png',width: 40.w,),
+                      Text('Grocery',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -69,12 +76,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/laundry2.png',width: 40.w,),
-                    Text('Laundry',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
-                  ],
+                child: GestureDetector(onTap: () {
+                  homeController.fetchLaundry();
+                },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/laundry2.png',width: 40.w,),
+                      Text('Laundry',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                    ],
+                  ),
                 ),
               ),
               Container(

@@ -38,7 +38,7 @@ class LoginController extends GetxController {
           box.write('access_token', accessToken);
            print('Access Token: $accessToken');
           Get.snackbar('Success', 'Login successful');
-
+          GetStorage().write('status', '4');
           if (cartController.cartItems.isNotEmpty) {
             // Post each cart item after login
             for (var cartItem in cartController.cartItems) {

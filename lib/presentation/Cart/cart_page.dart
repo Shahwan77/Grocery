@@ -18,6 +18,7 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
     final token = GetStorage().read('access_token');
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,7 +34,7 @@ class CartPage extends StatelessWidget {
       ),
       body: FutureBuilder<void>(
         future:
-            cartController.fetchCartItems(token ?? ''), // Call the fetch method
+        cartController.fetchCartItems(token ?? ''), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -41,7 +42,7 @@ class CartPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return Obx(() {
-              // Use Obx to reactively update the UI with fetched items
+              // Check if fetched cart items are empty after fetching
               if (cartController.fetchedcartItems.isEmpty &&
                   cartController.cartItems.isEmpty) {
                 return Column(
@@ -49,7 +50,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                          Lottie.asset('assets/Animation - 1724233631425.json'),
+                      Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -64,24 +65,22 @@ class CartPage extends StatelessWidget {
                       text: Text(
                         'Start Shopping',
                         style: TextStyle(
-                            fontSize: 15.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white),
                       ),
                       ontap: () {
-                        // final BottomNavController bottomNavController = Get.find<BottomNavController>();
-                        // bottomNavController.updateIndex(0);
-                        // Get.offAll(CustomBottomNavBar());
+                        // Navigate to the shopping page or bottom nav
                       },
                     )
                   ],
                 );
               }
 
-              return Obx(() {
+              // Check if there are items in the cart
+              if (cartController.getCartItems().isNotEmpty) {
                 return SingleChildScrollView(
-                  physics:
-                      const AlwaysScrollableScrollPhysics(), // To allow scrolling and pull to refresh
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
                       ListView.builder(
@@ -111,7 +110,7 @@ class CartPage extends StatelessWidget {
                                       width: 100.w,
                                       decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(20.r),
+                                        BorderRadius.circular(20.r),
                                         color: Colors.white,
                                       ),
                                       child: Center(
@@ -157,7 +156,6 @@ class CartPage extends StatelessWidget {
                                             }
                                           },
                                         ),
-
                                       ),
                                     ),
                                   ],
@@ -166,7 +164,7 @@ class CartPage extends StatelessWidget {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         item['name'],
@@ -178,7 +176,7 @@ class CartPage extends StatelessWidget {
                                       Spacer(),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             item['price'],
@@ -248,7 +246,6 @@ class CartPage extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-
                                         ],
                                       ),
                                     ],
@@ -259,6 +256,7 @@ class CartPage extends StatelessWidget {
                           );
                         },
                       ),
+                      // Display total amount only if logged in and items exist in the cart
                       if (cartController.isLoggedIn() &&
                           cartController.getCartItems().isNotEmpty) ...[
                         Row(
@@ -280,29 +278,60 @@ class CartPage extends StatelessWidget {
                         ),
                         SizedBox(height: 6.h,),
                       ],
-                      Button(
-                        color:Color(0xFFEB1C23),
-                        size: Size(340.w, 45.h),
-                        text: Text(
-                          "Continue",
-                          style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                      // Show the Continue button if there are items in the cart
+                      if (cartController.getCartItems().isNotEmpty) ...[
+                        Button(
+                          color: Color(0xFFEB1C23),
+                          size: Size(340.w, 45.h),
+                          text: Text(
+                            "Continue",
+                            style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                          ),
+                          ontap: () async {
+                            if (!cartController.isLoggedIn()) {
+                              await Get.to(() => LoginPage());
+                            } else {
+                              await Get.to(OrderDetails());
+                            }
+                          },
                         ),
-                        ontap: () async {
-                          if (!cartController.isLoggedIn()) {
-                            await Get.to(() => LoginPage());
-                          } else {
-                            await Get.to(OrderDetails());
-                          }
-                        },
-                      ),
-
-                      SizedBox(
-                        height: 20.h,
-                      ),
+                      ],
+                      SizedBox(height: 20.h),
                     ],
                   ),
                 );
-              });
+              } else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child:
+                      Lottie.asset('assets/Animation - 1724233631425.json'),
+                    ),
+                    SizedBox(height: 20.h),
+                    Text(
+                      'Your Cart is empty!',
+                      style: TextStyle(
+                          fontSize: 20.sp, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(height: 20.h),
+                    Button(
+                      size: Size(164, 54),
+                      color: Color(0xFFEB1C23),
+                      text: Text(
+                        'Start Shopping',
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white),
+                      ),
+                      ontap: () {
+                        // Navigate to the shopping page or bottom nav
+                      },
+                    )
+                  ],
+                );// Return an empty message if there's no data
+              }
             });
           }
         },

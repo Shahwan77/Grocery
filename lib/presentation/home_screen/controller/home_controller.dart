@@ -9,7 +9,7 @@ class HomeController extends GetxController {
   var discountProducts = <Models>[].obs;
   var popularCategories = <Models>[].obs;
   var isLoading = true.obs;
-
+  var selectedIndex = 0.obs;
   final ApiService _apiService = ApiService();
 
   @override
@@ -30,6 +30,17 @@ class HomeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    selectedIndex.value=0;
+  } Future<void> fetchLaundry() async {
+    try {
+      final categoryList = await _apiService.fetchLaundryCategories();
+      categories.value = categoryList;
+    } catch (e) {
+      print('Error fetching categories: $e');
+    } finally {
+      isLoading.value = false;
+    }
+    selectedIndex.value=1;
   }
 
   Future<void> fetchPopularProducts() async {

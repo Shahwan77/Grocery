@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ Future<void> main() async {
         messagingSenderId: "923637485364",
         projectId: "grocery-4a4ff",)
   );
+  await FirebaseAppCheck.instance.activate();
   runApp(const MyApp());
 }
 

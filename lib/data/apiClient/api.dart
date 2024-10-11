@@ -2,7 +2,7 @@ class Api {
   static String BaseUrl = 'https://grocery-dev.greendomains.in';
   static String ApiUrl = '$BaseUrl/api';
   static String ImageUrl = '$BaseUrl/storage/images';
-  static String Category= '$ApiUrl/product-categories';
+  static String Category= '$ApiUrl/product-categories?type=grocery';
   static String Product= '$ApiUrl/products';
   static String CategoryProduct= '$ApiUrl/products?category_id';
   static String PopularProduct='$ApiUrl/products/popular';
@@ -12,4 +12,9 @@ class Api {
   static String CartPost = '$ApiUrl/cart';
   static String CartGet = '$ApiUrl/cart';
   static String CartRemove = '$ApiUrl/cart/remove';
+  static String Order = '$ApiUrl/order';
+  static String Logout = '$ApiUrl/logout';
+  static String User = '$ApiUrl/user';
+  static String Register = '$ApiUrl/register';
+  static String CategoryLaundry= '$ApiUrl/product-categories?type=laundry';
 }
