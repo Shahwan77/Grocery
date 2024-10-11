@@ -86,54 +86,56 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.h),
-              CusCarousel(),
+              // CusCarousel(),
               SizedBox(height: 10.h),
 
 
-              CategoriesPage(),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 40.w),
-                      child: Text(
-                        'ORDER YOUR CUSTOMIZED CAKE !!!',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18.sp,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: Container(
-                        height: 150.h,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          color: Colors.green,
-                          image: DecorationImage(
-                            image: AssetImage('assets/gro4.png'),
-                            fit: BoxFit.fill,
+              controller.isLaundrySelected.value
+                  ? CategoriesPage()  // Show Laundry-specific content
+                  : Column(
+                children: [
+                  CusCarousel(),
+                  SizedBox(height: 10.h),
+                  CategoriesPage(),  // General categories
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 40.w),
+                          child: Text(
+                            'ORDER YOUR CUSTOMIZED CAKE !!!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18.sp,
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(height: 10.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                          child: Container(
+                            height: 150.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.r),
+                              color: Colors.green,
+                              image: DecorationImage(
+                                image: AssetImage('assets/gro4.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  MostPopularPage(),
+                  PopularProductPage(),
+                  TopDiscountPage(),
+                ],
               ),
 
-              // Most Popular Section
-              MostPopularPage(),
-
-              // Popular Products Section
-              PopularProductPage(),
-
-              // Top Discount Products Section
-              TopDiscountPage(),
 
               SizedBox(height: 20.h),
             ],

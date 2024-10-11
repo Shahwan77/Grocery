@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../Cart/cart_controller.dart';
 import '../../Cart/cart_page.dart';
 import '../../Promotions/promotions_page.dart';
-import '../../Search/search_page.dart';
+import '../../Categories/categories_navbar.dart';
 import '../../account/account.dart';
 import '../../home_screen/page/home_page.dart';
 import '../controller/bottomnav_controller.dart';
@@ -13,7 +13,7 @@ import '../controller/bottomnav_controller.dart';
 class CustomBottomNavBar extends StatelessWidget {
   final List<Widget> pages = [
     HomePage(),
-    SearchPage(),
+    CategoriesNavbar(),
     PromotionsPage(),
     Account(),
     CartPage(),

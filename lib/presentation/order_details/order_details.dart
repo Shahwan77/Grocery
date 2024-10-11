@@ -258,13 +258,23 @@ class OrderDetails extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.r),
                                 color: Colors.white,
                               ),
-                              child: Center(
-                                child: Image.network(
+                              child:Center(
+                                child: item['image'] != null && item['image'].isNotEmpty
+                                    ? Image.network(
                                   '${Api.ImageUrl}/products/${item['image']}',
                                   width: 80.w,
                                   height: 80.h,
-                                  fit: BoxFit
-                                      .cover, // Ensure image fits within the container
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Icon(
+                                    Icons.hide_image_outlined,
+                                    size: 90.sp,
+                                    color: Colors.grey,
+                                  ),
+                                )
+                                    : Icon(
+                                  Icons.hide_image_outlined,
+                                  size: 50.sp,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),

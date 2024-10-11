@@ -20,6 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     HomeController homeController = Get.put(HomeController());
+
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Color(0xFFEB1C23),
@@ -35,12 +36,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              // Grocery Container
+              Obx(() => Container(
                 height: 64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.r),
-                  color: Colors.white,
+                  color: homeController.selectedIndex.value == 0
+                      ? Colors.white54
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
@@ -56,18 +60,31 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/logo.png',width: 40.w,),
-                      Text('Grocery',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                      Image.asset('assets/logo.png', width: 40.w),
+                      Text(
+                        'Grocery',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: homeController.selectedIndex.value == 0
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              Container(
+              )),
+
+              // Laundry Container
+              Obx(() => Container(
                 height: 64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                    color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: homeController.selectedIndex.value == 1
+                      ? Colors.white54
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
@@ -76,24 +93,38 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-                child: GestureDetector(onTap: () {
-                  homeController.fetchLaundry();
-                },
+                child: GestureDetector(
+                  onTap: () {
+                    homeController.fetchLaundry();
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/laundry2.png',width: 40.w,),
-                      Text('Laundry',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
+                      Image.asset('assets/laundry2.png', width: 40.w),
+                      Text(
+                        'Laundry',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: homeController.selectedIndex.value == 1
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              Container(
+              )),
+
+              // Offers Container
+              Obx(() => Container(
                 height: 64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                    color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: homeController.selectedIndex.value == 2
+                      ? Colors.white54
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
@@ -102,20 +133,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/offers2.png',width: 40.w,),
-                    Text('Offers',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),)
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle Offers tap if needed
+                    homeController.selectedIndex.value = 2;
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/offers2.png', width: 40.w),
+                      Text(
+                        'Offers',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: homeController.selectedIndex.value == 2
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
+              )),
+
+              // AJ Container
+              Obx(() => Container(
                 height: 64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                    color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: homeController.selectedIndex.value == 3
+                      ? Colors.white54
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
@@ -124,17 +174,32 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/aj3.png',width: 70.w,height: 50,),
-                    Padding(
-                      padding:  EdgeInsets.only(bottom: 6),
-                      child: Text('AJ',style: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w600),),
-                    )
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle AJ tap if needed
+                    homeController.selectedIndex.value = 3;
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/aj3.png', width: 70.w, height: 50),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 6),
+                        child: Text(
+                          'AJ',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: homeController.selectedIndex.value == 3
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              )),
             ],
           ),
         ],
@@ -145,6 +210,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
 }
+
 
 
 

@@ -10,6 +10,7 @@ class HomeController extends GetxController {
   var popularCategories = <Models>[].obs;
   var isLoading = true.obs;
   var selectedIndex = 0.obs;
+  var isLaundrySelected = false.obs;
   final ApiService _apiService = ApiService();
 
   @override
@@ -31,6 +32,7 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
     selectedIndex.value=0;
+    isLaundrySelected.value = false;
   } Future<void> fetchLaundry() async {
     try {
       final categoryList = await _apiService.fetchLaundryCategories();
@@ -41,6 +43,7 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
     selectedIndex.value=1;
+    isLaundrySelected.value = true;
   }
 
   Future<void> fetchPopularProducts() async {
@@ -84,5 +87,10 @@ class HomeController extends GetxController {
     await fetchPopularCategories();
     isLoading.value = false;
     await Future.delayed(Duration(seconds: 0));
+    if (selectedIndex.value == 1) {
+      fetchLaundry();
+    } else {
+      fetchCategories();
+    }
   }
 }
