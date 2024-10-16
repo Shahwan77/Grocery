@@ -12,7 +12,7 @@ class CartController extends GetxController {
   var products = <Map<String, dynamic>>[].obs;
   final BottomApiService apiService = BottomApiService();
   var total_amount = "0.00".obs;
-  var total_quantity="0".obs;
+  var total_quantity = "0".obs;
   final box = GetStorage();
 
   @override
@@ -22,7 +22,7 @@ class CartController extends GetxController {
     if (isLoggedIn()) {
       final token = box.read('access_token');
       if (token != null) {
-        fetchCartItems(token);
+        fetchCartItems(token, 'grocery');
       }
     }
   }
@@ -45,7 +45,6 @@ class CartController extends GetxController {
     printStoredItems();
   }
 
-
   int get uniqueItemCount => cartItems.length;
 
   int get itemCount =>
@@ -59,19 +58,22 @@ class CartController extends GetxController {
   void afterLogin() {
     final token = box.read('access_token');
     if (token != null) {
-      fetchCartItems(token);
+      fetchCartItems(token, 'grocery');
     }
   }
 
-  Future<void> toggleCart(int productId, String itemName, String itemPrice, String itemImage) async {
-    final isAlreadyInFetchedCart = fetchedcartItems.any((item) => item['product_id'] == productId);
+  Future<void> toggleCart(int productId, String itemName, String itemPrice,
+      String itemImage) async {
+    final isAlreadyInFetchedCart =
+        fetchedcartItems.any((item) => item['product_id'] == productId);
 
     if (isAlreadyInFetchedCart) {
       Get.snackbar('Info', '$itemName is already in the cart.');
       return;
     }
 
-    final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
+    final itemIndex =
+        cartItems.indexWhere((item) => item['product_id'] == productId);
 
     // Create a new cart item
     final newItem = {
@@ -82,7 +84,6 @@ class CartController extends GetxController {
       'quantity': 1,
     };
 
-
     if (itemIndex >= 0) {
       cartItems.removeAt(itemIndex);
     } else {
@@ -92,9 +93,10 @@ class CartController extends GetxController {
     final token = box.read('access_token');
     if (token != null) {
       // Post only the newly added item to the server
-      postCartItems(token, newItem).then((success) {
+      postCartItems(token, newItem, 'grocery').then((success) {
         if (success) {
-          fetchedcartItems.add(newItem); // Add item to fetched cart after posting
+          fetchedcartItems
+              .add(newItem); // Add item to fetched cart after posting
         } else {
           Get.snackbar('Error', 'Failed to update cart.');
         }
@@ -102,13 +104,12 @@ class CartController extends GetxController {
     } else {
       saveCartItems(); // Save locally if no token
     }
-
   }
-
 
   void updateQuantity(int productId, int change) {
     if (isLoggedIn()) {
-      final itemIndex = fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
+      final itemIndex = fetchedcartItems
+          .indexWhere((item) => item['product_id'] == productId);
       if (itemIndex >= 0) {
         fetchedcartItems[itemIndex]['quantity'] = change;
 
@@ -121,11 +122,12 @@ class CartController extends GetxController {
         saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
-          postCartItems(token,fetchedcartItems[itemIndex]);
+          postCartItems(token, fetchedcartItems[itemIndex], 'grocery');
         }
       }
     } else {
-      final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
+      final itemIndex =
+          cartItems.indexWhere((item) => item['product_id'] == productId);
       if (itemIndex >= 0) {
         cartItems[itemIndex]['quantity'] += change;
 
@@ -149,7 +151,6 @@ class CartController extends GetxController {
   //   // Show success message or navigate to a different page if needed
   //   Get.snackbar("Success", "Your order has been placed!");
   // }
-
 
   bool isInCart(int productId) {
     return cartItems.any((item) => item['product_id'] == productId);
@@ -207,12 +208,13 @@ class CartController extends GetxController {
       } catch (e) {
         print("Error removing item: $e");
       }
+      //removeItemLocally(productId);
     }
   }
 
   void removeItemLocally(int productId) {
     final itemIndex =
-    fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
+        fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
     if (itemIndex >= 0) {
       print("Deleted item from local cart: ${fetchedcartItems[itemIndex]}");
       fetchedcartItems.removeAt(itemIndex);
@@ -220,7 +222,7 @@ class CartController extends GetxController {
     }
 
     final localItemIndex =
-    cartItems.indexWhere((item) => item['product_id'] == productId);
+        cartItems.indexWhere((item) => item['product_id'] == productId);
     if (localItemIndex >= 0) {
       print("Deleted item from fetched cart: ${cartItems[itemIndex]}");
       cartItems.removeAt(localItemIndex);
@@ -245,50 +247,85 @@ class CartController extends GetxController {
     }
   }
 
-  Future<bool> postCartItems(String token, Map<String, dynamic> cartItem) async {
+  Future<bool> postCartItems(
+      String token, Map<String, dynamic> cartItem, String type) async {
+    GetStorage Box = GetStorage();
+    String Type = Box.read('selectedButton');
     try {
-      // Send the POST request to the API with a single cart item
+      // Create the dynamic body based on the cart type (grocery or laundry)
+      final body = {
+        'type': Type, // Type is directly passed from the function arguments
+        'items': Type == 'laundry'
+            ? [
+          {
+            'product_id': cartItem['product_id'],
+            'quantity': cartItem['quantity'],
+            'services': cartItem['services'] ?? [], // Services for laundry
+          }
+        ]
+            : [
+          {
+            'product_id': cartItem['product_id'],
+            'quantity': cartItem['quantity'],
+            // Add more fields if necessary for grocery items
+          }
+        ]
+      };
+
+      // Print debug information to verify the body content
+      print("Request Body: $body");
+
+      // Send the POST request to the API
       final response = await http.post(
-        Uri.parse(Api.CartPost),
+        Uri.parse(Api.CartPost), // Make sure Api.CartPost has the correct URL
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode([{
-          'product_id': cartItem['product_id'],
-          'quantity': cartItem['quantity'],
-        }]), // Post just the single cart item
+        body: jsonEncode(body), // Convert the body to JSON
       );
 
-      // Handle the server response
+      // Handle the response
       if (response.statusCode == 200) {
+        print(response.body);
         final data = jsonDecode(response.body);
 
         if (data['success']) {
           Get.snackbar('Success', data['message']);
-          // Optionally fetch the updated cart from server to sync local cart
-          await fetchCartItems(token);
+          // Fetch updated cart items after a successful post
+          await fetchCartItems(token, Type); // Pass the type (grocery or laundry)
           return true;
         } else {
-          Get.snackbar('Error', 'Failed to add items to cart');
+          Get.snackbar('Error', 'Failed to add items to cart: ${data['message']}');
           return false;
         }
       } else {
+        print('Error: ${response.statusCode} - ${response.reasonPhrase}');
         Get.snackbar('Error', 'Failed to post cart item: ${response.reasonPhrase}');
         return false;
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while posting cart item: $e');
+      print('Error occurred: $e');
+      Get.snackbar('Error', 'An error occurred while posting the cart item.');
       return false;
     }
   }
 
 
-
-  Future<void> fetchCartItems(String token) async {
+  Future<void> fetchCartItems(String token, String type) async {
+    GetStorage Box = GetStorage();
+    String Type = Box.read('selectedButton');
+    String uri
+    = Type == 'grocery'
+        ? Api.CartGetgrocery
+        : Type == 'laundry'
+            ? Api.CartGetlaundry
+            : Api.CartGetgrocery;
+    print(uri);
+    print(token);
     try {
       final response = await http.get(
-        Uri.parse(Api.CartGet),
+        Uri.parse(uri), // Use the type dynamically
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -309,14 +346,15 @@ class CartController extends GetxController {
           }
         }
       } else {
-        // Handle the error response
-        // Get.snackbar('Error', 'Failed to fetch cart items: ${response.reasonPhrase}');
+        // Get.snackbar(
+        //     'Error', 'Failed to fetch cart items: ${response.reasonPhrase}');
       }
     } catch (e) {
-      // Handle any exceptions
       // Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
     }
+    print(Box.read('selectedButton'));
   }
+
   int get localCartItemCount => cartItems.length;
 
   int get serverCartItemCount => fetchedcartItems.length;
@@ -331,6 +369,4 @@ class CartController extends GetxController {
     final accessToken = box.read('access_token');
     return accessToken != null && accessToken.isNotEmpty;
   }
-
-
 }

@@ -9,6 +9,7 @@ import 'package:grocery/presentation/Top%20Discount%20Products/top_discount_page
 import 'package:grocery/widgets/carousel/cus_carousel.dart';
 import 'package:get/get.dart';
 import '../../../widgets/app_bar/appbar.dart';
+import '../../Cart/cart_controller.dart';
 import '../../Scanner/scanner_page.dart';
 import '../controller/home_controller.dart';
 
@@ -18,6 +19,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController controller = Get.put(HomeController());
+    final CartController cartController = Get.put(CartController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -59,29 +61,6 @@ class HomePage extends StatelessWidget {
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
-                    // SizedBox(width: 10.w),
-                    // InkWell(
-                    //   onTap: () async {
-                    //     String? scannedData = await Get.to(() => ScannerPage());
-                    //     if (scannedData != null) {
-                    //       print("Scanned data: $scannedData");
-                    //       // Handle the scanned data here
-                    //     }
-                    //   },
-                    //   borderRadius: BorderRadius.circular(10.r),
-                    //   child: Container(
-                    //     height: 46.h,
-                    //     width: 48.w,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(10.r),
-                    //       color: Colors.grey.shade100,
-                    //     ),
-                    //     child: Icon(
-                    //       Icons.document_scanner_rounded,
-                    //       color: Colors.red,
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),

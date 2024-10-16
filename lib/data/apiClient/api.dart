@@ -10,7 +10,8 @@ class Api {
   static String PopularCategories='$ApiUrl/product-categories/popular';
   static String Login = '$ApiUrl/login';
   static String CartPost = '$ApiUrl/cart';
-  static String CartGet = '$ApiUrl/cart';
+  static String CartGetgrocery = '$ApiUrl/cart?type=grocery';
+  static String CartGetlaundry = '$ApiUrl/cart?type=laundry';
   static String CartRemove = '$ApiUrl/cart/remove';
   static String Order = '$ApiUrl/order';
   static String Logout = '$ApiUrl/logout';

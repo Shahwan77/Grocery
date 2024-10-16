@@ -15,10 +15,11 @@ import 'dart:convert';
 
 import '../../data/models/register_model.dart';
 import '../../tst12.dart';
+import '../Cart/cart_controller.dart';
 
 class Account extends StatelessWidget {
   Account({super.key});
-
+  final CartController cartController = Get.put(CartController());
   final List<String> account = [
     'Notification',
     'Add Address',
@@ -52,6 +53,7 @@ class Account extends StatelessWidget {
 
     if (response.statusCode == 200) {
       // Successfully logged out
+
       print(response.body);
       GetStorage().remove('access_token'); // Clear the token
       Get.snackbar('Logout', 'Successfully logged out', snackPosition: SnackPosition.BOTTOM);

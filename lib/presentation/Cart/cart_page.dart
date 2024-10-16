@@ -34,7 +34,7 @@ class CartPage extends StatelessWidget {
       ),
       body: FutureBuilder<void>(
         future:
-        cartController.fetchCartItems(token ?? ''), // Fetch the cart items
+        cartController.fetchCartItems(token ?? '', 'grocery'), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

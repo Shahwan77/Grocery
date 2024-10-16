@@ -156,7 +156,7 @@ class SignupController extends GetxController {
         if (cartController.cartItems.isNotEmpty) {
           // Post each cart item after login
           for (var cartItem in cartController.cartItems) {
-            await cartController.postCartItems(accessToken!, cartItem);
+            await cartController.postCartItems(accessToken!, cartItem, 'grocery');
           }
         }
 

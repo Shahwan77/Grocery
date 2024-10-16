@@ -7,6 +7,7 @@ class Category {
   final bool? popular;
   final bool isSubCategories;
   final List<dynamic> subCategory;
+  final String? type;
 
   Category({
     required this.id,
@@ -17,6 +18,7 @@ class Category {
     this.popular,
     required this.isSubCategories,
     required this.subCategory,
+    this.type,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) {
@@ -28,7 +30,8 @@ class Category {
       status: json['status'],
       popular: json['popular'] == 1, // Convert integer to bool
       isSubCategories: json['is_sub_categories'] == true,
-      subCategory: List<dynamic>.from(json['sub_category'] ?? []), // Handle null subCategory
+      subCategory: List<dynamic>.from(json['sub_category'] ?? []),
+      type: json['type'],
     );
   }
 }

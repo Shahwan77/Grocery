@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../../data/apiClient/api_service.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/models.dart';
+import '../../Cart/cart_controller.dart';
 
 class HomeController extends GetxController {
   var categories = <Category>[].obs;
@@ -12,6 +13,7 @@ class HomeController extends GetxController {
   var selectedIndex = 0.obs;
   var isLaundrySelected = false.obs;
   final ApiService _apiService = ApiService();
+  final CartController cartController = Get.put(CartController());
 
   @override
   void onInit() {
@@ -32,7 +34,9 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
     selectedIndex.value=0;
+
     isLaundrySelected.value = false;
+    //cartController.selectedType.value = 'grocery';
   } Future<void> fetchLaundry() async {
     try {
       final categoryList = await _apiService.fetchLaundryCategories();
@@ -44,6 +48,7 @@ class HomeController extends GetxController {
     }
     selectedIndex.value=1;
     isLaundrySelected.value = true;
+    //cartController.selectedType.value = 'laundry';
   }
 
   Future<void> fetchPopularProducts() async {

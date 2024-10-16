@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/home_screen/controller/home_controller.dart';
 import 'package:grocery/widgets/drawer/cus_drawer.dart';
 
+import '../../presentation/Cart/cart_controller.dart';
 import '../../presentation/Scanner/scanner_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -20,6 +22,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     HomeController homeController = Get.put(HomeController());
+    final CartController cartController = Get.put(CartController());
+    final box = GetStorage();
+
 
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle(
@@ -56,7 +61,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: GestureDetector(
                   onTap: () {
                     homeController.fetchCategories();
+                    box.write('selectedButton', 'grocery');
+                    String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
+                    print('Selected Button: $selectedButton'); // Print the value
                   },
+
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -96,6 +105,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: GestureDetector(
                   onTap: () {
                     homeController.fetchLaundry();
+                    box.write('selectedButton', 'laundry');
+                    String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
+                    print('Selected Button: $selectedButton');// Store value in local storage
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +147,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    // Handle Offers tap if needed
                     homeController.selectedIndex.value = 2;
                   },
                   child: Column(
@@ -176,7 +187,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    // Handle AJ tap if needed
                     homeController.selectedIndex.value = 3;
                   },
                   child: Column(
@@ -210,7 +220,3 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
 }
-
-
-
-
