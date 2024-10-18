@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../data/apiClient/api.dart';
 import '../../data/models/models.dart';
@@ -15,7 +16,7 @@ class DetailPage extends StatelessWidget {
   final ProductsController productController = Get.put(ProductsController());
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
-
+  GetStorage Box = GetStorage();
   DetailPage({required this.categoryId, required this.categoryName,});
 
   Future<List<Models>> _fetchSubcategories() async {
@@ -80,155 +81,232 @@ class DetailPage extends StatelessWidget {
                             return GridView.builder(
                               padding: EdgeInsets.all(8.0),
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
+                                crossAxisCount: 2,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 20.0,
-                                mainAxisExtent: 200,
+                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 300 : 200,
                               ),
                               itemCount: productController.productItems.length,
                               itemBuilder: (context, index) {
                                 final item = productController.productItems[index];
+                                List<String> selectedServices = [];
+
                                 return Column(
                                   children: [
                                     IntrinsicHeight(
-                                      child: Container(
-                                        width: 160.w,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(8.r),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 4.0,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Obx(() {
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        final itemData = {
-                                                          'name': item.name,
-                                                          'price': item.price,
-                                                          'image': item.image,
-                                                        };
-
-                                                        favoriteController.toggleFavorite(
-                                                          itemData['name']!,
-                                                          itemData['price']!,
-                                                          itemData['image']!,
-                                                        );
-
-                                                        Get.snackbar(
-                                                          favoriteController.isFavorite(itemData['name']!)
-                                                              ? 'Added to Favorites'
-                                                              : 'Removed from Favorites',
-                                                          '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                                          snackPosition: SnackPosition.BOTTOM,
-                                                        );
-                                                      },
-                                                      child: Icon(
-                                                        favoriteController.isFavorite(item.name)
-                                                            ? Icons.favorite
-                                                            : Icons.favorite_border,
-                                                        color: favoriteController.isFavorite(item.name)
-                                                            ? Color(0xFFEB1C23)
-                                                            : Colors.grey,
-                                                      ),
-                                                    );
-                                                  }),
-                                                  Icon(
-                                                    Icons.info_outline,
-                                                    color: Colors.green.shade800,
-                                                  ),
-                                                ],
+                                      child: IntrinsicWidth(
+                                        child: Container(
+                                          width: 160.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(8.r),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 4.0,
+                                                offset: Offset(0, 2),
                                               ),
-                                            ),
-                                            Center(
-                                              child: item.image.isNotEmpty
-                                                  ? Image.network(
-                                                '${Api.ImageUrl}/products/${item.image}',
-                                                fit: BoxFit.cover,
-                                                height: 80.h,
-                                                width: 80.w,
-                                                errorBuilder: (context, error, stackTrace) => Icon(
+                                            ],
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Obx(() {
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          final itemData = {
+                                                            'name': item.name,
+                                                            'price': item.price,
+                                                            'image': item.image,
+                                                          };
+
+                                                          favoriteController.toggleFavorite(
+                                                            itemData['name']!,
+                                                            itemData['price']!,
+                                                            itemData['image']!,
+                                                          );
+
+                                                          Get.snackbar(
+                                                            favoriteController.isFavorite(itemData['name']!)
+                                                                ? 'Added to Favorites'
+                                                                : 'Removed from Favorites',
+                                                            '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                          );
+                                                        },
+                                                        child: Icon(
+                                                          favoriteController.isFavorite(item.name)
+                                                              ? Icons.favorite
+                                                              : Icons.favorite_border,
+                                                          color: favoriteController.isFavorite(item.name)
+                                                              ? Color(0xFFEB1C23)
+                                                              : Colors.grey,
+                                                        ),
+                                                      );
+                                                    }),
+                                                    Icon(
+                                                      Icons.info_outline,
+                                                      color: Colors.green.shade800,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Box.read('selectedButton') == 'laundry'
+                                                  ? SingleChildScrollView(
+                                                    child: Padding(
+                                                      padding:  EdgeInsets.only(left: 10.w),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                      Expanded(
+                                                        child: Obx(() => Column(
+                                                          children: [
+                                                            Icon(Icons.dry_cleaning_outlined),
+                                                            Text('DRYCLEAN', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
+                                                            Checkbox(
+                                                              value: cartController.isCheckedList[0].value,
+                                                              onChanged: (value) {
+                                                                cartController.toggleCheckbox(index, value);
+                                                                if (value!) {
+                                                                  selectedServices.add('DRYCLEAN');
+                                                                } else {
+                                                                  selectedServices.remove('DRYCLEAN');
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        )),
+                                                      ),
+                                                      Expanded(
+                                                        child: Obx(() => Column(
+                                                          children: [
+                                                            Icon(Icons.wash_outlined),
+                                                            Text('WASH', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
+                                                            Checkbox(
+                                                              value: cartController.isCheckedList[1].value,
+                                                              onChanged: (value) {
+                                                                cartController.toggleCheckbox(1, value);
+                                                                if (value!) {
+                                                                  selectedServices.add('WASH');
+                                                                } else {
+                                                                  selectedServices.remove('WASH');
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        )),
+                                                      ),
+                                                      Expanded(
+                                                        child: Obx(() => Column(
+                                                          children: [
+                                                            Icon(Icons.iron_outlined),
+                                                            Text('IRON', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
+                                                            Checkbox(
+                                                              value: cartController.isCheckedList[2].value,
+                                                              onChanged: (value) {
+                                                                cartController.toggleCheckbox(2, value);
+                                                                if (value!) {
+                                                                  selectedServices.add('IRON');
+                                                                } else {
+                                                                  selectedServices.remove('IRON');
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        )),
+                                                      ),
+                                                                                                      ],
+                                                                                                    ),
+                                                    ),
+                                                  )
+                                                  : SizedBox.shrink(),
+                                              Center(
+                                                child: item.image.isNotEmpty
+                                                    ? Image.network(
+                                                  '${Api.ImageUrl}/products/${item.image}',
+                                                  fit: BoxFit.cover,
+                                                  height: 80.h,
+                                                  width: 80.w,
+                                                  errorBuilder: (context, error, stackTrace) => Icon(
+                                                    Icons.hide_image_outlined,
+                                                    size: 90.sp,
+                                                    color: Colors.grey,
+                                                  ),
+                                                )
+                                                    : Icon(
                                                   Icons.hide_image_outlined,
                                                   size: 90.sp,
                                                   color: Colors.grey,
                                                 ),
-                                              )
-                                                  : Icon(
-                                                Icons.hide_image_outlined,
-                                                size: 90.sp,
-                                                color: Colors.grey,
                                               ),
-                                            ),
-                                            Text(
-                                              item.name,
-                                              style: TextStyle(
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w700,
+                                              Text(
+                                                item.name,
+                                                style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              textAlign: TextAlign.center,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    item.price,
-                                                    style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                  Obx(() {
-                                                    final isInLocalCart = cartController.isInCart(item.id);
-                                                    final isInServerCart = cartController.fetchedcartItems
-                                                        .any((fetchedItem) => fetchedItem['product_id'] == item.id);
-
-                                                    final isInCart = isInLocalCart || isInServerCart;
-
-                                                    return GestureDetector(
-                                                      onTap: isInCart
-                                                          ? null // Disable the action if item is already in the cart
-                                                          : () {
-                                                        cartController.toggleCart(
-                                                          item.id,
-                                                          item.name,
-                                                          item.price,
-                                                          item.image,
-                                                        );
-
-                                                        Get.snackbar(
-                                                          cartController.isInCart(item.id)
-                                                              ? 'Added to Cart'
-                                                              : 'Removed from Cart',
-                                                          '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
-                                                          snackPosition: SnackPosition.TOP,
-                                                        );
-                                                      },
-                                                      child: Icon(
-                                                        isInCart
-                                                            ? Icons.shopping_cart // Show filled cart if item is in cart
-                                                            : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
-                                                        color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      item.price,
+                                                      style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        fontWeight: FontWeight.w700,
                                                       ),
-                                                    );
-                                                  }),
-                                                ],
+                                                    ),
+                                                    Obx(() {
+                                                      final isInLocalCart = cartController.isInCart(item.id);
+                                                      final isInServerCart = cartController.fetchedcartItems
+                                                          .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+
+                                                      final isInCart = isInLocalCart || isInServerCart;
+                                                      final isLaundry = Box.read('selectedButton') == 'laundry';
+                                                      return GestureDetector(
+                                                        onTap: (isInCart && !isLaundry)
+                                                            ? null // Disable the action if item is already in the cart
+                                                            : () {
+                                                          // print(selectedServices);
+                                                          // Pass the selected services along with item details
+                                                          cartController.toggleCart(
+                                                            item.id,
+                                                            item.name,
+                                                            item.price,
+                                                            item.image,
+                                                              selectedServices
+                                                             // Pass selected services here
+                                                          );
+
+                                                          Get.snackbar(
+                                                            cartController.isInCart(item.id) ? 'Added to Cart' : 'Removed from Cart',
+                                                            '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                          );
+                                                          selectedServices.clear();
+                                                          cartController.clearCheckboxes();
+                                                        },
+                                                        child: Icon(
+                                                          isInCart && !isLaundry
+                                                              ? Icons.shopping_cart
+                                                              : Icons.shopping_cart_outlined,
+                                                          color: isInCart && !isLaundry ? Color(0xFFEB1C23) : Colors.green.shade800,
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

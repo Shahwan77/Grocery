@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Delivery%20Time%20Slots/DeliveryTimeSection/Deliverytime_Section.dart';
 import 'package:grocery/presentation/Delivery%20Time%20Slots/PaymentSection/Payment_Section.dart';
-import 'package:grocery/presentation/order_details/order_details.dart';
+import 'package:grocery/presentation/Delivery%20Time%20Slots/DeliveryTimeSection/delivery_time_controller.dart';
+import 'package:grocery/presentation/Delivery%20Time%20Slots/deliverytime_slots_controller.dart';
 
-import '../../widgets/button/button.dart';
-import 'DeliveryTimeSection/delivery_time_controller.dart';
-import 'deliverytime_slots_controller.dart';
+import 'CollenctionTimeSection/Collectiontime_Section.dart';
+import 'CollenctionTimeSection/collection_time_controller.dart';
 
 class DeliveryTimeSlots extends StatelessWidget {
   final List<dynamic> cartItems;
@@ -20,6 +21,11 @@ class DeliveryTimeSlots extends StatelessWidget {
         Get.put(DeliveryTimeController());
     final DeliveryTimeSlotsController deliveryTimeSlotsController =
         Get.put(DeliveryTimeSlotsController());
+    final CollectionTimeController collectionTimeController =
+        Get.put(CollectionTimeController());
+
+    final GetStorage box = GetStorage();
+    final selectedButton = box.read('selectedButton');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -46,20 +52,46 @@ class DeliveryTimeSlots extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-        child: Obx(() {
-          deliveryTimeSlotsController.saveSelectedDeliveryTimeSlots();
-          if (deliveryTimeController.showPaymentSection.value) {
-            return PaymentSection(
-              cartItems: cartItems,
-              selectedDay: deliveryTimeController.selectedDay.value,
-              selectedTimeSlot: deliveryTimeController.selectedTimeSlot.value,
-            );
-          } else {
-            return DeliveryTimeSection(
-              cartItems: cartItems,
-            );
-          }
-        }),
+        child: selectedButton == 'laundry'
+            ? Obx(() {
+                deliveryTimeSlotsController.saveSelectedDeliveryTimeSlots();
+                if (deliveryTimeController.showPaymentSection.value) {
+                  return PaymentSection(
+                    cartItems: cartItems,
+                    selectedDay: deliveryTimeController.selectedDay.value,
+                    selectedTimeSlot:
+                        deliveryTimeController.selectedTimeSlot.value,
+                  );
+                } else if (collectionTimeController.showDeliverySection.value) {
+                  return DeliveryTimeSection(
+                    cartItems: cartItems,
+                    collectionDay: collectionTimeController.collectionDay.value,
+                    collectionTimeSlot:
+                        collectionTimeController.collectionTimeSlot.value,
+                  );
+                } else {
+                  return CollectionTimeSection(cartItems: cartItems);
+                  // Otherwise, show DeliveryTimeSection
+                }
+              })
+            : Obx(() {
+                deliveryTimeSlotsController.saveSelectedDeliveryTimeSlots();
+                if (deliveryTimeController.showPaymentSection.value) {
+                  return PaymentSection(
+                    cartItems: cartItems,
+                    selectedDay: deliveryTimeController.selectedDay.value,
+                    selectedTimeSlot:
+                        deliveryTimeController.selectedTimeSlot.value,
+                  );
+                } else {
+                  return DeliveryTimeSection(
+                    cartItems: cartItems,
+                    collectionDay: collectionTimeController.collectionDay.value,
+                    collectionTimeSlot:
+                        collectionTimeController.collectionTimeSlot.value,
+                  ); // Otherwise, show DeliveryTimeSection
+                }
+              }),
       ),
     );
   }

@@ -442,7 +442,7 @@ class OrderDetails extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         ontap: () {
-                          Get.to(CartPage());
+                          Get.back();
                         },
                       ),
                       SizedBox(

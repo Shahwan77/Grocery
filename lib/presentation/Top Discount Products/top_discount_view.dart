@@ -163,7 +163,7 @@ class TopDiscountView extends StatelessWidget {
                                         item.id, // Product ID
                                         item.name,
                                         item.price,
-                                        item.image,
+                                        item.image,[]
                                       );
 
                                       Get.snackbar(

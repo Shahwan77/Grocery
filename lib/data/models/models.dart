@@ -15,8 +15,8 @@ class Models {
   final int discount;
   final bool isSubCategories;
   final dynamic cart;
-  final List<Models>? subCategories; // Add this line for subcategories
-
+  final List<String>? service;
+  final List<Models>? subCategories; // List of subcategories
 
   Models({
     required this.id,
@@ -32,9 +32,9 @@ class Models {
     required this.popular,
     required this.discount,
     required this.isSubCategories,
+    this.service,
     this.cart,
     this.subCategories, // Add this line
-
   });
 
   factory Models.fromJson(Map<String, dynamic> json) {
@@ -53,8 +53,12 @@ class Models {
       discount: json['discount'] ?? 0,
       isSubCategories: json['is_sub_categories'] ?? false,
       cart: json['cart'],
-      subCategories: (json['sub_categories'] as List?)?.map((item) => Models.fromJson(item)).toList(), // Deserialize subcategories
-
+      subCategories: (json['sub_categories'] as List<dynamic>?)
+          ?.map((item) => Models.fromJson(item))
+          .toList() ?? [], // Handle null and provide an empty list
+      service: (json['service'] as List<dynamic>?)
+          ?.map((item) => item.toString())
+          .toList() ?? [], // Handle null and provide an empty list
     );
   }
 }

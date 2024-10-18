@@ -1,363 +1,556 @@
+// import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:get_storage/get_storage.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-//
+// import 'package:shimmer/shimmer.dart';
 // import '../../data/apiClient/api.dart';
-// import '../../data/apiClient/bottom_api_services.dart';
+// import '../../data/models/models.dart';
+// import '../Cart/cart_controller.dart';
+// import '../Products/products_controller.dart';
+// import '../favorite/fav_controller.dart';
+// import '../organic/organic_page.dart';
 //
-// class CartController extends GetxController {
-//   var cartItems = <Map<String, dynamic>>[].obs;
-//   var fetchedcartItems = <Map<String, dynamic>>[].obs;
-//   var products = <Map<String, dynamic>>[].obs;
-//   final BottomApiService apiService = BottomApiService();
-//   var total_amount = "0.00".obs;
-//   var total_quantity="0".obs;
-//   final box = GetStorage();
+// class DetailPage extends StatelessWidget {
+//   final String categoryId;
+//   final String categoryName;
+//   final ProductsController productController = Get.put(ProductsController());
+//   final CartController cartController = Get.put(CartController());
+//   final FavoriteController favoriteController = Get.put(FavoriteController());
+//   GetStorage Box = GetStorage();
+//
+//   DetailPage({required this.categoryId, required this.categoryName,});
+//
+//   Future<List<Models>> _fetchSubcategories() async {
+//     return await productController.fetchSubcategories(int.parse(categoryId));
+//   }
 //
 //   @override
-//   void onInit() {
-//     super.onInit();
-//     loadCartItems();
-//     if (isLoggedIn()) {
-//       final token = box.read('access_token');
-//       if (token != null) {
-//         fetchCartItems(token);
-//       }
-//     }
-//   }
-//
-//   void clearLocalCart() {
-//     cartItems.clear();
-//     box.remove('cartItems');
-//     printStoredItems();
-//   }
-//
-//   void loadCartItems() {
-//     final savedCart = box.read('cartItems');
-//     if (savedCart != null) {
-//       cartItems.assignAll(List<Map<String, dynamic>>.from(savedCart));
-//     }
-//   }
-//
-//   void saveCartItems() {
-//     box.write('cartItems', cartItems);
-//     printStoredItems();
-//   }
-//
-//
-//   int get uniqueItemCount => cartItems.length;
-//
-//   int get itemCount =>
-//       cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
-//
-//   Future<void> loadProducts() async {
-//     final fetchedProducts = await apiService.fetchProducts();
-//     products.assignAll(fetchedProducts);
-//   }
-//
-//   void afterLogin() {
-//     final token = box.read('access_token');
-//     if (token != null) {
-//       fetchCartItems(token);
-//     }
-//   }
-//
-//   Future<void> toggleCart(int productId, String itemName, String itemPrice, String itemImage) async {
-//     final isAlreadyInFetchedCart = fetchedcartItems.any((item) => item['product_id'] == productId);
-//
-//     if (isAlreadyInFetchedCart) {
-//       Get.snackbar('Info', '$itemName is already in the cart.');
-//       return;
-//     }
-//
-//     final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
-//
-//     // Create a new cart item
-//     final newItem = {
-//       'product_id': productId,
-//       'name': itemName,
-//       'price': itemPrice,
-//       'image': itemImage,
-//       'quantity': 1,
-//     };
-//
-//
-//     if (itemIndex >= 0) {
-//       cartItems.removeAt(itemIndex);
-//     } else {
-//       cartItems.add(newItem);
-//     }
-//
-//     final token = box.read('access_token');
-//     if (token != null) {
-//       // Post only the newly added item to the server
-//       postCartItems(token, newItem).then((success) {
-//         if (success) {
-//           fetchedcartItems.add(newItem); // Add item to fetched cart after posting
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<List<Models>>(
+//       future: _fetchSubcategories(), // Fetch subcategories here
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Center(child: CircularProgressIndicator());
+//         } else if (snapshot.hasError) {
+//           return Center(child: Text("Error: ${snapshot.error}"));
 //         } else {
-//           Get.snackbar('Error', 'Failed to update cart.');
+//           final subcategories = snapshot.data!;
+//           return DefaultTabController(
+//             length: subcategories.length + 1,
+//             child: Scaffold(
+//               appBar: AppBar(
+//                 leading: IconButton(
+//                   icon: Container(
+//                     height: 22.h,
+//                     width: 26.w,
+//                     decoration: BoxDecoration(
+//                       color: Colors.white,
+//                       borderRadius: BorderRadius.circular(30.r),
+//                     ),
+//                     child: Center(
+//                       child: Icon(
+//                         Icons.arrow_back_ios_rounded,
+//                         color: Color(0xFFEB1C23),
+//                         size: 20.sp,
+//                       ),
+//                     ),
+//                   ),
+//                   onPressed: () {
+//                     Get.back();
+//                   },
+//                 ),
+//                 iconTheme: IconThemeData(color: Colors.white),
+//                 title: Text(categoryName, style: TextStyle(color: Colors.white)),
+//                 backgroundColor: Color(0xFFEB1C23),
+//                 bottom: TabBar(
+//                   labelStyle: TextStyle(color: Colors.black),
+//                   isScrollable: true,
+//                   tabs: [
+//                     Tab(text: ""),
+//                     ...subcategories.map((subcategory) => Tab(text: subcategory.name)).toList(),
+//                   ],
+//                 ),
+//               ),
+//               backgroundColor: Colors.white,
+//               body: TabBarView(
+//                 children: [
+//                   FutureBuilder(
+//                     future: productController.fetchProducts(int.parse(categoryId)), // Fetch products based on categoryId
+//                     builder: (context, snapshot) {
+//                       if (snapshot.connectionState == ConnectionState.waiting) {
+//                         return Center(child: CircularProgressIndicator());
+//                       } else if (snapshot.hasError) {
+//                         return Center(child: Text("Error: ${snapshot.error}"));
+//                       } else {
+//                         return Obx(() {
+//                           if (productController.isLoading.value) {
+//                             return Center(child: CircularProgressIndicator());
+//                           } else if (productController.productItems.isEmpty) {
+//                             return Center(child: Text("No products found."));
+//                           } else {
+//                             return GridView.builder(
+//                               padding: EdgeInsets.all(8.0),
+//                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                                 crossAxisCount: 2,
+//                                 crossAxisSpacing: 10.0,
+//                                 mainAxisSpacing: 20.0,
+//                                 mainAxisExtent: 200,
+//                               ),
+//                               itemCount: productController.productItems.length,
+//                               itemBuilder: (context, index) {
+//                                 final item = productController.productItems[index];
+//
+//                                 // Initialize a list to store selected services
+//                                 List<String> selectedServices = [];
+//
+//                                 return Column(
+//                                   children: [
+//                                     IntrinsicHeight(
+//                                       child: IntrinsicWidth(
+//                                         child: Container(
+//                                           width: 160.w,
+//                                           decoration: BoxDecoration(
+//                                             color: Colors.white,
+//                                             borderRadius: BorderRadius.circular(8.r),
+//                                             boxShadow: [
+//                                               BoxShadow(
+//                                                 color: Colors.black26,
+//                                                 blurRadius: 4.0,
+//                                                 offset: Offset(0, 2),
+//                                               ),
+//                                             ],
+//                                           ),
+//                                           child: Column(
+//                                             children: [
+//                                               Padding(
+//                                                 padding: const EdgeInsets.all(8.0),
+//                                                 child: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                                   children: [
+//                                                     Obx(() {
+//                                                       return GestureDetector(
+//                                                         onTap: () {
+//                                                           final itemData = {
+//                                                             'name': item.name,
+//                                                             'price': item.price,
+//                                                             'image': item.image,
+//                                                           };
+//
+//                                                           favoriteController.toggleFavorite(
+//                                                             itemData['name']!,
+//                                                             itemData['price']!,
+//                                                             itemData['image']!,
+//                                                           );
+//
+//                                                           Get.snackbar(
+//                                                             favoriteController.isFavorite(itemData['name']!)
+//                                                                 ? 'Added to Favorites'
+//                                                                 : 'Removed from Favorites',
+//                                                             '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+//                                                             snackPosition: SnackPosition.BOTTOM,
+//                                                           );
+//                                                         },
+//                                                         child: Icon(
+//                                                           favoriteController.isFavorite(item.name)
+//                                                               ? Icons.favorite
+//                                                               : Icons.favorite_border,
+//                                                           color: favoriteController.isFavorite(item.name)
+//                                                               ? Color(0xFFEB1C23)
+//                                                               : Colors.grey,
+//                                                         ),
+//                                                       );
+//                                                     }),
+//                                                     Icon(
+//                                                       Icons.info_outline,
+//                                                       color: Colors.green.shade800,
+//                                                     ),
+//                                                   ],
+//                                                 ),
+//                                               ),
+//                                               Box.read('selectedButton') == 'laundry'
+//                                                   ? Row(
+//                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                                 children: [
+//                                                   Obx(() => Column(
+//                                                     children: [
+//                                                       Icon(Icons.dry_cleaning_outlined),
+//                                                       Text('DRYCLEAN', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                       Checkbox(
+//                                                         value: cartController.isCheckedList[0].value,
+//                                                         onChanged: (value) {
+//                                                           cartController.toggleCheckbox(0, value);
+//                                                           if (value!) {
+//                                                             selectedServices.add('DRYCLEAN');
+//                                                           } else {
+//                                                             selectedServices.remove('DRYCLEAN');
+//                                                           }
+//                                                         },
+//                                                       ),
+//                                                     ],
+//                                                   )),
+//                                                   Obx(() => Column(
+//                                                     children: [
+//                                                       Icon(Icons.wash_outlined),
+//                                                       Text('WASH', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                       Checkbox(
+//                                                         value: cartController.isCheckedList[1].value,
+//                                                         onChanged: (value) {
+//                                                           cartController.toggleCheckbox(1, value);
+//                                                           if (value!) {
+//                                                             selectedServices.add('WASH');
+//                                                           } else {
+//                                                             selectedServices.remove('WASH');
+//                                                           }
+//                                                         },
+//                                                       ),
+//                                                     ],
+//                                                   )),
+//                                                   Obx(() => Column(
+//                                                     children: [
+//                                                       Icon(Icons.iron_outlined),
+//                                                       Text('IRON', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                       Checkbox(
+//                                                         value: cartController.isCheckedList[2].value,
+//                                                         onChanged: (value) {
+//                                                           cartController.toggleCheckbox(2, value);
+//                                                           if (value!) {
+//                                                             selectedServices.add('IRON');
+//                                                           } else {
+//                                                             selectedServices.remove('IRON');
+//                                                           }
+//                                                         },
+//                                                       ),
+//                                                     ],
+//                                                   )),
+//                                                 ],
+//                                               )
+//                                                   : SizedBox.shrink(),
+//                                               Center(
+//                                                 child: item.image.isNotEmpty
+//                                                     ? Image.network(
+//                                                   '${Api.ImageUrl}/products/${item.image}',
+//                                                   fit: BoxFit.cover,
+//                                                   height: 80.h,
+//                                                   width: 80.w,
+//                                                   errorBuilder: (context, error, stackTrace) =>
+//                                                       Icon(Icons.hide_image_outlined, size: 90.sp, color: Colors.grey),
+//                                                 )
+//                                                     : Icon(Icons.hide_image_outlined, size: 90.sp, color: Colors.grey),
+//                                               ),
+//                                               Text(
+//                                                 item.name,
+//                                                 style: TextStyle(
+//                                                   fontSize: 12.sp,
+//                                                   fontWeight: FontWeight.w700,
+//                                                 ),
+//                                                 textAlign: TextAlign.center,
+//                                                 overflow: TextOverflow.ellipsis,
+//                                               ),
+//                                               Padding(
+//                                                 padding: const EdgeInsets.all(8.0),
+//                                                 child: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                                   children: [
+//                                                     Text(
+//                                                       item.price,
+//                                                       style: TextStyle(
+//                                                         fontSize: 12.sp,
+//                                                         fontWeight: FontWeight.w700,
+//                                                       ),
+//                                                     ),
+//                                                     Obx(() {
+//                                                       final isInLocalCart = cartController.isInCart(item.id);
+//                                                       final isInServerCart = cartController.fetchedcartItems
+//                                                           .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+//
+//                                                       final isInCart = isInLocalCart || isInServerCart;
+//
+//                                                       return GestureDetector(
+//                                                         onTap: isInCart
+//                                                             ? null // Disable the action if item is already in the cart
+//                                                             : () {
+//                                                           // Pass the selected services along with item details
+//                                                           cartController.toggleCart(
+//                                                             item.id,
+//                                                             item.name,
+//                                                             item.price,
+//                                                             item.image,
+//                                                             selectedServices, // Pass selected services here
+//                                                           );
+//
+//                                                           Get.snackbar(
+//                                                             cartController.isInCart(item.id) ? 'Added to Cart' : 'Removed from Cart',
+//                                                             '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+//                                                             snackPosition: SnackPosition.BOTTOM,
+//                                                           );
+//                                                         },
+//                                                         child: Icon(
+//                                                           isInCart
+//                                                               ? Icons.remove_shopping_cart_outlined
+//                                                               : Icons.add_shopping_cart_outlined,
+//                                                           color: isInCart ? Color(0xFFEB1C23) : Colors.green.shade800,
+//                                                         ),
+//                                                       );
+//                                                     }),
+//                                                   ],
+//                                                 ),
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 );
+//                               },
+//                             );
+//                           }
+//                         });
+//                       }
+//                     },
+//                   ),
+//                   for (var subcategory in subcategories)
+//                     FutureBuilder(
+//                       future: productController.fetchProducts(subcategory.id), // Fetch products based on subcategory
+//                       builder: (context, snapshot) {
+//                         if (snapshot.connectionState == ConnectionState.waiting) {
+//                           return Center(child: CircularProgressIndicator());
+//                         } else if (snapshot.hasError) {
+//                           return Center(child: Text("Error: ${snapshot.error}"));
+//                         } else {
+//                           return Obx(() {
+//                             if (productController.isLoading.value) {
+//                               return Center(child: CircularProgressIndicator());
+//                             } else if (productController.productItems.isEmpty) {
+//                               return Center(child: Text("No products found."));
+//                             } else {
+//                               return GridView.builder(
+//                                 padding: EdgeInsets.all(8.0),
+//                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                                   crossAxisCount: 2,
+//                                   crossAxisSpacing: 10.0,
+//                                   mainAxisSpacing: 20.0,
+//                                   mainAxisExtent: 200,
+//                                 ),
+//                                 itemCount: productController.productItems.length,
+//                                 itemBuilder: (context, index) {
+//                                   final item = productController.productItems[index];
+//
+//                                   // Initialize a list to store selected services
+//                                   List<String> selectedServices = [];
+//
+//                                   return Column(
+//                                     children: [
+//                                   IntrinsicHeight(
+//                                   child: IntrinsicWidth(
+//                                   child: Container(
+//                                     width: 160.w,
+//                                     decoration: BoxDecoration(
+//                                       color: Colors.white,
+//                                       borderRadius: BorderRadius.circular(8.r),
+//                                       boxShadow: [
+//                                         BoxShadow(
+//                                           color: Colors.black26,
+//                                           blurRadius: 4.0,
+//                                           offset: Offset(0, 2),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                     child: Column(
+//                                       children: [
+//                                         Padding(
+//                                           padding: const EdgeInsets.all(8.0),
+//                                           child: Row(
+//                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                             children: [
+//                                               Obx(() {
+//                                                 return GestureDetector(
+//                                                   onTap: () {
+//                                                     final itemData = {
+//                                                       'name': item.name,
+//                                                       'price': item.price,
+//                                                       'image': item.image,
+//                                                     };
+//
+//                                                     favoriteController.toggleFavorite(
+//                                                       itemData['name']!,
+//                                                       itemData['price']!,
+//                                                       itemData['image']!,
+//                                                     );
+//
+//                                                     Get.snackbar(
+//                                                       favoriteController.isFavorite(itemData['name']!)
+//                                                           ? 'Added to Favorites'
+//                                                           : 'Removed from Favorites',
+//                                                       '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+//                                                       snackPosition: SnackPosition.BOTTOM,
+//                                                     );
+//                                                   },
+//                                                   child: Icon(
+//                                                     favoriteController.isFavorite(item.name)
+//                                                         ? Icons.favorite
+//                                                         : Icons.favorite_border,
+//                                                     color: favoriteController.isFavorite(item.name)
+//                                                         ? Color(0xFFEB1C23)
+//                                                         : Colors.grey,
+//                                                   ),
+//                                                 );
+//                                               }),
+//                                               Icon(
+//                                                 Icons.info_outline,
+//                                                 color: Colors.green.shade800,
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         ),
+//                                         Box.read('selectedButton') == 'laundry'
+//                                             ? Row(
+//                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                           children: [
+//                                             Obx(() => Column(
+//                                               children: [
+//                                                 Icon(Icons.dry_cleaning_outlined),
+//                                                 Text('DRYCLEAN', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                 Checkbox(
+//                                                   value: cartController.isCheckedList[0].value,
+//                                                   onChanged: (value) {
+//                                                     cartController.toggleCheckbox(0, value);
+//                                                     if (value!) {
+//                                                       selectedServices.add('DRYCLEAN');
+//                                                     } else {
+//                                                       selectedServices.remove('DRYCLEAN');
+//                                                     }
+//                                                   },
+//                                                 ),
+//                                               ],
+//                                             )),
+//                                             Obx(() => Column(
+//                                               children: [
+//                                                 Icon(Icons.wash_outlined),
+//                                                 Text('WASH', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                 Checkbox(
+//                                                   value: cartController.isCheckedList[1].value,
+//                                                   onChanged: (value) {
+//                                                     cartController.toggleCheckbox(1, value);
+//                                                     if (value!) {
+//                                                       selectedServices.add('WASH');
+//                                                     } else {
+//                                                       selectedServices.remove('WASH');
+//                                                     }
+//                                                   },
+//                                                 ),
+//                                               ],
+//                                             )),
+//                                             Obx(() => Column(
+//                                               children: [
+//                                                 Icon(Icons.iron_outlined),
+//                                                 Text('IRON', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700)),
+//                                                 Checkbox(
+//                                                   value: cartController.isCheckedList[2].value,
+//                                                   onChanged: (value) {
+//                                                     cartController.toggleCheckbox(2, value);
+//                                                     if (value!) {
+//                                                       selectedServices.add('IRON');
+//                                                     } else {
+//                                                       selectedServices.remove('IRON');
+//                                                     }
+//                                                   },
+//                                                 ),
+//                                               ],
+//                                             )),
+//                                           ],
+//                                         )
+//                                             : SizedBox.shrink(),
+//                                         Center(
+//                                           child: item.image.isNotEmpty
+//                                               ? Image.network(
+//                                             '${Api.ImageUrl}/products/${item.image}',
+//                                             fit: BoxFit.cover,
+//                                             height: 80.h,
+//                                             width: 80.w,
+//                                             errorBuilder: (context, error, stackTrace) =>
+//                                                 Icon(Icons.hide_image_outlined, size: 90.sp, color: Colors.grey),
+//                                           )
+//                                               : Icon(Icons.hide_image_outlined, size: 90.sp, color: Colors.grey),
+//                                         ),
+//                                         Text(
+//                                           item.name,
+//                                           style: TextStyle(
+//                                             fontSize: 12.sp,
+//                                             fontWeight: FontWeight.w700,
+//                                           ),
+//                                           textAlign: TextAlign.center,
+//                                           overflow: TextOverflow.ellipsis,
+//                                         ),
+//                                         Padding(
+//                                           padding: const EdgeInsets.all(8.0),
+//                                           child: Row(
+//                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                             children: [
+//                                               Text(
+//                                                 item.price,
+//                                                 style: TextStyle(
+//                                                   fontSize: 12.sp,
+//                                                   fontWeight: FontWeight.w700,
+//                                                 ),
+//                                               ),
+//                                               Obx(() {
+//                                                 final isInLocalCart = cartController.isInCart(item.id);
+//                                                 final isInServerCart = cartController.fetchedcartItems
+//                                                     .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+//
+//                                                 final isInCart = isInLocalCart || isInServerCart;
+//
+//                                                 return GestureDetector(
+//                                                   onTap: isInCart
+//                                                       ? null // Disable the action if item is already in the cart
+//                                                       : () {
+//                                                     // Pass the selected services along with item details
+//                                                     cartController.toggleCart(
+//                                                       item.id,
+//                                                       item.name,
+//                                                       item.price,
+//                                                       item.image,
+//                                                       selectedServices, // Pass selected services here
+//                                                     );
+//
+//                                                     Get.snackbar(
+//                                                       cartController.isInCart(item.id) ? 'Added to Cart' : 'Removed from Cart',
+//                                                       '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+//                                                       snackPosition: SnackPosition.BOTTOM,
+//                                                     );
+//                                                   },
+//                                                   child: Icon(
+//                                                     isInCart
+//                                                         ? Icons.remove_shopping_cart_outlined
+//                                                         : Icons.add_shopping_cart_outlined,
+//                                                     color: isInCart ? Color(0xFFEB1C23) : Colors.green.shade800,
+//                                                   ),
+//                                                 );
+//                                               }),
+//                                             ],
+//                                           ),
+//                                         ),
+//                                       ],
+//                                       ],
+//                                     ),
+//                                   ),
+//                                   ),
+//                                   ],
+//                                   );
+//                                 },
+//                               );
+//                             }
+//                           });
+//                         }
+//                       },
+//                     ),
+//                 ],
+//               ),
+//             ),
+//           );
 //         }
-//       });
-//     } else {
-//       saveCartItems(); // Save locally if no token
-//     }
-//
+//       },
+//     );
 //   }
-//
-//
-//   void updateQuantity(int productId, int change) {
-//     if (isLoggedIn()) {
-//       final itemIndex = fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
-//       if (itemIndex >= 0) {
-//         fetchedcartItems[itemIndex]['quantity'] = change;
-//
-//         // Remove the item if quantity becomes zero or less
-//         // if (fetchedcartItems[itemIndex]['quantity'] <= 0) {
-//         //   fetchedcartItems.removeAt(itemIndex);
-//         // } else {
-//         //   fetchedcartItems.refresh();
-//         // }
-//         saveCartItems();
-//         final token = box.read('access_token');
-//         if (token != null) {
-//           postCartItems(token,fetchedcartItems[itemIndex]);
-//         }
-//       }
-//     } else {
-//       final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
-//       if (itemIndex >= 0) {
-//         cartItems[itemIndex]['quantity'] += change;
-//
-//         // Remove the item if quantity becomes zero or less
-//         if (cartItems[itemIndex]['quantity'] <= 0) {
-//           cartItems.removeAt(itemIndex);
-//         } else {
-//           cartItems.refresh();
-//         }
-//         saveCartItems();
-//       }
-//     }
-//   }
-//
-//   // Future<void> placeOrder() async {
-//   //   // Logic to place the order...
-//   //   // Assume order is placed successfully
-//   //
-//   //   // After successful order placement
-//   //   clearLocalCart(); // Clear the cart
-//   //   // Show success message or navigate to a different page if needed
-//   //   Get.snackbar("Success", "Your order has been placed!");
-//   // }
-//
-//
-//   bool isInCart(int productId) {
-//     return cartItems.any((item) => item['product_id'] == productId);
-//   }
-//
-//   List<Map<String, dynamic>> getCartItems() {
-//     if (GetStorage().read('access_token') == null) {
-//       return cartItems;
-//     } else {
-//       return fetchedcartItems;
-//     }
-//   }
-//
-//   // void posticonCartItems(
-//   //     int productId, String itemName, String itemPrice, String itemImage) {
-//   //   final token = box.read('access_token');
-//   //
-//   //   if (token == null) {
-//   //     toggleCart(productId, itemName, itemPrice, itemImage);
-//   //   } else {
-//   //     postCartItems(token);
-//   //   }
-//   // }
-//
-//   Future<void> removeItemFromCart(int productId) async {
-//     final token = box.read('access_token');
-//     if (token != null) {
-//       try {
-//         final response = await http.post(
-//           Uri.parse(Api.CartRemove),
-//           headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer $token',
-//           },
-//           body: jsonEncode({
-//             "product_id": productId,
-//           }),
-//         );
-//
-//         if (response.statusCode == 200) {
-//           final data = jsonDecode(response.body);
-//           if (data['success']) {
-//             print(data['message']);
-//             removeItemLocally(productId);
-//             int currentQuantity = int.tryParse(total_quantity.value) ?? 0;
-//             if (currentQuantity > 0) {
-//               total_quantity.value = (currentQuantity - 1).toString();
-//             }
-//           } else {
-//             print("Failed to remove item from cart: ${data['message']}");
-//           }
-//         } else {
-//           print("Failed to remove item. Status code: ${response.statusCode}");
-//         }
-//       } catch (e) {
-//         print("Error removing item: $e");
-//       }
-//     }else{
-//       removeItemLocally(productId);
-//     }
-//   }
-//
-//   void removeItemLocally(int productId) {
-//     final itemIndex =
-//     fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
-//     if (itemIndex >= 0) {
-//       print("Deleted item from local cart: ${fetchedcartItems[itemIndex]}");
-//       fetchedcartItems.removeAt(itemIndex);
-//       fetchedcartItems.refresh();
-//     }
-//
-//     final localItemIndex =
-//     cartItems.indexWhere((item) => item['product_id'] == productId);
-//     if (localItemIndex >= 0) {
-//       print("Deleted item from fetched cart: ${cartItems[itemIndex]}");
-//       cartItems.removeAt(localItemIndex);
-//       saveCartItems();
-//     }
-//   }
-//
-//   void removeFromCart(String itemName, String itemPrice, String itemImage) {
-//     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
-//     if (itemIndex >= 0) {
-//       cartItems.removeAt(itemIndex);
-//       saveCartItems();
-//     }
-//   }
-//
-//   void printStoredItems() {
-//     final storedItems = box.read('cartItems');
-//     if (storedItems != null && storedItems.isNotEmpty) {
-//       print('Stored Cart Items: $storedItems');
-//     } else {
-//       print('No items found in local storage.');
-//     }
-//   }
-//
-//   Future<bool> postCartItems(String token, Map<String, dynamic> cartItem) async {
-//     String selectedButton = box.read('selectedButton') ?? 'grocery';
-//     try {
-//       Map<String, dynamic> body = {
-//         'type': selectedButton, // Use the selected type
-//         'items': [], // Initialize items as an empty list
-//       };
-//       print('Cart Items Before Posting: $cartItems');
-//
-//       for (var item in cartItems) {
-//         if (selectedButton == 'grocery') {
-//           // For grocery, only include product_id and quantity
-//           body['items'].add({
-//             'product_id': item['product_id'],
-//             'quantity': item['quantity'],
-//           });
-//         } else if (selectedButton == 'laundry') {
-//           // For laundry, include product_id, quantity, and services
-//           body['items'].add({
-//             'product_id': item['product_id'],
-//             'quantity': item['quantity'],
-//             'services':'wash', // Ensure services are included
-//           });
-//         }
-//       }
-//       print('Body to be Posted: $body');
-//       // Send the POST request to the API with a single cart item
-//       final response = await http.post(
-//         Uri.parse(Api.CartPost),
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//         body: jsonEncode(body),
-//       );
-//
-//
-//       // Handle the server response
-//       if (response.statusCode == 200) {
-//         print(response.body);
-//         // print(response.request);
-//         final data = jsonDecode(response.body);
-//
-//         if (data['success']) {
-//           print('Posted Data: $body');
-//           Get.snackbar('Success', data['message']);
-//           // Optionally fetch the updated cart from server to sync local cart
-//           await fetchCartItems(token);
-//           return true;
-//         } else {
-//           Get.snackbar('Error', 'Failed to add items to cart');
-//           return false;
-//         }
-//       } else {
-//         Get.snackbar('Error', 'Failed to post cart item: ${response.reasonPhrase}');
-//         return false;
-//       }
-//     } catch (e) {
-//       Get.snackbar('Error', 'An error occurred while posting cart item: $e');
-//       return false;
-//     }
-//   }
-//
-//
-//   Future<void> fetchCartItems(String token) async {
-//     String selectedButton = box.read('selectedButton') ?? 'grocery';
-//     try {
-//       final response = await http.get(
-//         Uri.parse("https://grocery-dev.greendomains.in/api/cart?type=$selectedButton"),
-//         headers: {
-//           'Authorization': 'Bearer $token',
-//         },
-//       );
-//
-//       if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//
-//         if (data['success'] == true && data['data'] != null) {
-//           final items = data['data']['items'];
-//           if (items != null) {
-//             fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
-//
-//             total_amount.value = data['data']['total_amount'];
-//             total_quantity.value = data['data']['total_quantity'].toString();
-//             print('Fetched Cart Items: ${fetchedcartItems.toList()}');
-//             print('Total Amount: ${total_amount.value}');
-//           }
-//         }
-//       } else {
-//         // Handle the error response
-//         // Get.snackbar('Error', 'Failed to fetch cart items: ${response.reasonPhrase}');
-//       }
-//     } catch (e) {
-//       // Handle any exceptions
-//       // Get.snackbar('Error', 'An error occurred while fetching cart items: $e');
-//     }
-//   }
-//   int get localCartItemCount => cartItems.length;
-//
-//   int get serverCartItemCount => fetchedcartItems.length;
-//
-//   int get localItemCount =>
-//       cartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
-//
-//   int get serverItemCount =>
-//       fetchedcartItems.fold(0, (sum, item) => sum + (item['quantity'] as int));
-//
-//   bool isLoggedIn() {
-//     final accessToken = box.read('access_token');
-//     return accessToken != null && accessToken.isNotEmpty;
-//   }
-//
-//
 // }

@@ -57,6 +57,7 @@ class Account extends StatelessWidget {
       print(response.body);
       GetStorage().remove('access_token'); // Clear the token
       Get.snackbar('Logout', 'Successfully logged out', snackPosition: SnackPosition.BOTTOM);
+      cartController.clearLocalCart();
       Get.offAll(CustomBottomNavBar()); // Navigate to login screen (change to your login route)
     } else {
       // Handle error

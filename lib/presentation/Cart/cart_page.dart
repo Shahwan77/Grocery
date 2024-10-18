@@ -14,6 +14,7 @@ import '../bottomnav/controller/bottomnav_controller.dart';
 import 'cart_controller.dart';
 
 class CartPage extends StatelessWidget {
+  GetStorage Box = GetStorage();
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
@@ -33,8 +34,8 @@ class CartPage extends StatelessWidget {
         backgroundColor: Color(0xFFEB1C23),
       ),
       body: FutureBuilder<void>(
-        future:
-        cartController.fetchCartItems(token ?? '', 'grocery'), // Fetch the cart items
+        future: cartController.fetchCartItems(
+            token ?? '', 'grocery'), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -50,7 +51,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                      Lottie.asset('assets/Animation - 1724233631425.json'),
+                          Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -91,179 +92,206 @@ class CartPage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final item = cartController.getCartItems()[index];
                           final int productId = item['product_id'];
-                          return Container(
-                            height: 114.h,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8.h, horizontal: 10.w),
-                            padding: EdgeInsets.all(12.w),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      height: 100.h,
-                                      width: 100.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(20.r),
-                                        color: Colors.white,
-                                      ),
-                                      child:Center(
-                                        child: item['image'] != null && item['image'].isNotEmpty
-                                            ? Image.network(
-                                          '${Api.ImageUrl}/products/${item['image']}',
-                                          width: 80.w,
-                                          height: 80.h,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Icon(
-                                            Icons.hide_image_outlined,
-                                            size: 90.sp,
-                                            color: Colors.grey,
-                                          ),
-                                        )
-                                            : Icon(
-                                          Icons.hide_image_outlined,
-                                          size: 60.sp,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 70.h,
-                                      right: 34.w,
-                                      left: 35,
-                                      child: Container(
-                                        height: 30.h,
-                                        width: 34.w,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          borderRadius: BorderRadius.only(
-                                            bottomRight: Radius.circular(14.r),
-                                            bottomLeft: Radius.circular(14.r),
-                                          ),
-                                        ),
-                                        child: IconButton(
-                                          icon: Image.asset(
-                                            'assets/dlt.png',
-                                            width: 20.w,
-                                            height: 20.h,
-                                            color: Color(0xFFEB1C23),
-                                          ),
-                                          onPressed: () {
-                                            final productId = item['product_id'];
-
-                                            if (token != null) {
-                                              cartController.removeItemFromCart(productId);
-                                            } else {
-                                              cartController.removeFromCart(
-                                                item['name'],
-                                                item['price'],
-                                                item['image'],
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10.w),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                          return IntrinsicHeight(
+                            child: Container(
+                              //height: 114.h,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8.h, horizontal: 10.w),
+                              padding: EdgeInsets.all(12.w),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Row(
+                                children: [
+                                  Stack(
+                                    clipBehavior: Clip.none,
                                     children: [
-                                      Text(
-                                        item['name'],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14.sp,
+                                      Container(
+                                        height: 100.h,
+                                        width: 100.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20.r),
+                                          color: Colors.white,
+                                        ),
+                                        child: Center(
+                                          child: item['image'] != null &&
+                                                  item['image'].isNotEmpty
+                                              ? Image.network(
+                                                  '${Api.ImageUrl}/products/${item['image']}',
+                                                  width: 80.w,
+                                                  height: 80.h,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                          stackTrace) =>
+                                                      Icon(
+                                                    Icons.hide_image_outlined,
+                                                    size: 90.sp,
+                                                    color: Colors.grey,
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.hide_image_outlined,
+                                                  size: 60.sp,
+                                                  color: Colors.grey,
+                                                ),
                                         ),
                                       ),
-                                      Spacer(),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            item['price'],
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14.sp,
+                                      Positioned(
+                                        bottom: 70.h,
+                                        right: 34.w,
+                                        left: 35,
+                                        child: Container(
+                                          height: 30.h,
+                                          width: 34.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade200,
+                                            borderRadius: BorderRadius.only(
+                                              bottomRight:
+                                                  Radius.circular(14.r),
+                                              bottomLeft: Radius.circular(14.r),
                                             ),
                                           ),
-                                          Expanded(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                // Decrement Button
-                                                Container(
-                                                  height: 30.h,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10.r),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.remove,
-                                                      color: (item['quantity'] ?? 0) > 1 // Check if quantity is greater than 1
-                                                          ? Colors.red.shade600
-                                                          : Colors.grey,
-                                                    ),
-                                                    onPressed: () {
-                                                      // Allow decrement only if quantity is greater than 1
-                                                      if ((item['quantity'] ?? 0) > 1) {
-                                                        cartController.updateQuantity(productId, -1);
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-
-                                                SizedBox(width: 5.w),
-
-                                                // Display Quantity
-                                                Text(
-                                                  '${item['quantity'] ?? 0}', // Handle null values safely
-                                                  style: GoogleFonts.roboto(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 14.sp,
-                                                  ),
-                                                ),
-
-                                                SizedBox(width: 5.w),
-
-                                                // Increment Button
-                                                Container(
-                                                  height: 30.h,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10.r),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.add,
-                                                      color: Colors.green.shade800,
-                                                    ),
-                                                    onPressed: () {
-                                                      // Increment the quantity by 1
-                                                      cartController.updateQuantity(productId, 1);
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
+                                          child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/dlt.png',
+                                              width: 20.w,
+                                              height: 20.h,
+                                              color: Color(0xFFEB1C23),
                                             ),
+                                            onPressed: () {
+                                              final productId =
+                                                  item['product_id'];
+
+                                              if (token != null) {
+                                                cartController
+                                                    .removeItemFromCart(
+                                                        productId);
+                                              } else {
+                                                cartController.removeFromCart(
+                                                  item['name'],
+                                                  item['price'],
+                                                  item['image'],
+                                                );
+                                              }
+                                            },
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['name'],
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                        Spacer(),
+
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              item['price'],
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14.sp,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  // Decrement Button
+                                                  Container(
+                                                    height: 30.h,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.r),
+                                                      color: Colors.white,
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        Icons.remove,
+                                                        color: (item['quantity'] ??
+                                                                    0) >
+                                                                1 // Check if quantity is greater than 1
+                                                            ? Colors
+                                                                .red.shade600
+                                                            : Colors.grey,
+                                                      ),
+                                                      onPressed: () {
+                                                        // Allow decrement only if quantity is greater than 1
+                                                        if ((item['quantity'] ??
+                                                                0) >
+                                                            1) {
+                                                          cartController
+                                                              .updateQuantity(
+                                                                  productId,
+                                                                  -1);
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(width: 5.w),
+
+                                                  // Display Quantity
+                                                  Text(
+                                                    '${item['quantity'] ?? 0}', // Handle null values safely
+                                                    style: GoogleFonts.roboto(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14.sp,
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(width: 5.w),
+
+                                                  // Increment Button
+                                                  Container(
+                                                    height: 30.h,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.r),
+                                                      color: Colors.white,
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        Icons.add,
+                                                        color: Colors
+                                                            .green.shade800,
+                                                      ),
+                                                      onPressed: () {
+                                                        // Increment the quantity by 1
+                                                        cartController
+                                                            .updateQuantity(
+                                                                productId, 1);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -274,7 +302,10 @@ class CartPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Total:', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18.sp)),
+                            Text('Total:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18.sp)),
                             SizedBox(width: 10),
                             Obx(() {
                               return Text(
@@ -288,7 +319,9 @@ class CartPage extends StatelessWidget {
                             }),
                           ],
                         ),
-                        SizedBox(height: 6.h,),
+                        SizedBox(
+                          height: 6.h,
+                        ),
                       ],
                       // Show the Continue button if there are items in the cart
                       if (cartController.getCartItems().isNotEmpty) ...[
@@ -297,7 +330,8 @@ class CartPage extends StatelessWidget {
                           size: Size(340.w, 45.h),
                           text: Text(
                             "Continue",
-                            style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
                           ontap: () async {
                             if (!cartController.isLoggedIn()) {
@@ -318,7 +352,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                      Lottie.asset('assets/Animation - 1724233631425.json'),
+                          Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -342,7 +376,7 @@ class CartPage extends StatelessWidget {
                       },
                     )
                   ],
-                );// Return an empty message if there's no data
+                ); // Return an empty message if there's no data
               }
             });
           }
