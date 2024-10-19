@@ -15,7 +15,7 @@ class Models {
   final int discount;
   final bool isSubCategories;
   final dynamic cart;
-  final List<String>? service;
+  final List<ServiceModel>? services; // Updated to use ServiceModel
   final List<Models>? subCategories; // List of subcategories
 
   Models({
@@ -32,9 +32,9 @@ class Models {
     required this.popular,
     required this.discount,
     required this.isSubCategories,
-    this.service,
+    this.services, // Update this line
     this.cart,
-    this.subCategories, // Add this line
+    this.subCategories,
   });
 
   factory Models.fromJson(Map<String, dynamic> json) {
@@ -56,9 +56,28 @@ class Models {
       subCategories: (json['sub_categories'] as List<dynamic>?)
           ?.map((item) => Models.fromJson(item))
           .toList() ?? [], // Handle null and provide an empty list
-      service: (json['service'] as List<dynamic>?)
-          ?.map((item) => item.toString())
+      services: (json['services'] as List<dynamic>?) // Update this line
+          ?.map((item) => ServiceModel.fromJson(item))
           .toList() ?? [], // Handle null and provide an empty list
+    );
+  }
+}
+class ServiceModel {
+  final int id;
+  final String name;
+  final String price;
+
+  ServiceModel({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
+
+  factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    return ServiceModel(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Unknown',
+      price: json['price'] ?? '0.0',
     );
   }
 }

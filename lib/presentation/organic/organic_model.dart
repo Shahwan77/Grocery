@@ -1,11 +1,11 @@
 class OrganicModel {
   final String name;
   final String imagePath;
-  final String price;
+ // final String price;
 
   OrganicModel({
     required this.name,
-    required this.price,
+   // required this.price,
     required this.imagePath,
   });
 
@@ -14,7 +14,7 @@ class OrganicModel {
     return  OrganicModel(
       name: json['name'] as String,
       imagePath: json['imagePath'] as String,
-      price: json['price'] as String,
+      //price: json['price'] as String,
     );
   }
 
@@ -22,32 +22,39 @@ class OrganicModel {
     return {
       'name': name,
       'imagePath': imagePath,
-      'price' : price
+      //'price' : price
     };
   }
 }
 // ice_cream_data.dart
 final List< OrganicModel> organicItems = [
-  OrganicModel(name: 'Chocofun Coolchoc Coconut Bars 175Gm', imagePath: 'assets/org1.png', price: '9.50 AED'),
-  OrganicModel(name: 'Almarai Mixed Fruit Juice with Mango', imagePath: 'assets/org2.png', price: '9.95 AED'),
-  OrganicModel(name: 'Organic Tattva Urad Dal White Split 1Kg', imagePath: 'assets/org3.png', price: '16.50 AED'),
-  OrganicModel(name: 'Kelloggs Coco Pops 375Gm@ 20%Off', imagePath: 'assets/org4.png', price: '16.95 AED'),
-  OrganicModel(name: 'Essentially Beet Aid Cold Pressed Juice 250 Ml', imagePath: 'assets/org5.png', price: '14.99 AED'),
-  OrganicModel(name: 'Capri Sun Edition Long Life Mixed Fruit Dr...', imagePath: 'assets/org6.png', price: '13.50 AED'),
-  OrganicModel(name: 'Barilla Pasta Spaghetti', imagePath: 'assets/org7.png', price: '10.23 AED'),
-  OrganicModel(name: 'Arla Organic Long Life', imagePath: 'assets/org8.png', price: '8.88 AED'),
-  OrganicModel(name: 'TAS Green Jackfruit In', imagePath: 'assets/org9.png', price: '14.64 AED'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
-  // OrganicModel(name: 'Mint', imagePath: 'assets/cat2.png'),
+  OrganicModel(name: 'Kid Fashion', imagePath: 'assets/kid.png', ),
+  OrganicModel(name: 'watches', imagePath: 'assets/watch.png', ),
+  OrganicModel(name: 'Eyewear', imagePath: 'assets/eyewear.png',),
+  OrganicModel(name: 'Sports', imagePath: 'assets/sports.png',),
+  OrganicModel(name: 'Automotive', imagePath: 'assets/automative.png',),
+  OrganicModel(name: 'Stationery', imagePath: 'assets/stationery.png',),
+  OrganicModel(name: 'Books', imagePath: 'assets/books.png',),
+  OrganicModel(name: 'Men Fashion', imagePath: 'assets/men.png', ),
+  OrganicModel(name: 'Gift Card', imagePath: 'assets/giftcard.png',),
+  OrganicModel(name: 'Baby gear', imagePath: 'assets/babygear.png'),
+  OrganicModel(name: 'Home & Kitchen', imagePath: 'assets/kitchen.png'),
+  OrganicModel(name: 'Large Appliances', imagePath: 'assets/largeappliances.png'),
+  OrganicModel(name: 'Health & nutrition', imagePath: 'assets/health.png'),
+  OrganicModel(name: 'Fragrance', imagePath: 'assets/pefumes.png'),
+  OrganicModel(name: 'Personal care', imagePath: 'assets/cat2.png'),
+  OrganicModel(name: 'Furniture', imagePath: 'assets/furniture.png'),
+  OrganicModel(name: "Men's fashion", imagePath: 'assets/men.png',),
+   OrganicModel(name: "Women's fashion", imagePath: 'assets/women.png'),
+  OrganicModel(name: 'Mobiles & accessories', imagePath: 'assets/mobile.png'),
+  OrganicModel(name: 'Electronics', imagePath: 'assets/electronics.png'),
+  OrganicModel(name: 'Gaming essentials', imagePath: 'assets/gaming.png'),
+  OrganicModel(name: 'Beauty', imagePath: 'assets/beauty.png'),
+  OrganicModel(name: 'Grocery', imagePath: 'assets/grocery.png'),
+  OrganicModel(name: 'Laptops & accessories', imagePath: 'assets/laptops.png'),
+  OrganicModel(name: 'Small Appliances', imagePath: 'assets/smallappliances.png'),
+  OrganicModel(name: 'Toys & Games', imagePath: 'assets/toys.png'),
+  OrganicModel(name: 'Baby Care', imagePath: 'assets/babycare.png'),
 ];
 final imageUrls = [
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHH9k5BBM5urnhkWzfgx3DGPYt85EYmDeUy2Ozi_8q9DsCsvS6',

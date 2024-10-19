@@ -195,7 +195,7 @@ class SubcategoryPage extends StatelessWidget {
                                         product.id, // Product ID
                                         product.name,
                                         product.price,
-                                        product.image,[]
+                                        product.image,{}
                                       );
 
                                       Get.snackbar(

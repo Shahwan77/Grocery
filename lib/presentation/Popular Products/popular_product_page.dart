@@ -241,7 +241,7 @@ class PopularProductPage extends StatelessWidget {
                                           item.name,
                                           item.price,
                                           item.image,
-                                          []
+                                          {}
                                         );
 
                                         Get.snackbar(

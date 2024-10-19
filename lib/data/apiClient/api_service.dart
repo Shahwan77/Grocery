@@ -44,8 +44,8 @@ class ApiService {
     }
   }
 
-  Future<List<Models>> fetchCategoryProducts(int categoryId) async {
-    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId'));
+  Future<List<Models>> fetchCategoryProducts(int categoryId, String type) async {
+    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId&type=$type'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -61,8 +61,8 @@ class ApiService {
     }
   }
 
-  Future<List<Models>> fetchTabs(int subcategoryId) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId'));
+  Future<List<Models>> fetchTabs(int subcategoryId, String type) async {
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId&type=$type'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -73,11 +73,12 @@ class ApiService {
         return [];
       }
     } else {
-      throw Exception('Failed to fetch rice cakes');
+      throw Exception('Failed to fetch tabs');
     }
   }
-  Future<List<Models>> fetchSubcategories(int categoryId) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId'));
+
+  Future<List<Models>> fetchSubcategories(int categoryId, String type) async {
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId&type=$type'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

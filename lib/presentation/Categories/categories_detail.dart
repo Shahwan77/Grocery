@@ -12,6 +12,7 @@ import '../organic/organic_page.dart';
 
 class DetailPage extends StatelessWidget {
   final String categoryId;
+  Map<int, List<int>> selectedServices = {};
   final String categoryName;
   final ProductsController productController = Get.put(ProductsController());
   final CartController cartController = Get.put(CartController());
@@ -84,13 +85,12 @@ class DetailPage extends StatelessWidget {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 20.0,
-                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 300 : 200,
+                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 367 : 200,
                               ),
                               itemCount: productController.productItems.length,
                               itemBuilder: (context, index) {
                                 final item = productController.productItems[index];
-                                List<String> selectedServices = [];
-
+                                Map<int, Map<String, dynamic>> selectedServices = {};
                                 return Column(
                                   children: [
                                     IntrinsicHeight(
@@ -155,74 +155,36 @@ class DetailPage extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
+                                              // Use SingleChildScrollView to avoid overflow
                                               Box.read('selectedButton') == 'laundry'
                                                   ? SingleChildScrollView(
-                                                    child: Padding(
-                                                      padding:  EdgeInsets.only(left: 10.w),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                      Expanded(
-                                                        child: Obx(() => Column(
-                                                          children: [
-                                                            Icon(Icons.dry_cleaning_outlined),
-                                                            Text('DRYCLEAN', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
-                                                            Checkbox(
-                                                              value: cartController.isCheckedList[0].value,
-                                                              onChanged: (value) {
-                                                                cartController.toggleCheckbox(index, value);
-                                                                if (value!) {
-                                                                  selectedServices.add('DRYCLEAN');
-                                                                } else {
-                                                                  selectedServices.remove('DRYCLEAN');
-                                                                }
-                                                              },
-                                                            ),
-                                                          ],
-                                                        )),
-                                                      ),
-                                                      Expanded(
-                                                        child: Obx(() => Column(
-                                                          children: [
-                                                            Icon(Icons.wash_outlined),
-                                                            Text('WASH', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
-                                                            Checkbox(
-                                                              value: cartController.isCheckedList[1].value,
-                                                              onChanged: (value) {
-                                                                cartController.toggleCheckbox(1, value);
-                                                                if (value!) {
-                                                                  selectedServices.add('WASH');
-                                                                } else {
-                                                                  selectedServices.remove('WASH');
-                                                                }
-                                                              },
-                                                            ),
-                                                          ],
-                                                        )),
-                                                      ),
-                                                      Expanded(
-                                                        child: Obx(() => Column(
-                                                          children: [
-                                                            Icon(Icons.iron_outlined),
-                                                            Text('IRON', style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w700)),
-                                                            Checkbox(
-                                                              value: cartController.isCheckedList[2].value,
-                                                              onChanged: (value) {
-                                                                cartController.toggleCheckbox(2, value);
-                                                                if (value!) {
-                                                                  selectedServices.add('IRON');
-                                                                } else {
-                                                                  selectedServices.remove('IRON');
-                                                                }
-                                                              },
-                                                            ),
-                                                          ],
-                                                        )),
-                                                      ),
-                                                                                                      ],
-                                                                                                    ),
-                                                    ),
-                                                  )
+                                                child: Column( // Maintain Column for checkboxes
+                                                  children: item.services!.map((service) {
+                                                    return Obx(() {
+                                                      bool isSelected =
+                                                          productController.selectedServices[item.id]?.contains(service.id) ?? false;
+                                                      return CheckboxListTile(
+                                                        title: Text('${service.name}'),
+                                                        value: isSelected,
+                                                        onChanged: (bool? value) {
+                                                          if (value != null) {
+                                                            productController.toggleServiceSelection(item.id, service.id, value);
+                                                            if (value) {
+                                                              selectedServices[service.id] =
+                                                              {
+                                                                'name': service.name,
+                                                                'price': service.price,
+                                                              };// Add selected service
+                                                            } else {
+                                                              selectedServices.remove(service.name); // Remove deselected service
+                                                            }
+                                                          }
+                                                        },
+                                                      );
+                                                    });
+                                                  }).toList(),
+                                                ),
+                                              )
                                                   : SizedBox.shrink(),
                                               Center(
                                                 child: item.image.isNotEmpty
@@ -257,13 +219,19 @@ class DetailPage extends StatelessWidget {
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      item.price,
-                                                      style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        fontWeight: FontWeight.w700,
-                                                      ),
-                                                    ),
+                                                    Obx(() {
+                                                      // Calculate the total price based on selected services
+                                                      final totalPrice =
+                                                      productController.calculateTotalPrice(item);
+                                                      print(totalPrice);
+                                                      return Text(
+                                                        '\$${totalPrice}',
+                                                        style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      );
+                                                    }),
                                                     Obx(() {
                                                       final isInLocalCart = cartController.isInCart(item.id);
                                                       final isInServerCart = cartController.fetchedcartItems
@@ -271,19 +239,18 @@ class DetailPage extends StatelessWidget {
 
                                                       final isInCart = isInLocalCart || isInServerCart;
                                                       final isLaundry = Box.read('selectedButton') == 'laundry';
+
                                                       return GestureDetector(
                                                         onTap: (isInCart && !isLaundry)
-                                                            ? null // Disable the action if item is already in the cart
+                                                            ? null
                                                             : () {
-                                                          // print(selectedServices);
                                                           // Pass the selected services along with item details
                                                           cartController.toggleCart(
                                                             item.id,
                                                             item.name,
                                                             item.price,
                                                             item.image,
-                                                              selectedServices
-                                                             // Pass selected services here
+                                                            selectedServices,
                                                           );
 
                                                           Get.snackbar(
@@ -292,7 +259,7 @@ class DetailPage extends StatelessWidget {
                                                             snackPosition: SnackPosition.BOTTOM,
                                                           );
                                                           selectedServices.clear();
-                                                          cartController.clearCheckboxes();
+                                                          productController.clearCheckboxes();
                                                         },
                                                         child: Icon(
                                                           isInCart && !isLaundry
@@ -314,6 +281,7 @@ class DetailPage extends StatelessWidget {
                                 );
                               },
                             );
+
                           }
                         });
                       }

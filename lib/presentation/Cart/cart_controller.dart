@@ -13,7 +13,6 @@ class CartController extends GetxController {
   final BottomApiService apiService = BottomApiService();
   var total_amount = "0.00".obs;
   var total_quantity = "0".obs;
-  List<RxBool> isCheckedList = [false.obs, false.obs,false.obs];
   final box = GetStorage();
   GetStorage Box = GetStorage();
   @override
@@ -25,16 +24,6 @@ class CartController extends GetxController {
       if (token != null) {
         fetchCartItems(token, 'grocery');
       }
-    }
-  }
-  void toggleCheckbox(int index, bool? value) {
-    if (index >= 0 && index < isCheckedList.length) {
-      isCheckedList[index].value = value ?? false;
-    }
-  }
-  void clearCheckboxes() {
-    for (var checkbox in isCheckedList) {
-      checkbox.value = false; // Reset each checkbox to unchecked
     }
   }
   void clearLocalCart() {
@@ -75,11 +64,11 @@ class CartController extends GetxController {
   Future<void> toggleCart(
       int productId,
       String itemName,
-      String itemPrice,
+   String itemPrice,
       String itemImage,
-      List<String>? services
+      Map<int, Map<String, dynamic>>? selectedServices
       ) async {
-    print(services);
+
 
     final isLaundry = Box.read('selectedButton') == 'laundry';
 
@@ -95,7 +84,14 @@ class CartController extends GetxController {
         cartItems.removeAt(itemIndex);
       }
     }
-
+    final servicesList = selectedServices?.entries.map((entry) {
+      return {
+        'id': entry.key, // Service ID
+        // 'name': entry.value['name'], // Service name
+        // 'price': entry.value['price'], // Service price
+      };
+    }).toList() ?? [];
+    print('fffff: ${servicesList}');
     // Create a new cart item
     final newItem = {
       'product_id': productId,
@@ -103,7 +99,7 @@ class CartController extends GetxController {
       'price': itemPrice,
       'image': itemImage,
       'quantity': 1,
-      'service': services
+      'service': servicesList
     };
 
     cartItems.add(newItem);
@@ -277,7 +273,12 @@ class CartController extends GetxController {
           {
             'product_id': cartItem['product_id'],
             'quantity': cartItem['quantity'],
-            'services': cartItem['service'] ?? [null], // Services for laundry
+            'services':  cartItem['service'],
+            // [{
+            //   "id": 1,
+            //   "name": "Dry Clean",
+            //   "price": "10.00"
+            // }], // Services for laundry
           }
         ]
         // Type == 'laundry'
@@ -395,4 +396,5 @@ class CartController extends GetxController {
     final accessToken = box.read('access_token');
     return accessToken != null && accessToken.isNotEmpty;
   }
+
 }

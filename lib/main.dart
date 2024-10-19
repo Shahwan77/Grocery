@@ -11,6 +11,8 @@ import 'package:grocery/routes/app_routes.dart';
 import 'package:grocery/tst12.dart';
 import 'package:grocery/tstts.dart';
 
+import 'kkk.dart';
+
 Future<void> main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: GetMaterialApp(
         title: 'Flutter Demo',
-        // home: MyAppstatata(),
+       // home: Category(),
         initialRoute:AppRoutes.Splash,
        getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,
