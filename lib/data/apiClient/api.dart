@@ -14,6 +14,8 @@ class Api {
   static String CartGetlaundry = '$ApiUrl/cart?type=laundry';
   static String CartRemove = '$ApiUrl/cart/remove';
   static String Order = '$ApiUrl/order';
+  static String MyOrderlaundry = '$ApiUrl/order?type=laundry';
+  static String MyOrdergrocery = '$ApiUrl/order?type=grocery';
   static String Logout = '$ApiUrl/logout';
   static String User = '$ApiUrl/user';
   static String Register = '$ApiUrl/register';

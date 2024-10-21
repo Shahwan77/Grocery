@@ -83,9 +83,9 @@ class DetailPage extends StatelessWidget {
                               padding: EdgeInsets.all(8.0),
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
+                                crossAxisSpacing: 12.0,
                                 mainAxisSpacing: 20.0,
-                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 290 : 200,
+                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 284 : 200,
                               ),
                               itemCount: productController.productItems.length,
                               itemBuilder: (context, index) {
@@ -186,61 +186,86 @@ class DetailPage extends StatelessWidget {
                                               // Use SingleChildScrollView to avoid overflow
                                               Box.read('selectedButton') == 'laundry'
                                                   ? SingleChildScrollView(
-                                                child: Column(
-                                                  children: item.services!.map((service) {
-                                                    return Obx(() {
-                                                      bool isSelected = productController.selectedServices[item.id]?.contains(service.id) ?? false;
-                                                      return GestureDetector(
-                                                        onTap: () {
-                                                          // Handle tap event
-                                                          bool newValue = !isSelected;
-                                                          productController.toggleServiceSelection(item.id, service.id, newValue);
-                                                          if (newValue) {
-                                                            selectedServices[service.id] = {
-                                                              'name': service.name,  // Keep name for local use if needed
-                                                              'price': service.price, // Keep price for local use if needed
-                                                            }; // Add selected service
-                                                          } else {
-                                                            selectedServices.remove(service.id); // Ensure the key is the ID, not the name
-                                                          }
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            // Custom Checkbox
-                                                            Padding(
-                                                              padding:  EdgeInsets.symmetric(horizontal: 10.w,vertical: 4.h),
-                                                              child: Container(
-                                                                width: 19.w,
-                                                                height: 16.h,
-                                                                decoration: BoxDecoration(
-                                                                  shape: BoxShape.rectangle,
-                                                                  borderRadius: BorderRadius.circular(4), // Rounded corners
-                                                                  border: Border.all(
-                                                                    color: isSelected ? Colors.red : Colors.grey, // Border color
-                                                                    width: 1,
+                                                child:Padding(
+                                                  padding:  EdgeInsets.symmetric(horizontal: 10.w),
+                                                  child: Column(
+                                                    children: item.services!.map((service) {
+                                                      return Obx(() {
+                                                        bool isSelected = productController.selectedServices[item.id]?.contains(service.id) ?? false;
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            bool newValue = !isSelected;
+                                                            productController.toggleServiceSelection(item.id, service.id, newValue);
+                                                            if (newValue) {
+                                                              selectedServices[service.id] = {
+                                                                'name': service.name,
+                                                                'price': service.price,
+                                                              };
+                                                            } else {
+                                                              selectedServices.remove(service.id);
+                                                            }
+                                                          },
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensures space between elements
+                                                            crossAxisAlignment: CrossAxisAlignment.center, // Aligns everything at the center vertically
+                                                            children: [
+                                                              Padding(
+                                                                padding: EdgeInsets.symmetric( vertical: 4.h),
+                                                                child: AnimatedContainer(
+                                                                  duration: Duration(milliseconds: 300),
+                                                                  width: 30.w,
+                                                                  height: 14.h,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(8.r),
+                                                                    color: isSelected ? Colors.green : Colors.grey.shade200,
+                                                                    border: Border.all(color: Colors.grey.shade300),
                                                                   ),
-                                                                  color: isSelected ? Colors.red : Colors.transparent, // Fill color
+                                                                  child: Align(
+                                                                    alignment: isSelected ? Alignment.centerRight : Alignment.centerLeft,
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.all(2),
+                                                                      child: AnimatedContainer(
+                                                                        duration: Duration(milliseconds: 300),
+                                                                        width: 11.w,
+                                                                        height: 10.h,
+                                                                        decoration: BoxDecoration(
+                                                                          shape: BoxShape.circle,
+                                                                          color: Colors.white,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                                child: isSelected
-                                                                    ? Icon(
-                                                                  Icons.check,
-                                                                  color: Colors.white,
-                                                                  size: 18,
-                                                                )
-                                                                    : null,
                                                               ),
-                                                            ),
-                                                            const SizedBox(width: 8), // Add some spacing between the checkbox and text
-                                                            Text(
-                                                              service.name,
-                                                              style: TextStyle(fontSize: 14), // Customize text style
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    });
-                                                  }).toList(),
+                                                            SizedBox(width: 7.w,),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  service.name,
+                                                                  style: TextStyle(
+                                                                    fontSize: 12.sp,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    color: Colors.grey.shade600,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "\$${service.price}",
+                                                                style: TextStyle(
+                                                                  fontSize: 12.sp,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: Colors.grey.shade600,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+
+                                                        );
+                                                      });
+                                                    }).toList(),
+                                                  ),
                                                 ),
+
+
 
                                               )
                                                   : SizedBox.shrink(),

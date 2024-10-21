@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/presentation/Language%20Selection/language_selection.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: GetMaterialApp(
         title: 'Flutter Demo',
-       // home: Category(),
+       // home: WelcomePage(),
         initialRoute:AppRoutes.Splash,
        getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,
