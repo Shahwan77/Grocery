@@ -5,9 +5,11 @@ import 'dart:convert';
 
 import '../../data/apiClient/api.dart';
 import '../../data/apiClient/bottom_api_services.dart';
+import '../../data/models/models.dart';
 
 class CartController extends GetxController {
   var cartItems = <Map<String, dynamic>>[].obs;
+  var popularProducts = <Models>[].obs;
   var fetchedcartItems = <Map<String, dynamic>>[].obs;
   var products = <Map<String, dynamic>>[].obs;
   final BottomApiService apiService = BottomApiService();
@@ -38,6 +40,7 @@ class CartController extends GetxController {
       cartItems.assignAll(List<Map<String, dynamic>>.from(savedCart));
     }
   }
+
 
   void saveCartItems() {
     box.write('cartItems', cartItems);
@@ -84,13 +87,7 @@ class CartController extends GetxController {
         cartItems.removeAt(itemIndex);
       }
     }
-    final servicesList = selectedServices?.entries.map((entry) {
-      return {
-        'id': entry.key, // Service ID
-        // 'name': entry.value['name'], // Service name
-        // 'price': entry.value['price'], // Service price
-      };
-    }).toList() ?? [];
+    final servicesList = selectedServices?.keys.toList() ?? [];
     print('fffff: ${servicesList}');
     // Create a new cart item
     final newItem = {
@@ -365,7 +362,6 @@ class CartController extends GetxController {
           final items = data['data']['items'];
           if (items != null) {
             fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
-
             total_amount.value = data['data']['total_amount'];
             total_quantity.value = data['data']['total_quantity'].toString();
             print('Fetched Cart Items: ${fetchedcartItems.toList()}');

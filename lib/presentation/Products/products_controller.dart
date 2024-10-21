@@ -8,6 +8,7 @@ import '../../data/models/models.dart';
 
 class ProductsController extends GetxController {
   var productItems = <Models>[].obs;
+  var popularProducts11 = <ServiceModel>[].obs;
   var isLoading = true.obs;
   final ApiService apiService = ApiService();
   GetStorage Box = GetStorage();

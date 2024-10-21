@@ -16,12 +16,14 @@ import 'dart:convert';
 import '../../data/models/register_model.dart';
 import '../../tst12.dart';
 import '../Cart/cart_controller.dart';
+import '../order_details/my_orders.dart';
 
 class Account extends StatelessWidget {
   Account({super.key});
   final CartController cartController = Get.put(CartController());
   final List<String> account = [
     'Notification',
+    'My Orders',
     'Add Address',
     'Change Email Address',
     'Edit Profile',
@@ -32,6 +34,7 @@ class Account extends StatelessWidget {
 
   final List<IconData> accounticon = [
     Icons.notifications_outlined,
+    Icons.shopping_cart,
     Icons.location_on_outlined,
     Icons.email_outlined,
     Icons.edit_outlined,
@@ -94,115 +97,121 @@ class Account extends StatelessWidget {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               final user = snapshot.data;
-              return Column(
-                children: [
-                  Container(
-                    height: 110.h,
-                    width: 320.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(26.r),
-                      color: Color(0xFFEB1C23),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                height: 84.h,
-                                width: 90.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18.r),
-                                  color: Colors.white,
-                                ),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 50.sp,
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 110.h,
+                      width: 320.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(26.r),
+                        color: Color(0xFFEB1C23),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 84.h,
+                                  width: 90.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18.r),
+                                    color: Colors.white,
+                                  ),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 50.sp,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                user?.name ?? 'NAME', // Displaying the user's name or placeholder
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w800,
+                                SizedBox(
+                                  width: 10.w,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                Text(
+                                  user?.name ?? 'NAME', // Displaying the user's name or placeholder
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  ListView.builder(
-                    itemCount: account.length,
-                    scrollDirection: Axis.vertical,
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: ListTile(
-                            leading: Container(
-                              width: 34.w,
-                              height: 30.h,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30.r),
-                              ),
-                              child: Icon(accounticon[index]),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    ListView.builder(
+                      itemCount: account.length,
+                      scrollDirection: Axis.vertical,
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(12.r),
                             ),
-                            title: Text(account[index]),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                            onTap: () {
-                              if (account[index] == 'Logout') {
-                                Get.dialog(
-                                  AlertDialog(
-                                    title: Text('Logout Confirmation'),
-                                    content: Text('Are you sure you want to logout?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Get.back(); // Close the dialog
-                                        },
-                                        child: Text('No'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Get.back(); // Close the dialog
-                                          logout(); // Call the logout function
-                                        },
-                                        child: Text('Yes'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                print('Tapped on ${account[index]}');
-                              }
-                            },
+                            child: ListTile(
+                              leading: Container(
+                                width: 34.w,
+                                height: 30.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30.r),
+                                ),
+                                child: Icon(accounticon[index]),
+                              ),
+                              title: Text(account[index]),
+                              trailing: Icon(Icons.arrow_forward_ios_rounded),
+                              onTap: () {
+                                if (account[index] == 'Logout') {
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: Text('Logout Confirmation'),
+                                      content: Text('Are you sure you want to logout?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Get.back(); // Close the dialog
+                                          },
+                                          child: Text('No'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Get.back(); // Close the dialog
+                                            logout(); // Call the logout function
+                                          },
+                                          child: Text('Yes'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else if (account[index] == 'My Orders') {
+                                  // Navigate to My Orders Page
+                                  Get.to(OrderPage());
+                                }
+                                else {
+                                  print('Tapped on ${account[index]}');
+                                }
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               );
             } else {
               return Center(child: Text('No user data found.'));

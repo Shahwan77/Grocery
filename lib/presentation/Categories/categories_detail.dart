@@ -85,7 +85,7 @@ class DetailPage extends StatelessWidget {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 20.0,
-                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 367 : 200,
+                                mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 290 : 200,
                               ),
                               itemCount: productController.productItems.length,
                               itemBuilder: (context, index) {
@@ -155,37 +155,6 @@ class DetailPage extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                              // Use SingleChildScrollView to avoid overflow
-                                              Box.read('selectedButton') == 'laundry'
-                                                  ? SingleChildScrollView(
-                                                child: Column( // Maintain Column for checkboxes
-                                                  children: item.services!.map((service) {
-                                                    return Obx(() {
-                                                      bool isSelected =
-                                                          productController.selectedServices[item.id]?.contains(service.id) ?? false;
-                                                      return CheckboxListTile(
-                                                        title: Text('${service.name}'),
-                                                        value: isSelected,
-                                                        onChanged: (bool? value) {
-                                                          if (value != null) {
-                                                            productController.toggleServiceSelection(item.id, service.id, value);
-                                                            if (value) {
-                                                              selectedServices[service.id] =
-                                                              {
-                                                                'name': service.name,
-                                                                'price': service.price,
-                                                              };// Add selected service
-                                                            } else {
-                                                              selectedServices.remove(service.name); // Remove deselected service
-                                                            }
-                                                          }
-                                                        },
-                                                      );
-                                                    });
-                                                  }).toList(),
-                                                ),
-                                              )
-                                                  : SizedBox.shrink(),
                                               Center(
                                                 child: item.image.isNotEmpty
                                                     ? Image.network(
@@ -214,6 +183,67 @@ class DetailPage extends StatelessWidget {
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
+                                              // Use SingleChildScrollView to avoid overflow
+                                              Box.read('selectedButton') == 'laundry'
+                                                  ? SingleChildScrollView(
+                                                child: Column(
+                                                  children: item.services!.map((service) {
+                                                    return Obx(() {
+                                                      bool isSelected = productController.selectedServices[item.id]?.contains(service.id) ?? false;
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          // Handle tap event
+                                                          bool newValue = !isSelected;
+                                                          productController.toggleServiceSelection(item.id, service.id, newValue);
+                                                          if (newValue) {
+                                                            selectedServices[service.id] = {
+                                                              'name': service.name,  // Keep name for local use if needed
+                                                              'price': service.price, // Keep price for local use if needed
+                                                            }; // Add selected service
+                                                          } else {
+                                                            selectedServices.remove(service.id); // Ensure the key is the ID, not the name
+                                                          }
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            // Custom Checkbox
+                                                            Padding(
+                                                              padding:  EdgeInsets.symmetric(horizontal: 10.w,vertical: 4.h),
+                                                              child: Container(
+                                                                width: 19.w,
+                                                                height: 16.h,
+                                                                decoration: BoxDecoration(
+                                                                  shape: BoxShape.rectangle,
+                                                                  borderRadius: BorderRadius.circular(4), // Rounded corners
+                                                                  border: Border.all(
+                                                                    color: isSelected ? Colors.red : Colors.grey, // Border color
+                                                                    width: 1,
+                                                                  ),
+                                                                  color: isSelected ? Colors.red : Colors.transparent, // Fill color
+                                                                ),
+                                                                child: isSelected
+                                                                    ? Icon(
+                                                                  Icons.check,
+                                                                  color: Colors.white,
+                                                                  size: 18,
+                                                                )
+                                                                    : null,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(width: 8), // Add some spacing between the checkbox and text
+                                                            Text(
+                                                              service.name,
+                                                              style: TextStyle(fontSize: 14), // Customize text style
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                                  }).toList(),
+                                                ),
+
+                                              )
+                                                  : SizedBox.shrink(),
                                               Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Row(

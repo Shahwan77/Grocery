@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery/presentation/Products/products_controller.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/presentation/order_details/order_details.dart';
 import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
@@ -18,6 +19,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
+    final Map<String, dynamic> item;
     final token = GetStorage().read('access_token');
 
     return Scaffold(
@@ -195,98 +197,84 @@ class CartPage extends StatelessWidget {
                                           ),
                                         ),
                                         Spacer(),
-
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              item['price'],
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14.sp,
+                                      if (Box.read('selectedButton') == 'laundry') ...[
+                                        Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                      ],
+                                        Visibility(
+                                          visible: Box.read('selectedButton') != 'laundry',
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                item['price'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14.sp,
+                                                ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  // Decrement Button
-                                                  Container(
-                                                    height: 30.h,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.r),
-                                                      color: Colors.white,
-                                                    ),
-                                                    child: IconButton(
-                                                      icon: Icon(
-                                                        Icons.remove,
-                                                        color: (item['quantity'] ??
-                                                                    0) >
-                                                                1 // Check if quantity is greater than 1
-                                                            ? Colors
-                                                                .red.shade600
-                                                            : Colors.grey,
+                                              Expanded(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    // Decrement Button
+                                                    Container(
+                                                      height: 30.h,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10.r),
+                                                        color: Colors.white,
                                                       ),
-                                                      onPressed: () {
-                                                        // Allow decrement only if quantity is greater than 1
-                                                        if ((item['quantity'] ??
-                                                                0) >
-                                                            1) {
-                                                          cartController
-                                                              .updateQuantity(
-                                                                  productId,
-                                                                  -1);
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(width: 5.w),
-
-                                                  // Display Quantity
-                                                  Text(
-                                                    '${item['quantity'] ?? 0}', // Handle null values safely
-                                                    style: GoogleFonts.roboto(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14.sp,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(width: 5.w),
-
-                                                  // Increment Button
-                                                  Container(
-                                                    height: 30.h,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.r),
-                                                      color: Colors.white,
-                                                    ),
-                                                    child: IconButton(
-                                                      icon: Icon(
-                                                        Icons.add,
-                                                        color: Colors
-                                                            .green.shade800,
+                                                      child: IconButton(
+                                                        icon: Icon(
+                                                          Icons.remove,
+                                                          color: (item['quantity'] ?? 0) > 1
+                                                              ? Colors.red.shade600
+                                                              : Colors.grey,
+                                                        ),
+                                                        onPressed: () {
+                                                          if ((item['quantity'] ?? 0) > 1) {
+                                                            cartController.updateQuantity(productId, -1);
+                                                          }
+                                                        },
                                                       ),
-                                                      onPressed: () {
-                                                        // Increment the quantity by 1
-                                                        cartController
-                                                            .updateQuantity(
-                                                                productId, 1);
-                                                      },
                                                     ),
-                                                  ),
-                                                ],
+
+                                                    SizedBox(width: 5.w),
+
+                                                    // Display Quantity
+                                                    Text(
+                                                      '${item['quantity'] ?? 0}',
+                                                      style: GoogleFonts.roboto(
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 14.sp,
+                                                      ),
+                                                    ),
+
+                                                    SizedBox(width: 5.w),
+
+                                                    // Increment Button
+                                                    Container(
+                                                      height: 30.h,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10.r),
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: IconButton(
+                                                        icon: Icon(
+                                                          Icons.add,
+                                                          color: Colors.green.shade800,
+                                                        ),
+                                                        onPressed: () {
+                                                          cartController.updateQuantity(productId, 1);
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
+                                            ],
+                                          ),
+                                        )
+
                                       ],
                                     ),
                                   ),

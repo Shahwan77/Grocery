@@ -21,7 +21,7 @@ class OrderDetails extends StatelessWidget {
   OrderDetails({super.key});
   final CartController cartController = Get.put(CartController());
   final SignupController signupController = Get.put(SignupController());
-
+  GetStorage Box = GetStorage();
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
@@ -288,19 +288,27 @@ class OrderDetails extends StatelessWidget {
                             ),
                             subtitle: Row(
                               children: [
-                                Text(
-                                  item['price'],
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                                SizedBox(
-                                    width: 5
-                                        .w), // Add some spacing between price and quantity
-                                Text(
-                                  '*${item['quantity']}',
-                                  style: TextStyle(color: Colors.green),
-                                ),
+                                if (Box.read('selectedButton') == 'grocery') ...[
+                                  Text(
+                                    item['price'],
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                  SizedBox(
+                                    width: 5.w, // Add some spacing between price and quantity
+                                  ),
+                                  Text(
+                                    '*${item['quantity']}',
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ] else if (Box.read('selectedButton') == 'laundry') ...[
+                                  Text(
+                                    '${item['services'].join(', ')}',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
                               ],
                             ),
+
                             trailing: Text(
                               calculateTotalPrice(
                                   item['price'], item['quantity']),

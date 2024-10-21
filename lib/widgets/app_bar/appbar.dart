@@ -192,7 +192,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/aj3.png', width: 70.w, height: 50),
+                      Image.asset('assets/aj.png', width: 70.w, height: 50),
                       Padding(
                         padding: EdgeInsets.only(bottom: 6),
                         child: Text(
