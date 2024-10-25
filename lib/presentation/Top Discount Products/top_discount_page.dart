@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocery/presentation/Top%20Discount%20Products/top_discount_view.dart';
 import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
+import '../Language Selection/language_controller.dart';
 import '../favorite/fav_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 
@@ -12,6 +13,7 @@ class TopDiscountPage extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
   final FavoriteController favoriteController = Get.put(FavoriteController());
   final HomeController homeController = Get.find<HomeController>();
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class TopDiscountPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Top Discount Products',
+                languagecontroller.topText,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18.sp,
@@ -54,7 +56,7 @@ class TopDiscountPage extends StatelessWidget {
                   });
                 },
                 child: Text(
-                  'See all',
+                  languagecontroller.seeallText,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,

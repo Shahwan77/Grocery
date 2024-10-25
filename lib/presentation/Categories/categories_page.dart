@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/see%20all_page.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../data/apiClient/api.dart';
+import '../Language Selection/language_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 import '../organic/organic_page.dart';
 import 'categories_detail.dart';
@@ -13,6 +14,7 @@ import 'category_controller.dart';
 
 class CategoriesPage extends StatelessWidget {
   final HomeController categoryController = Get.put(HomeController());
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class CategoriesPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Categories",
+                languagecontroller.categoriesText,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18.sp,
@@ -32,7 +34,7 @@ class CategoriesPage extends StatelessWidget {
               ),
               GestureDetector(
                 child: Text(
-                  "See all",
+                  languagecontroller.seeallText,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14.sp,

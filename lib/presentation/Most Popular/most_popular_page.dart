@@ -6,12 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
+import '../Language Selection/language_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 import 'most_popular_view.dart';
 
 class MostPopularPage extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
   final HomeController homeController = Get.put(HomeController());
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class MostPopularPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Most Popular Categories",
+                  languagecontroller.mostText,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18.sp,
@@ -63,7 +65,7 @@ class MostPopularPage extends StatelessWidget {
                     });
                   },
                   child: Text(
-                    'See all',
+                    languagecontroller.seeallText,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14.sp,

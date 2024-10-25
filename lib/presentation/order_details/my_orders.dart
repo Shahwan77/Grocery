@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../data/apiClient/api.dart';
+import '../Language Selection/language_controller.dart';
 
 // Base Item class
 class Item {
@@ -32,12 +35,12 @@ class GroceryItem extends Item {
     String? image,
     required int quantity,
   }) : super(
-    productId: productId,
-    name: name,
-    price: price,
-    image: image,
-    quantity: quantity,
-  );
+          productId: productId,
+          name: name,
+          price: price,
+          image: image,
+          quantity: quantity,
+        );
 
   factory GroceryItem.fromJson(Map<String, dynamic> json) {
     return GroceryItem(
@@ -62,12 +65,12 @@ class LaundryItem extends Item {
     required int quantity,
     required this.services,
   }) : super(
-    productId: productId,
-    name: name,
-    price: price,
-    image: image,
-    quantity: quantity,
-  );
+          productId: productId,
+          name: name,
+          price: price,
+          image: image,
+          quantity: quantity,
+        );
 
   factory LaundryItem.fromJson(Map<String, dynamic> json) {
     return LaundryItem(
@@ -140,7 +143,7 @@ class OrderPage extends StatelessWidget {
     final String? token = box.read('access_token');
     final String? type = box.read('selectedButton');
     final response = await http.get(
-      Uri.parse('https://grocery-dev.greendomains.in/api/order?type=$type'),
+      Uri.parse('https://grocery-dev.greendomains.in/api/orders?shop_id=1&type=$type'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -160,106 +163,267 @@ class OrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My Order',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Color(0xFFEB1C23),
-      ),
-      body: FutureBuilder<Order>(
-        future: fetchOrder(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(fontSize: 16, color: Colors.red)));
-          } else if (snapshot.hasData && snapshot.data!.items.isEmpty) {
-            return Center(child: Text('No items found in your order.', style: TextStyle(fontSize: 16)));
-          } else {
-            final order = snapshot.data!;
-            return Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Order Summary Section
-                  Card(
-                    elevation: 4,
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    child: Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Total Amount: \$${order.totalAmount}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 8),
-                          Text('Total Quantity: ${order.totalQuantity}', style: TextStyle(fontSize: 16)),
-                          SizedBox(height: 8),
-                          if (box.read('selectedButton') == 'laundry') ...[
-                            Text('Collection Date: ${order.collectionDate}', style: TextStyle(fontSize: 16)),
-                            SizedBox(height: 4),
-                            Text('Collection Time: ${order.collectionTime}', style: TextStyle(fontSize: 16)),
-                          ],
-                          Text('Delivery Date: ${order.deliveryDate}', style: TextStyle(fontSize: 16)),
-                          SizedBox(height: 4),
-                          Text('Delivery Time: ${order.deliveryTime}', style: TextStyle(fontSize: 16)),
-                          Text('Payment Method: ${order.paymentMethod}', style: TextStyle(fontSize: 16)),
-                          Text('Payment Change: ${order.paymentChange ?? "N/A"}', style: TextStyle(fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Divider for separation
-                  SizedBox(height: 10),
-                  Text('Order Items', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFEB1C23),)),
-
-                  // List of Order Items
-                  // List of Order Items
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: order.items.length,
-                      itemBuilder: (context, index) {
-                        final item = order.items[index];
-                        final String? selectedType = box.read('selectedButton'); // Read selectedButton
-
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          elevation: 3,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(10),
-                            leading: Image.network(
-                              '${Api.ImageUrl}/products/${item.image}',
-                              width: 80.w,
-                              height: 80.h,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(Icons.hide_image_outlined, size: 90.sp, color: Colors.grey),
-                            ),
-                            title: Text(item.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Common Price display
-                                Text('Price: \$${double.tryParse(item.price) ?? 0.0}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-
-                                // Conditionally show the services if the type is 'laundry' and the item is a LaundryItem
-                                if (selectedType == 'laundry' && item is LaundryItem)
-                                  Text('Services: ${item.services.join(', ')}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-                              ],
-                            ),
-                            trailing: Text('Qty: ${item.quantity}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                ],
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Container(
+              height: 22.h,
+              width: 26.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.r),
               ),
-            );
-          }
-        },
+              child: Center(
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: Color(0xFFEB1C23),
+                  size: 20.sp,
+                ),
+              ),
+            ),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+          title: Text(
+            languagecontroller.myOrdersText,
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Color(0xFFEB1C23),
+        ),
+        body: FutureBuilder<Order>(
+          future: fetchOrder(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text('Error: ${snapshot.error}',
+                      style: TextStyle(fontSize: 16, color: Colors.red)));
+            } else if (snapshot.hasData && snapshot.data!.items.isEmpty) {
+              return Center(
+                  child: Text('No items found in your order.',
+                      style: TextStyle(fontSize: 16)));
+            } else {
+              final order = snapshot.data!;
+              return SingleChildScrollView(
+                // Add this line
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Order Summary Section
+                      Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                languagecontroller.summeryText,
+                                style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFEB1C23)),
+                              ),
+                              SizedBox(height: 10.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.totalamountText ,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('\$${order.totalAmount}',
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              SizedBox(height: 8.h),
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.totalquantityText,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('${order.totalQuantity}',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ],
+                              ),
+                              if (box.read('selectedButton') == 'laundry') ...[
+                                SizedBox(height: 8.h),
+                                Divider(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(languagecontroller.collectiondateText,
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey.shade700)),
+                                    Text('${order.collectionDate}',
+                                        style: TextStyle(fontSize: 16.sp)),
+                                  ],
+                                ),
+                                SizedBox(height: 4.h),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(languagecontroller.collectiontimeText,
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey.shade700)),
+                                    Text('${order.collectionTime}',
+                                        style: TextStyle(fontSize: 16.sp)),
+                                  ],
+                                ),
+                              ],
+                              SizedBox(height: 8.h),
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.dateText,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('${order.deliveryDate}',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ],
+                              ),
+                              SizedBox(height: 4.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.timeText,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('${order.deliveryTime}',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ],
+                              ),
+                              SizedBox(height: 8.h),
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.methodText,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('${order.paymentMethod}',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ],
+                              ),
+                              SizedBox(height: 4.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(languagecontroller.changeText,
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade700)),
+                                  Text('${order.paymentChange ?? "N/A"}',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+                      Text(
+                        languagecontroller.orderitemsText,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFEB1C23)),
+                      ),
+
+                      // List of order items
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: order.items.length,
+                        itemBuilder: (context, index) {
+                          final item = order.items[index];
+                          final String? selectedType = box.read('selectedButton');
+
+                          return Card(
+                            color: Colors.white,
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            elevation: 4,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(10),
+                              leading: Image.network(
+                                '${Api.ImageUrl}/products/${item.image}',
+                                width: 80.w,
+                                height: 80.h,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(Icons.hide_image_outlined,
+                                        size: 90.sp, color: Colors.grey),
+                              ),
+                              title: Text(item.name,
+                                  style: TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.w500)),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // if (selectedType == 'grocery' &&
+                                  //     item is GroceryItem)// Common Price display
+                                  Text(
+                                      'Price: \$${double.tryParse(item.price) ?? 0.0}',
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.grey[700])),
+
+                                  // Conditionally show the services if the type is 'laundry' and the item is a LaundryItem
+                                  if (selectedType == 'laundry' &&
+                                      item is LaundryItem)
+                                    Text('Services: ${item.services.join(', ')}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[700])),
+                                ],
+                              ),
+                              trailing: Text('Qty: ${item.quantity}',
+                                  style: TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.w500)),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

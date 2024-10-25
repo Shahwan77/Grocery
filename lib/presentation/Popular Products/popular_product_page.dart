@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
 import '../Cart/cart_page.dart';
+import '../Language Selection/language_controller.dart';
 import '../Popular Products/popular_products_view.dart';
 import '../favorite/fav_controller.dart';
 import '../Products/products_controller.dart';
@@ -16,7 +17,7 @@ class PopularProductPage extends StatelessWidget {
     final CartController cartController = Get.put(CartController());
     final FavoriteController favoriteController = Get.put(FavoriteController());
     final HomeController homeController = Get.put(HomeController());
-
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
 
     return Obx(() {
       if (homeController.isLoading.value) {
@@ -32,7 +33,7 @@ class PopularProductPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Popular Products',
+                    languagecontroller.popularText,
                     style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w600,
                       fontSize: 18.sp,
@@ -63,7 +64,7 @@ class PopularProductPage extends StatelessWidget {
                       });
                     },
                     child: Text(
-                      'See all',
+                      languagecontroller.seeallText,
                       style:TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14.sp,

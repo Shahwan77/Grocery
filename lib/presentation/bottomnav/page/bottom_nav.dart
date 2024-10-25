@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../Cart/cart_controller.dart';
 import '../../Cart/cart_page.dart';
+import '../../Language Selection/language_controller.dart';
 import '../../Promotions/promotions_page.dart';
 import '../../Categories/categories_navbar.dart';
 import '../../account/account.dart';
@@ -23,86 +24,91 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final BottomNavController bottomNavController = Get.put(BottomNavController());
     final CartController cartController = Get.put(CartController());
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
 
-    return Scaffold(
-      body: Obx(
-            () => pages[bottomNavController.selectedIndex.value],
-      ),
-      bottomNavigationBar: Obx(
-            () {
-          final cartItemCount = cartController.isLoggedIn()
-              ? int.tryParse(cartController.total_quantity.value) ?? 0
-              : cartController.localCartItemCount;
 
-          return BottomNavigationBar(
-            currentIndex: bottomNavController.selectedIndex.value,
-            onTap: (index) {
-              bottomNavController.updateIndex(index);
-            },
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: _buildIcon('assets/home.svg', 0, bottomNavController),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIcon('assets/categories.svg', 1, bottomNavController),
-                label: 'Categories',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIcon('assets/offer.svg', 2, bottomNavController),
-                label: 'Deals',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIcon('assets/account.svg', 3, bottomNavController),
-                label: 'Account',
-              ),
-              BottomNavigationBarItem(
-                icon: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _buildIcon('assets/cart3.svg', 4, bottomNavController),
-                    if (cartItemCount > 0)
-                      Positioned(
-                        right: -4,
-                        top: -4,
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.yellow.shade800,
-                            border: Border.all(
-                              color: Color(0xFFEB1C23),
-                              width: 2.w,
-                            ),
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 18.w,
-                            minHeight: 18.h,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$cartItemCount',
-                              style: TextStyle(
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: Obx(
+              () => pages[bottomNavController.selectedIndex.value],
+        ),
+        bottomNavigationBar: Obx(
+              () {
+            final cartItemCount = cartController.isLoggedIn()
+                ? int.tryParse(cartController.total_quantity.value) ?? 0
+                : cartController.localCartItemCount;
+
+            return BottomNavigationBar(
+              currentIndex: bottomNavController.selectedIndex.value,
+              onTap: (index) {
+                bottomNavController.updateIndex(index);
+              },
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: _buildIcon('assets/home.svg', 0, bottomNavController),
+                  label: languagecontroller.homeText,
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildIcon('assets/categories.svg', 1, bottomNavController),
+                  label: languagecontroller.categoriesText,
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildIcon('assets/offer.svg', 2, bottomNavController),
+                  label: languagecontroller.dealsText,
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildIcon('assets/account.svg', 3, bottomNavController),
+                  label: languagecontroller.accountText,
+                ),
+                BottomNavigationBarItem(
+                  icon: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _buildIcon('assets/cart3.svg', 4, bottomNavController),
+                      if (cartItemCount > 0)
+                        Positioned(
+                          right: -4,
+                          top: -4,
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.yellow.shade800,
+                              border: Border.all(
                                 color: Color(0xFFEB1C23),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10.h,
+                                width: 2.w,
+                              ),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 18.w,
+                              minHeight: 18.h,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '$cartItemCount',
+                                style: TextStyle(
+                                  color: Color(0xFFEB1C23),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10.h,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
+                  label: languagecontroller.cartText,
                 ),
-                label: 'Cart',
-              ),
-            ],
-            selectedItemColor: Color(0xFFEB1C23),
-            unselectedItemColor: Colors.black,
-            showUnselectedLabels: true,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-          );
-        },
+              ],
+              selectedItemColor: Color(0xFFEB1C23),
+              unselectedItemColor: Colors.black,
+              showUnselectedLabels: true,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+            );
+          },
+        ),
       ),
     );
   }

@@ -128,7 +128,7 @@ class CartController extends GetxController {
         // } else {
         //   fetchedcartItems.refresh();
         // }
-        saveCartItems();
+       // saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
           postCartItems(token, fetchedcartItems[itemIndex], 'grocery');
@@ -264,7 +264,7 @@ class CartController extends GetxController {
       // Create the dynamic body based on the cart type (grocery or laundry)
       final body = {
         'type': Type,
-        // Type is directly passed from the function arguments
+        'shop_id':1,
         'items':
         [
           {
@@ -340,16 +340,22 @@ class CartController extends GetxController {
   Future<void> fetchCartItems(String token, String type) async {
     GetStorage Box = GetStorage();
     String Type = Box.read('selectedButton');
-    String uri = Type == 'grocery'
+    String baseUri = Type == 'grocery'
         ? Api.CartGetgrocery
         : Type == 'laundry'
             ? Api.CartGetlaundry
             : Api.CartGetgrocery;
-    print(uri);
-    print(token);
+    final uri = Uri.parse(baseUri).replace(queryParameters: {
+      'shop_id': '1',
+      'type': Type,
+    });
+
+    print("Selected API endpoint with query parameters: $uri");
+    print("Authorization Token: $token");
+
     try {
       final response = await http.get(
-        Uri.parse(uri), // Use the type dynamically
+        uri,
         headers: {
           'Authorization': 'Bearer $token',
         },

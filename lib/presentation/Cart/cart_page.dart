@@ -11,6 +11,7 @@ import 'package:lottie/lottie.dart';
 import '../../data/apiClient/api.dart';
 import '../../tstts.dart';
 import '../../widgets/button/button.dart';
+import '../Language Selection/language_controller.dart';
 import '../bottomnav/controller/bottomnav_controller.dart';
 import 'cart_controller.dart';
 
@@ -19,6 +20,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
     final Map<String, dynamic> item;
     final token = GetStorage().read('access_token');
 
@@ -57,7 +59,7 @@ class CartPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Text(
-                      'Your Cart is empty!',
+                      languagecontroller.emptyText,
                       style: TextStyle(
                           fontSize: 20.sp, fontWeight: FontWeight.w600),
                     ),
@@ -66,7 +68,7 @@ class CartPage extends StatelessWidget {
                       size: Size(164, 54),
                       color: Color(0xFFEB1C23),
                       text: Text(
-                        'Start Shopping',
+                        languagecontroller.startText,
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
@@ -197,9 +199,21 @@ class CartPage extends StatelessWidget {
                                           ),
                                         ),
                                         Spacer(),
-                                      if (Box.read('selectedButton') == 'laundry') ...[
-                                        Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
-                                      ],
+
+                                        if (Box.read('selectedButton') == 'laundry') ...[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: item['services'].map<Widget>((service) {
+                                              return Text(
+                                                service,
+                                                style: TextStyle(fontSize: 16),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ],
+                                      // if (Box.read('selectedButton') == 'laundry') ...[
+                                      //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                      // ],
                                         Visibility(
                                           visible: Box.read('selectedButton') != 'laundry',
                                           child: Row(
@@ -226,16 +240,15 @@ class CartPage extends StatelessWidget {
                                                       child: IconButton(
                                                         icon: Icon(
                                                           Icons.remove,
-                                                          color: (item['quantity'] ?? 0) > 1
-                                                              ? Colors.red.shade600
-                                                              : Colors.grey,
+                                                          color: (item['quantity'] ?? 0) > 1 ? Colors.red.shade600 : Colors.grey,
                                                         ),
                                                         onPressed: () {
                                                           if ((item['quantity'] ?? 0) > 1) {
-                                                            cartController.updateQuantity(productId, -1);
+                                                            cartController.updateQuantity(productId, -1); // Reduce quantity by 1
                                                           }
                                                         },
                                                       ),
+
                                                     ),
 
                                                     SizedBox(width: 5.w),
@@ -290,7 +303,7 @@ class CartPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Total:',
+                            Text(languagecontroller.totalText,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 18.sp)),
@@ -317,7 +330,7 @@ class CartPage extends StatelessWidget {
                           color: Color(0xFFEB1C23),
                           size: Size(340.w, 45.h),
                           text: Text(
-                            "Continue",
+                            languagecontroller.continueText,
                             style:
                                 TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
@@ -344,7 +357,7 @@ class CartPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Text(
-                      'Your Cart is empty!',
+                      languagecontroller.emptyText,
                       style: TextStyle(
                           fontSize: 20.sp, fontWeight: FontWeight.w600),
                     ),
@@ -353,7 +366,7 @@ class CartPage extends StatelessWidget {
                       size: Size(164, 54),
                       color: Color(0xFFEB1C23),
                       text: Text(
-                        'Start Shopping',
+                        languagecontroller.startText,
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,

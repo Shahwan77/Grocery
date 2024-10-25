@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:grocery/presentation/organic/organic_model.dart';
 
+import '../Language Selection/language_controller.dart';
+
 class PromotionsPage extends StatelessWidget {
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +16,7 @@ class PromotionsPage extends StatelessWidget {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          'Promotions',
+         languagecontroller.dealsText,
           style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,

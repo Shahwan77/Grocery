@@ -139,6 +139,7 @@ class PaymentMethodController extends GetxController {
 print(bix.read('selectedButton'));
     final Map<String, dynamic> body = {
       "type": bix.read('selectedButton'),
+      "shop_id": 1,
       "collection" : {
         "date" : collectionTimecontroller.selectedIndex.value ==0
       ? controller.today

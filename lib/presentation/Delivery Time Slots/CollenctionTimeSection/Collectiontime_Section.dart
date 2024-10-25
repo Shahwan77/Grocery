@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../widgets/button/button.dart';
 import '../../Cart/cart_controller.dart';
+import '../../Language Selection/language_controller.dart';
 import '../../order_details/order_details.dart';
 import 'collection_time_controller.dart';
 
@@ -17,12 +18,12 @@ class CollectionTimeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final CollectionTimeController collectionTimeController = Get.put(CollectionTimeController());
     final CartController cartController = Get.put(CartController());
-
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Collection Date & Timeslots',
+          languagecontroller.collectionText,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15.sp),
         ),
         SizedBox(height: 10.h),
@@ -51,7 +52,7 @@ class CollectionTimeSection extends StatelessWidget {
                   children: [
                     SizedBox(height: 2.h),
                     Text(
-                      'Today',
+                      languagecontroller.todayText,
                       style: TextStyle(
                         color: collectionTimeController.selectedIndex.value == 0
                             ? Colors.white
@@ -96,7 +97,7 @@ class CollectionTimeSection extends StatelessWidget {
                   children: [
                     SizedBox(height: 2.h),
                     Text(
-                      'Tomorrow',
+                     languagecontroller.tomorrowText,
                       style: TextStyle(
                         color: collectionTimeController.selectedIndex.value == 1
                             ? Colors.white
@@ -185,7 +186,7 @@ class CollectionTimeSection extends StatelessWidget {
               size: Size(80.w, 44.h),
               color: Color(0xFFEB1C23),
               text: Text(
-                'Prev',
+               languagecontroller.prevText,
                 style: TextStyle(color: Colors.white),
               ),
               ontap: () {
@@ -199,7 +200,7 @@ class CollectionTimeSection extends StatelessWidget {
               size: Size(80.w, 44.h),
               color: Color(0xFFEB1C23),
               text: Text(
-                'Next',
+               languagecontroller.nextText,
                 style: TextStyle(color: Colors.white),
               ),
               ontap: () {

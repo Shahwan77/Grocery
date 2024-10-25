@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:grocery/presentation/Language%20Selection/language_selection.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
 import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
@@ -22,6 +23,9 @@ class AppPages {
     GetPage(
       name: AppRoutes.BottomNav,
       page: () => CustomBottomNavBar(),
+    ),  GetPage(
+      name: AppRoutes.Language,
+      page: () => WelcomePage(),
     ),
   ];
 }

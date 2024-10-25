@@ -9,11 +9,11 @@ class Api {
   static String DiscountProduct='$ApiUrl/products/discount';
   static String PopularCategories='$ApiUrl/product-categories/popular';
   static String Login = '$ApiUrl/login';
-  static String CartPost = '$ApiUrl/cart';
-  static String CartGetgrocery = '$ApiUrl/cart?type=grocery';
-  static String CartGetlaundry = '$ApiUrl/cart?type=laundry';
-  static String CartRemove = '$ApiUrl/cart/remove';
-  static String Order = '$ApiUrl/order';
+  static String CartPost = '$ApiUrl/carts';
+  static String CartGetgrocery = '$ApiUrl/carts?shop_id=1&type=grocery';
+  static String CartGetlaundry = '$ApiUrl/carts?shop_id=1&type=laundry';
+  static String CartRemove = '$ApiUrl/carts/remove';
+  static String Order = '$ApiUrl/orders';
   static String MyOrderlaundry = '$ApiUrl/order?type=laundry';
   static String MyOrdergrocery = '$ApiUrl/order?type=grocery';
   static String Logout = '$ApiUrl/logout';

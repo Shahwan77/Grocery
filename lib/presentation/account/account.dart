@@ -7,40 +7,47 @@ import 'package:get_storage/get_storage.dart';
 import 'package:grocery/data/apiClient/api.dart';
 import 'package:grocery/presentation/account/user_data.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
-import 'package:grocery/presentation/home_screen/page/home_page.dart';
 import 'package:grocery/presentation/sign_in_screen/page/login_page.dart';
-import 'package:grocery/presentation/sign_up_screen/controller/signup_controller.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../data/models/register_model.dart';
-import '../../tst12.dart';
 import '../Cart/cart_controller.dart';
+import '../Language Selection/language_controller.dart';
 import '../order_details/my_orders.dart';
+import '../sign_up_screen/controller/signup_controller.dart';
+import 'account_login.dart';
+import 'language.dart';
 
 class Account extends StatelessWidget {
   Account({super.key});
   final CartController cartController = Get.put(CartController());
-  final List<String> account = [
-    'Notification',
-    'My Orders',
-    'Add Address',
-    'Change Email Address',
-    'Edit Profile',
-    'Change Password',
-    'Change Mobile Number',
-    'Logout',
-  ];
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
 
+  // List of icons and corresponding translation keys
   final List<IconData> accounticon = [
     Icons.notifications_outlined,
     Icons.shopping_cart,
+    Icons.language_outlined,
     Icons.location_on_outlined,
     Icons.email_outlined,
     Icons.edit_outlined,
     Icons.more_horiz,
     Icons.phone_android_outlined,
     Icons.logout,
+  ];
+
+  // Translation keys corresponding to each account item
+  final List<String> accountTextKeys = [
+    'notification',    // "Notification"
+    'my_orders',       // "My Orders"
+    'language',
+    'add_address',     // "Add Address"
+    'change_email',    // "Change Email"
+    'edit_profile',    // "Edit Profile"
+    'change_password', // "Change Password"
+    'change_mobile',   // "Change Mobile"
+    'logout',          // "Logout"
   ];
 
   Future<void> logout() async {
@@ -56,12 +63,11 @@ class Account extends StatelessWidget {
 
     if (response.statusCode == 200) {
       // Successfully logged out
-
       print(response.body);
       GetStorage().remove('access_token'); // Clear the token
       Get.snackbar('Logout', 'Successfully logged out', snackPosition: SnackPosition.BOTTOM);
       cartController.clearLocalCart();
-      Get.offAll(CustomBottomNavBar()); // Navigate to login screen (change to your login route)
+      Get.offAll(CustomBottomNavBar()); // Navigate to bottom nav (change as needed)
     } else {
       // Handle error
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -75,154 +81,159 @@ class Account extends StatelessWidget {
     final SignupController signupController = Get.put(SignupController());
     final token = box.read('access_token');
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        toolbarHeight: 8.h,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Color(0xFFEB1C23),
-          statusBarIconBrightness: Brightness.light,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: 8.h,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Color(0xFFEB1C23),
+            statusBarIconBrightness: Brightness.light,
+          ),
+          backgroundColor: Color(0xFFEB1C23),
         ),
-        backgroundColor: Color(0xFFEB1C23),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-        child: token != null
-            ? FutureBuilder<User?>(
-          future: UserData().fetchUser(), // Fetch user data
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData) {
-              final user = snapshot.data;
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 110.h,
-                      width: 320.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(26.r),
-                        color: Color(0xFFEB1C23),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  height: 84.h,
-                                  width: 90.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18.r),
-                                    color: Colors.white,
-                                  ),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 50.sp,
+        body: Padding(
+          padding: EdgeInsets.symmetric(),
+          child: token != null
+              ? FutureBuilder<User?>(
+            future: UserData().fetchUser(), // Fetch user data
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                final user = snapshot.data;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.h,),
+                      Container(
+                        height: 110.h,
+                        width: 320.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(26.r),
+                          color: Color(0xFFEB1C23),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    height: 84.h,
+                                    width: 90.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(18.r),
+                                      color: Colors.white,
+                                    ),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 50.sp,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  user?.name ?? 'NAME', // Displaying the user's name or placeholder
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w800,
+                                  SizedBox(
+                                    width: 10.w,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  Text(
+                                    user?.name ?? 'NAME', // Displaying user's name
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    ListView.builder(
-                      itemCount: account.length,
-                      scrollDirection: Axis.vertical,
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: ListTile(
-                              leading: Container(
-                                width: 34.w,
-                                height: 30.h,
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Padding(
+                        padding:  EdgeInsets.symmetric(horizontal: 20.w,),
+                        child: ListView.builder(
+                          itemCount: accounticon.length,
+                          scrollDirection: Axis.vertical,
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final accountText = accountTextKeys[index].tr; // Directly using the translation key
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30.r),
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
-                                child: Icon(accounticon[index]),
-                              ),
-                              title: Text(account[index]),
-                              trailing: Icon(Icons.arrow_forward_ios_rounded),
-                              onTap: () {
-                                if (account[index] == 'Logout') {
-                                  Get.dialog(
-                                    AlertDialog(
-                                      title: Text('Logout Confirmation'),
-                                      content: Text('Are you sure you want to logout?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Get.back(); // Close the dialog
-                                          },
-                                          child: Text('No'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Get.back(); // Close the dialog
-                                            logout(); // Call the logout function
-                                          },
-                                          child: Text('Yes'),
-                                        ),
-                                      ],
+                                child: ListTile(
+                                  leading: Container(
+                                    width: 34.w,
+                                    height: 30.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(30.r),
                                     ),
-                                  );
-                                } else if (account[index] == 'My Orders') {
-                                  // Navigate to My Orders Page
-                                  Get.to(OrderPage());
-                                }
-                                else {
-                                  print('Tapped on ${account[index]}');
-                                }
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Center(child: Text('No user data found.'));
-            }
-          },
-        )
-            : Center(
-          child: Text(
-            'Please login to access your account',
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-          ),
+                                    child: Icon(accounticon[index]),
+                                  ),
+                                  title: Text(accountText), // Translated text
+                                  trailing: Icon(Icons.arrow_forward_ios_rounded),
+                                  onTap: () {
+                                    if (accountText == 'logout'.tr) {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: Text('logout'.tr), // Localized title
+                                          content: Text('Are you sure you want to logout?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Get.back(); // Close the dialog
+                                              },
+                                              child: Text('No'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Get.back(); // Close the dialog
+                                                logout(); // Call the logout function
+                                              },
+                                              child: Text('Yes'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else if (accountText == 'my_orders'.tr) {
+                                      Get.to(OrderPage()); // Navigate to My Orders
+                                    } else if (accountText == 'language'.tr) {
+
+                                      Get.to(LanguagePage());
+                                    }
+                                    else {
+                                      print('Tapped on $accountText');
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Center(child: Text('No user data found.'));
+              }
+            },
+          )
+              : AccountLoginPage()
         ),
       ),
     );

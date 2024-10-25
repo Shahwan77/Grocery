@@ -18,6 +18,6 @@ class SplashController extends GetxController {
     await Future.delayed(
       Duration(seconds: 4),
     );
-   Get.offNamed('/bottomnav');
+   Get.offNamed('/language');
   }
 }

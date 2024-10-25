@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:grocery/presentation/Delivery%20Time%20Slots/PaymentSection/payment_controller.dart';
 import '../../../widgets/button/button.dart';
 import '../../Cart/cart_controller.dart';
+import '../../Language Selection/language_controller.dart';
 import '../DeliveryTimeSection/delivery_time_controller.dart';
 
 class PaymentSection extends StatelessWidget {
@@ -25,7 +26,7 @@ class PaymentSection extends StatelessWidget {
     Get.put(PaymentMethodController());
     final DeliveryTimeController deliveryTimeController =
     Get.put(DeliveryTimeController());
-
+    final WelcomeController languagecontroller = Get.put(WelcomeController());
     final List<String> paybycashItems = [
       'NO Change Needed',
       'AED 50',
@@ -37,7 +38,7 @@ class PaymentSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Payment Method',
+         languagecontroller.paymentText,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15.sp),
         ),
         SizedBox(height: 10.h),
@@ -65,7 +66,7 @@ class PaymentSection extends StatelessWidget {
                   children: [
                     SizedBox(height: 2.h),
                     Text(
-                      'Pay By Cash',
+                      languagecontroller.cashText,
                       style: TextStyle(
                         color:
                         paymentMethodController.selectedIndex.value == 0
@@ -74,7 +75,7 @@ class PaymentSection extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Available',
+                      languagecontroller.availableText,
                       style: TextStyle(
                         color:
                         paymentMethodController.selectedIndex.value == 0
@@ -109,7 +110,7 @@ class PaymentSection extends StatelessWidget {
                   children: [
                     SizedBox(height: 2.h),
                     Text(
-                      'Bring Card Reader',
+                      languagecontroller.cardText,
                       style: TextStyle(
                         color:
                         paymentMethodController.selectedIndex.value == 1
@@ -118,7 +119,7 @@ class PaymentSection extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Available',
+                      languagecontroller.availableText,
                       style: TextStyle(
                         color:
                         paymentMethodController.selectedIndex.value == 1
@@ -189,7 +190,7 @@ class PaymentSection extends StatelessWidget {
             Button(
               size: Size(80.w, 44.h),
               color:Color(0xFFEB1C23),
-              text: Text('Prev', style: TextStyle(color: Colors.white)),
+              text: Text(languagecontroller.prevText, style: TextStyle(color: Colors.white)),
               ontap: () {
                 deliveryTimeController.backToDeliveryTime();
               },
@@ -198,7 +199,7 @@ class PaymentSection extends StatelessWidget {
             Button(
               size: Size(100.w, 44.h),
               color: Color(0xFFEB1C23),
-              text: Text('Confirm', style: TextStyle(color: Colors.white)),
+              text: Text(languagecontroller.confirmText, style: TextStyle(color: Colors.white)),
               ontap: () {
                 paymentMethodController.postOrder();
               },

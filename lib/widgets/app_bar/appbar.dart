@@ -9,6 +9,7 @@ import 'package:grocery/presentation/home_screen/controller/home_controller.dart
 import 'package:grocery/widgets/drawer/cus_drawer.dart';
 
 import '../../presentation/Cart/cart_controller.dart';
+import '../../presentation/Language Selection/language_controller.dart';
 import '../../presentation/Scanner/scanner_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -23,6 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     HomeController homeController = Get.put(HomeController());
     final CartController cartController = Get.put(CartController());
+    final WelcomeController controller = Get.put(WelcomeController());
     final box = GetStorage();
 
 
@@ -71,7 +73,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     children: [
                       Image.asset('assets/logo.png', width: 40.w),
                       Text(
-                        'Grocery',
+                        controller.groceryText,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -114,7 +116,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     children: [
                       Image.asset('assets/laundry2.png', width: 40.w),
                       Text(
-                        'Laundry',
+                        controller.laundryText,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -154,7 +156,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     children: [
                       Image.asset('assets/offers2.png', width: 40.w),
                       Text(
-                        'Offers',
+                        controller.offersText,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -196,7 +198,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Padding(
                         padding: EdgeInsets.only(bottom: 6),
                         child: Text(
-                          'AJ',
+                         controller.ajText,
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
