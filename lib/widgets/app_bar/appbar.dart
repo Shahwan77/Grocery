@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/home_screen/controller/home_controller.dart';
 import 'package:grocery/widgets/drawer/cus_drawer.dart';
 
+import '../../Admin/to_do_controller.dart';
 import '../../presentation/Cart/cart_controller.dart';
 import '../../presentation/Language Selection/language_controller.dart';
 import '../../presentation/Scanner/scanner_page.dart';
@@ -25,6 +26,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     HomeController homeController = Get.put(HomeController());
     final CartController cartController = Get.put(CartController());
     final WelcomeController controller = Get.put(WelcomeController());
+    final OrderController orderController = Get.put(OrderController());
+
     final box = GetStorage();
 
 
@@ -65,7 +68,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     homeController.fetchCategories();
                     box.write('selectedButton', 'grocery');
                     String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
-                    print('Selected Button: $selectedButton'); // Print the value
+                    print('Selected Button: $selectedButton');
+                    orderController.fetchAdminOrderlist();// Print the value
                   },
 
                   child: Column(
@@ -109,7 +113,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     homeController.fetchLaundry();
                     box.write('selectedButton', 'laundry');
                     String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
-                    print('Selected Button: $selectedButton');// Store value in local storage
+                    print('Selected Button: $selectedButton');
+                    orderController.fetchAdminOrderlist();// Store value in local storage
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

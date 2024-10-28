@@ -20,4 +20,8 @@ class Api {
   static String User = '$ApiUrl/user';
   static String Register = '$ApiUrl/register';
   static String CategoryLaundry= '$ApiUrl/product-categories?type=laundry';
+  static String AdminOrdergrocery= '$ApiUrl/admin/orders?shop_id=1&type=grocery&status=unassigned';
+  static String AdminOrderlaundry= '$ApiUrl/admin/orders?shop_id=1&type=laundry&status=unassigned';
+  static String AdminInOrdergrocery= '$ApiUrl/admin/orders?shop_id=1&type=grocery&status=assigned';
+  static String AdminInOrderlaundry= '$ApiUrl/admin/orders?shop_id=1&type=laundry&status=assigned';
 }

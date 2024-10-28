@@ -339,7 +339,7 @@ class CartController extends GetxController {
 
   Future<void> fetchCartItems(String token, String type) async {
     GetStorage Box = GetStorage();
-    String Type = Box.read('selectedButton');
+    String Type = Box.read('selectedButton')??'grocery';
     String baseUri = Type == 'grocery'
         ? Api.CartGetgrocery
         : Type == 'laundry'

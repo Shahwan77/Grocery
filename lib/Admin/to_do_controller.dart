@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 
 import '../data/models/admin_orderlist_model.dart';
@@ -7,24 +9,29 @@ import '../data/models/admin_orderlist_model.dart';
 class OrderController extends GetxController {
   var isLoading = false.obs;
   var orders = <Orderlist>[].obs;
-
+  GetStorage box = GetStorage();
   @override
   void onInit() {
-    fetchOrders();
+    fetchAdminOrderlist();
     super.onInit();
   }
 
-  Future<void> fetchOrders() async {
+  Future<void> fetchAdminOrderlist() async {
+    final String? token = box.read('access_token');
+    String Type = box.read('selectedButton')??'grocery';
     isLoading.value = true;
     try {
+      String apiUrl = (Type == 'grocery') ? Api.AdminOrdergrocery : Api.AdminOrderlaundry;
       final response = await http.get(
-        Uri.parse('https://grocery-dev.greendomains.in/api/admin/orders?shop_id=1&type=grocery'),
+        Uri.parse(apiUrl),
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer 474|mo7xMy3xgCxTffLvpiQJpJJWS8WK7PvqMLCiUUjmfeb0f1b9',
+          'Authorization': 'Bearer $token',
         },
       );
-
+     // await Future.delayed(Duration(seconds: 2));
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
         if (jsonResponse.containsKey('data') && jsonResponse['data'] is List) {

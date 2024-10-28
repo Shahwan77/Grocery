@@ -60,7 +60,7 @@ class OrdersList extends StatelessWidget {
               ),
               TabBar(
                 labelColor: Color(0xFFEB1C23),
-                unselectedLabelColor: Colors.grey,
+                unselectedLabelColor: Colors.grey,dividerColor: Colors.transparent,
                 indicatorColor: Colors.transparent,
                 tabs: [
                   Tab(
@@ -79,6 +79,7 @@ class OrdersList extends StatelessWidget {
                     icon: Icon(Icons.assignment_turned_in),
                     text: languagecontroller.completeText,
                   ),
+
                 ],
               ),
               // TabBarView with content for each tab

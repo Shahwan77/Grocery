@@ -11,6 +11,7 @@ class Orderlist {
   final String totalAmount;
   final String status;
   final List<Item> items;
+  final User user;
 
   Orderlist({
     required this.id,
@@ -25,6 +26,7 @@ class Orderlist {
     required this.totalAmount,
     required this.status,
     required this.items,
+    required this.user,
   });
 
   factory Orderlist.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class Orderlist {
       totalAmount: json['total_amount'],
       status: json['status'],
       items: items,
+      user: User.fromJson(json['user']),
     );
   }
 }
@@ -96,6 +99,25 @@ class Product {
       name: json['name'],
       image: json['image'],
       price: json['price'],
+    );
+  }
+}
+class User {
+  final String id;
+  final String name;
+  final String mobileNo;
+
+  User({
+    required this.id,
+    required this.name,
+    required this.mobileNo,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'].toString(),
+      name: json['name'],
+      mobileNo: json['mobile_no'] ?? '', // Use a default value if null
     );
   }
 }
