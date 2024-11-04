@@ -54,8 +54,9 @@ class LoginController extends GetxController {
 
           // Navigate to OrdersList if user type is Shop Admin
           if (userType == 'Shop Admin') {
-            Get.offAll(() => OrdersList());
-          } else {
+            //Get.offAll(() => OrdersList());
+          }
+          else {
             // Proceed with normal user navigation
             if (cartController.cartItems.isNotEmpty) {
               // Post each cart item after login

@@ -67,7 +67,7 @@ class CartController extends GetxController {
   Future<void> toggleCart(
       int productId,
       String itemName,
-   String itemPrice,
+      String itemPrice,
       String itemImage,
       Map<int, Map<String, dynamic>>? selectedServices
       ) async {
@@ -87,7 +87,16 @@ class CartController extends GetxController {
         cartItems.removeAt(itemIndex);
       }
     }
-    final servicesList = selectedServices?.keys.toList() ?? [];
+    List<Map<String, dynamic>> servicesList = [];
+    if (selectedServices != null) {
+      selectedServices.forEach((id, service) {
+        servicesList.add({
+          'id': id,
+          'name': service['name'],
+          'price': service['price'],
+        });
+      });
+    }
     print('fffff: ${servicesList}');
     // Create a new cart item
     final newItem = {
@@ -128,7 +137,7 @@ class CartController extends GetxController {
         // } else {
         //   fetchedcartItems.refresh();
         // }
-       // saveCartItems();
+        // saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
           postCartItems(token, fetchedcartItems[itemIndex], 'grocery');
@@ -136,7 +145,7 @@ class CartController extends GetxController {
       }
     } else {
       final itemIndex =
-          cartItems.indexWhere((item) => item['product_id'] == productId);
+      cartItems.indexWhere((item) => item['product_id'] == productId);
       if (itemIndex >= 0) {
         cartItems[itemIndex]['quantity'] += change;
 
@@ -223,7 +232,7 @@ class CartController extends GetxController {
 
   void removeItemLocally(int productId) {
     final itemIndex =
-        fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
+    fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
     if (itemIndex >= 0) {
       print("Deleted item from local cart: ${fetchedcartItems[itemIndex]}");
       fetchedcartItems.removeAt(itemIndex);
@@ -231,7 +240,7 @@ class CartController extends GetxController {
     }
 
     final localItemIndex =
-        cartItems.indexWhere((item) => item['product_id'] == productId);
+    cartItems.indexWhere((item) => item['product_id'] == productId);
     if (localItemIndex >= 0) {
       print("Deleted item from fetched cart: ${cartItems[itemIndex]}");
       cartItems.removeAt(localItemIndex);
@@ -271,28 +280,9 @@ class CartController extends GetxController {
             'product_id': cartItem['product_id'],
             'quantity': cartItem['quantity'],
             'services':  cartItem['service'],
-            // [{
-            //   "id": 1,
-            //   "name": "Dry Clean",
-            //   "price": "10.00"
-            // }], // Services for laundry
+
           }
         ]
-        // Type == 'laundry'
-        //     ? [
-        //   {
-        //     'product_id': cartItem['product_id'],
-        //     'quantity': cartItem['quantity'],
-        //     'services': cartItem['services'] ?? [], // Services for laundry
-        //   }
-        // ]
-        //     : [
-        //   {
-        //     'product_id': cartItem['product_id'],
-        //     'quantity': cartItem['quantity'],
-        //     // Add more fields if necessary for grocery items
-        //   }
-        // ]
       };
 
       // Print debug information to verify the body content
@@ -343,8 +333,8 @@ class CartController extends GetxController {
     String baseUri = Type == 'grocery'
         ? Api.CartGetgrocery
         : Type == 'laundry'
-            ? Api.CartGetlaundry
-            : Api.CartGetgrocery;
+        ? Api.CartGetlaundry
+        : Api.CartGetgrocery;
     final uri = Uri.parse(baseUri).replace(queryParameters: {
       'shop_id': '1',
       'type': Type,

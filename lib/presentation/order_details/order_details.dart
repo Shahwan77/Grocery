@@ -305,12 +305,26 @@ class OrderDetails extends StatelessWidget {
                                       '*${item['quantity']}',
                                       style: TextStyle(color: Colors.green),
                                     ),
-                                  ] else if (Box.read('selectedButton') == 'laundry') ...[
-                                    Text(
-                                      '${item['services'].join(', ')}',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
+                                  ]
+                                  // else  if (Box.read('selectedButton') == 'laundry') ...[
+                                  //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                  // ]
+                                  else
+                                    if (Box.read('selectedButton') == 'laundry') ...[
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
+                                          final serviceName = (service is Map && service['name'] != null)
+                                              ? service['name']
+                                              : 'Unknown Service';
+                                          print('Services: ${item['services']}');
+                                          return Text(
+                                            serviceName,
+                                            style: TextStyle(fontSize: 16),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
                                 ],
                               ),
       
@@ -326,7 +340,7 @@ class OrderDetails extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(14.r),
                               ),
                               tileColor: Colors
-                                  .grey.shade200, // Background color for the tile
+                                  .grey.shade200,
                             ),
                             SizedBox(
                               height: 15,

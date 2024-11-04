@@ -26,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     HomeController homeController = Get.put(HomeController());
     final CartController cartController = Get.put(CartController());
     final WelcomeController controller = Get.put(WelcomeController());
-    final OrderController orderController = Get.put(OrderController());
+    //final OrderController orderController = Get.put(OrderController());
 
     final box = GetStorage();
 
@@ -69,7 +69,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     box.write('selectedButton', 'grocery');
                     String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
                     print('Selected Button: $selectedButton');
-                    orderController.fetchAdminOrderlist();// Print the value
+                    //orderController.fetchAdminOrderlist();// Print the value
                   },
 
                   child: Column(
@@ -114,7 +114,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     box.write('selectedButton', 'laundry');
                     String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
                     print('Selected Button: $selectedButton');
-                    orderController.fetchAdminOrderlist();// Store value in local storage
+                    //orderController.fetchAdminOrderlist();// Store value in local storage
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

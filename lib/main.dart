@@ -7,6 +7,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Language%20Selection/TranslationService.dart';
 import 'package:grocery/presentation/Language%20Selection/language_selection.dart';
+import 'package:grocery/presentation/replace/replace.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
 import 'Admin/orders_list.dart';
@@ -52,10 +53,10 @@ class MyApp extends StatelessWidget {
           Locale('es'), // Spanish
         ],
         title: 'Flutter Demo',
-         //home: OrdersList(),
+         //home: MissingItemPage(),
          initialRoute: AppRoutes.Splash,
          getPages: AppPages.Lists,
-        debugShowCheckedModeBanner: false, // Remove banner
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

@@ -55,7 +55,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                          Lottie.asset('assets/Animation - 1724233631425.json'),
+                      Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -116,30 +116,30 @@ class CartPage extends StatelessWidget {
                                         width: 100.w,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(20.r),
+                                          BorderRadius.circular(20.r),
                                           color: Colors.white,
                                         ),
                                         child: Center(
                                           child: item['image'] != null &&
-                                                  item['image'].isNotEmpty
+                                              item['image'].isNotEmpty
                                               ? Image.network(
-                                                  '${Api.ImageUrl}/products/${item['image']}',
-                                                  width: 80.w,
-                                                  height: 80.h,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error,
-                                                          stackTrace) =>
-                                                      Icon(
-                                                    Icons.hide_image_outlined,
-                                                    size: 90.sp,
-                                                    color: Colors.grey,
-                                                  ),
-                                                )
-                                              : Icon(
+                                            '${Api.ImageUrl}/products/${item['image']}',
+                                            width: 80.w,
+                                            height: 80.h,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error,
+                                                stackTrace) =>
+                                                Icon(
                                                   Icons.hide_image_outlined,
-                                                  size: 60.sp,
+                                                  size: 90.sp,
                                                   color: Colors.grey,
                                                 ),
+                                          )
+                                              : Icon(
+                                            Icons.hide_image_outlined,
+                                            size: 60.sp,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                       Positioned(
@@ -153,7 +153,7 @@ class CartPage extends StatelessWidget {
                                             color: Colors.grey.shade200,
                                             borderRadius: BorderRadius.only(
                                               bottomRight:
-                                                  Radius.circular(14.r),
+                                              Radius.circular(14.r),
                                               bottomLeft: Radius.circular(14.r),
                                             ),
                                           ),
@@ -166,12 +166,12 @@ class CartPage extends StatelessWidget {
                                             ),
                                             onPressed: () {
                                               final productId =
-                                                  item['product_id'];
+                                              item['product_id'];
 
                                               if (token != null) {
                                                 cartController
                                                     .removeItemFromCart(
-                                                        productId);
+                                                    productId);
                                               } else {
                                                 cartController.removeFromCart(
                                                   item['name'],
@@ -189,7 +189,7 @@ class CartPage extends StatelessWidget {
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           item['name'],
@@ -203,17 +203,22 @@ class CartPage extends StatelessWidget {
                                         if (Box.read('selectedButton') == 'laundry') ...[
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: item['services'].map<Widget>((service) {
+                                            children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
+                                              final serviceName = (service is Map && service['name'] != null)
+                                                  ? service['name']
+                                                  : 'Unknown Service';
+                                              print('Services: ${item['services']}');
                                               return Text(
-                                                service,
+                                                serviceName,
                                                 style: TextStyle(fontSize: 16),
                                               );
                                             }).toList(),
                                           ),
                                         ],
-                                      // if (Box.read('selectedButton') == 'laundry') ...[
-                                      //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
-                                      // ],
+
+                                        // if (Box.read('selectedButton') == 'laundry') ...[
+                                        //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                        // ],
                                         Visibility(
                                           visible: Box.read('selectedButton') != 'laundry',
                                           child: Row(
@@ -332,7 +337,7 @@ class CartPage extends StatelessWidget {
                           text: Text(
                             languagecontroller.continueText,
                             style:
-                                TextStyle(fontSize: 18.sp, color: Colors.white),
+                            TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
                           ontap: () async {
                             if (!cartController.isLoggedIn()) {
@@ -353,7 +358,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                          Lottie.asset('assets/Animation - 1724233631425.json'),
+                      Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(

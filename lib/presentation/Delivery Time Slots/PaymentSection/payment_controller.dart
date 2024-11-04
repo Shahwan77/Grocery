@@ -123,18 +123,20 @@ class PaymentMethodController extends GetxController {
     }
 
     List<Map<String, dynamic>> items =
-        cartcontroller.getCartItems().map((item) {
+    cartcontroller.getCartItems().map((item) {
       return {
         "product_id": item['product_id'],
         "quantity": item['quantity'],
         "services": (item['services'] as List<dynamic>?)?.map((serviceItem) {
-              // Ensure the serviceItem is mapped to the desired structure if needed
-              return serviceItem
-                  .toString(); // Adjust this as per the required format
-            }).toList() ??
-            [],
+          return {
+            "id": serviceItem['id'],
+            "name": serviceItem['name'],
+            "price": serviceItem['price'],
+          };
+        }).toList() ?? [],
       };
     }).toList();
+
     print('Items: $items');
 print(bix.read('selectedButton'));
     final Map<String, dynamic> body = {

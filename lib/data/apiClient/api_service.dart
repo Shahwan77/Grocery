@@ -45,7 +45,7 @@ class ApiService {
   }
 
   Future<List<Models>> fetchCategoryProducts(int categoryId, String type) async {
-    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId&type=$type'));
+    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId&type=$type&shop_id=1'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -62,7 +62,7 @@ class ApiService {
   }
 
   Future<List<Models>> fetchTabs(int subcategoryId, String type) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId&type=$type'));
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId&type=$type&shop_id=1'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
