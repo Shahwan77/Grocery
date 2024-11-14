@@ -25,15 +25,15 @@ class DeliveryTimeController extends GetxController {
   final CartController cartController = Get.put(CartController());
 
   var todayItems = <String>[
-    '2:37 PM - 3:37 PM',
-    '3:37 PM - 4:37 PM',
-    '4:37 PM - 5:37 PM'
+    '12:00 AM - 1:00 AM',
+    '1:00 AM - 2:00 AM',
+    '2:00 AM - 3:00 AM',
   ].obs;
 
   var tomorrowItems = <String>[
-    '2:30 PM - 3:30 PM',
-    '3:30 PM - 4:30 PM',
-    '4:30 PM - 5:30 PM'
+    '12:00 AM - 1:00 AM',
+    '1:00 AM - 2:00 AM',
+    '2:00 AM - 3:00 AM',
   ].obs;
 
   void updateSelectedIndex(int index) {

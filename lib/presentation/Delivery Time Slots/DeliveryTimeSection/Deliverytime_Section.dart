@@ -132,51 +132,55 @@ class DeliveryTimeSection extends StatelessWidget {
               ? deliveryTimeController.todayCheckedList
               : deliveryTimeController.tomorrowCheckedList;
 
-          return ListView.builder(
-            itemCount: items.length,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(color: Colors.grey.shade200)),
-                    child: ListTile(
-                      title: Text(items[index], style: TextStyle(fontSize: 14.sp)),
-                      trailing: Obx(() {
-                        return Container(
-                          height: 30.h,
-                          width: 34.w,
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(30.r)),
-                          child: Checkbox(
-                            value: isCheckedList[index],
-                            onChanged: (value) {
-                              deliveryTimeController.toggleCheckbox(index);
-                            },
-                            activeColor: Colors.transparent,
-                            checkColor:Color(0xFFEB1C23),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.r)),
-                            side: MaterialStateBorderSide.resolveWith(
-                                  (states) => BorderSide.none,
-                            ),
-                          ),
-                        );
-                      }),
-                      onTap: () {
-                        deliveryTimeController.toggleCheckbox(index);
-                      },
-                    ),
-                  ),
-                ],
-              );
-            },
+          return Container(
+            height: 300.h, // Set the desired height for the scrollable list
+            child: SingleChildScrollView(
+              child: ListView.builder(
+                itemCount: items.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(), // Prevents ListView from scrolling independently
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(color: Colors.grey.shade200)),
+                        child: ListTile(
+                          title: Text(items[index], style: TextStyle(fontSize: 14.sp)),
+                          trailing: Obx(() {
+                            return Container(
+                              height: 30.h,
+                              width: 34.w,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(30.r)),
+                              child: Checkbox(
+                                value: isCheckedList[index],
+                                onChanged: (value) {
+                                  deliveryTimeController.toggleCheckbox(index);
+                                },
+                                activeColor: Colors.transparent,
+                                checkColor: Color(0xFFEB1C23),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.r)),
+                                side: MaterialStateBorderSide.resolveWith(
+                                      (states) => BorderSide.none,
+                                ),
+                              ),
+                            );
+                          }),
+                          onTap: () {
+                            deliveryTimeController.toggleCheckbox(index);
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           );
         }),
 

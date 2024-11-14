@@ -126,6 +126,8 @@ class SignupController extends GetxController {
 
     //const String url = 'https://grocery-dev.greendomains.in/api/register';
     try {
+      final String? selectedStoreId = GetStorage().read('selected_shop_id');
+
       final response = await http.post(
         Uri.parse(Api.Register),
         headers: <String, String>{
@@ -136,6 +138,7 @@ class SignupController extends GetxController {
           'mobile_no': mobileNoController.text,
           'password': passwordController.text,
           'password_confirmation': passwordConfirmController.text,
+          'shop_id': selectedStoreId,
         }),
       );
 

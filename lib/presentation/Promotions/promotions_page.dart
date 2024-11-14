@@ -1,101 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:grocery/presentation/organic/organic_model.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:grocery/presentation/Promotions/promotion_product.dart';
+import 'package:grocery/presentation/home_screen/controller/home_controller.dart';
 
-import '../Language Selection/language_controller.dart';
+import '../../data/apiClient/api.dart';
 
 class PromotionsPage extends StatelessWidget {
-  final WelcomeController languagecontroller = Get.put(WelcomeController());
+  final HomeController promotionsController = Get.put(HomeController());
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-         languagecontroller.dealsText,
-          style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.white),
-        ),
-        backgroundColor: Color(0xFFEB1C23),
-      ),
-      body: ListView.builder(
-        itemCount: 3,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(15),
-            child: GestureDetector(
-              onTap: () => _navigateToPage(index),
-              child: Container(
-                  height: 180.h,
-                  width: 280.w,
-                  child: Image.asset(
-                    promo[index],
-                    fit: BoxFit.fill,
-                  )),
-            ),
-          );
-        },
-      ),
+    return Column(
+      children: [
+        Obx(() {
+          if (promotionsController.isLoading.value) {
+            return Center(child: CircularProgressIndicator());
+          } else if (promotionsController.promotionsList.isEmpty) {
+            return Center(child: Text('No promotions available'));
+          } else {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: promotionsController.promotionsList.length,
+              itemBuilder: (context, index) {
+                final promotion = promotionsController.promotionsList[index];
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => PromoProductsPage(promotionName: promotion.name));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Image.network(
+                          '${Api.ImageUrl}/promotions/${promotion.banner}',
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        }),
+      ],
     );
-  }
-}
-
-class PageOne extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green.shade800,
-        title: Text('Promotion 1',style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),    );
-  }
-}
-
-class PageTwo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green.shade800,
-        title: Text('Promotion 2',style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),    );
-  }
-}
-
-class PageThree extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green.shade800,
-          title: Text('Promotion 3',style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-    );
-  }
-}
-
-void _navigateToPage(int index) {
-  switch (index) {
-    case 0:
-      Get.to(() => PageOne());
-    // break;
-    case 1:
-      Get.to(() => PageTwo());
-    // break;
-    case 2:
-      Get.to(() => PageThree());
-    //break;
-    // default:
-    //   break;
   }
 }

@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:grocery/presentation/account/notification.dart';
 import '../../Cart/cart_controller.dart';
 import '../../Cart/cart_page.dart';
 import '../../Language Selection/language_controller.dart';
 import '../../Promotions/promotions_page.dart';
 import '../../Categories/categories_navbar.dart';
 import '../../account/account.dart';
+import '../../delas.dart';
+import '../../home_screen/controller/home_controller.dart';
 import '../../home_screen/page/home_page.dart';
 import '../controller/bottomnav_controller.dart';
 
@@ -15,9 +19,10 @@ class CustomBottomNavBar extends StatelessWidget {
   final List<Widget> pages = [
     HomePage(),
     CategoriesNavbar(),
-    PromotionsPage(),
+    DealsPage(),
     Account(),
     CartPage(),
+    NotificationPage(),
   ];
 
   @override
@@ -25,7 +30,7 @@ class CustomBottomNavBar extends StatelessWidget {
     final BottomNavController bottomNavController = Get.put(BottomNavController());
     final CartController cartController = Get.put(CartController());
     final WelcomeController languagecontroller = Get.put(WelcomeController());
-
+    HomeController homeController = Get.put(HomeController());
 
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -43,6 +48,11 @@ class CustomBottomNavBar extends StatelessWidget {
               currentIndex: bottomNavController.selectedIndex.value,
               onTap: (index) {
                 bottomNavController.updateIndex(index);
+                if (index == 0) {
+                  homeController.fetchCategories();
+                  GetStorage().write('selectedButton', 'grocery');
+                  print('Selected Button: Grocery');
+                }
               },
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -99,6 +109,10 @@ class CustomBottomNavBar extends StatelessWidget {
                     ],
                   ),
                   label: languagecontroller.cartText,
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildIcon('assets/notification.svg', 5, bottomNavController),
+                  label: 'Notification',
                 ),
               ],
               selectedItemColor: Color(0xFFEB1C23),

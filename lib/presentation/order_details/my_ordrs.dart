@@ -56,11 +56,7 @@ class OrderPage extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                  child: Text('Error: ${snapshot.error}',
-                      style: TextStyle(fontSize: 16, color: Colors.red)));
-            } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+            }  else if (snapshot.hasData && snapshot.data!.isEmpty) {
               return Center(
                   child:
                       Text('No orders found.', style: TextStyle(fontSize: 16)));

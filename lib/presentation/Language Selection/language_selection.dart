@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/button/button.dart';
+import '../shop.dart';
 import 'language_controller.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -154,7 +155,7 @@ class WelcomePage extends StatelessWidget {
                           fontSize: 18, color: Colors.white),
                     ),
                   ontap: () {
-                    Get.off(CustomBottomNavBar());
+                    Get.off(SelectStorePage());
                   },
                 ),
               ],

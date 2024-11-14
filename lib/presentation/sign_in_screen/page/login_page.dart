@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery/presentation/OTP%20Field/otp_field.dart';
+import 'package:grocery/presentation/account/change_password.dart';
 import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
 import '../../../widgets/button/button.dart';
 import '../../../widgets/textfield/custom_textfield.dart';
@@ -98,6 +99,9 @@ class LoginPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
+                    onTap: () {
+                     // Get.to(ChangePassword());
+                    },
                     child: Text(
                       languagecontroller.forgotpassText,
                       style:

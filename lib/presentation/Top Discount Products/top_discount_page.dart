@@ -187,13 +187,13 @@ class TopDiscountPage extends StatelessWidget {
                                           item.image,{}
                                         );
 
-                                        Get.snackbar(
-                                          cartController.isInCart(item.id)
-                                              ? 'Added to Cart'
-                                              : 'Removed from Cart',
-                                          '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
-                                          snackPosition: SnackPosition.TOP,
-                                        );
+                                        // Get.snackbar(
+                                        //   cartController.isInCart(item.id)
+                                        //       ? 'Added to Cart'
+                                        //       : 'Removed from Cart',
+                                        //   '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
+                                        //   snackPosition: SnackPosition.TOP,
+                                        // );
                                       },
                                       child: Icon(
                                         isInCart

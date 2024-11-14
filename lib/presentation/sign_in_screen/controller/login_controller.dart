@@ -27,57 +27,69 @@ class LoginController extends GetxController {
   // Login method
   Future<void> login() async {
     try {
+      String? fcmToken = GetStorage().read('fcm_token');
       final response = await http.post(
         Uri.parse(Api.Login),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'mobile_no': numberController.text,
           'password': passwordController.text,
+          'fcm_token': fcmToken,
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(response.body);
 
-        if (data.containsKey('access_token') && data['access_token'] != null) {
-          String accessToken = data['access_token'];
-          String userType = data['user_type']; // Get user_type
-
-          box.write('access_token', accessToken);
-          box.write('user_type', userType); // Store user_type in GetStorage
-
+        // Log the entire data object for debugging
+        if (data is Map<String, dynamic>) {
+          String? accessToken = data['access_token'];
+          String? userType = data['user_type'];
+          Map<String, dynamic>? user = data['user'];
           print('Access Token: $accessToken');
-          print('User Type: $userType'); // Print user type for debugging
+          print('User Type: $userType');
+          print(user);
+          if (accessToken != null && userType != null && user!= null) {
+            box.write('access_token', accessToken);
+            box.write('user_type', userType);
+            box.write('user', user);
+            print("USErrrrrrrr");
+            if (user.containsKey('id') && user.containsKey('shop_id')) {
+              // Storing the user ID and shop ID
+              box.write('user_id', user['id']);
+              box.write('shop_id', user['shop_id']);
+            }
+            box.write('isLoggedIn', true);
+            Get.snackbar('Success', 'Login successful');
+            GetStorage().write('status', '4');
 
-          Get.snackbar('Success', 'Login successful');
-          GetStorage().write('status', '4');
-
-          // Navigate to OrdersList if user type is Shop Admin
-          if (userType == 'Shop Admin') {
-            //Get.offAll(() => OrdersList());
-          }
-          else {
-            // Proceed with normal user navigation
+            // Removed the userType check and navigation logic
             if (cartController.cartItems.isNotEmpty) {
-              // Post each cart item after login
               for (var cartItem in cartController.cartItems) {
-                await cartController.postCartItems(accessToken, cartItem, 'grocery');
+                await cartController.postCartItems(accessToken, cartItem, 'grocery'); // or 'laundry'
               }
             }
+
             cartController.clearLocalCart();
             await Future.delayed(Duration(seconds: 1));
             Get.offAll(() => CustomBottomNavBar());
+          } else {
+            Get.snackbar('Error', 'Login failed: Access token or user type not found');
           }
         } else {
-          Get.snackbar('Error', 'Login failed: Access token not found');
+          Get.snackbar('Error', 'Login failed: Unexpected response format');
         }
       } else {
         Get.snackbar('Error', 'Login failed: ${response.reasonPhrase}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'An error occurred: ${e.toString()}');
+      print("${e.toString()}");
     }
   }
+
+
 
   String? validateEmail(String value) {
     isNumberValid.value = value.isNotEmpty && value.length == 10;

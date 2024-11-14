@@ -140,8 +140,8 @@ class PaymentMethodController extends GetxController {
     print('Items: $items');
 print(bix.read('selectedButton'));
     final Map<String, dynamic> body = {
-      "type": bix.read('selectedButton'),
-      "shop_id": 1,
+      "type": bix.read('selectedButton')??'grocery',
+      "shop_id": GetStorage().read('selected_shop_id'),
       "collection" : {
         "date" : collectionTimecontroller.selectedIndex.value ==0
       ? controller.today

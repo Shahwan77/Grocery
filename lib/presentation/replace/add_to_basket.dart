@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:grocery/kkk.dart';
 
+import '../order_details/my_ordrs.dart';
 import 'add_to_controller.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -78,14 +79,14 @@ class ProductDetailPage extends StatelessWidget {
                       child: Icon(Icons.remove, color: Colors.white)),
                   onPressed: productController.decrementQuantity,
                 ),
-                SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Obx(() => Container(
                   width: 50.w,
                   height: 38.h,
-                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Center(
                     child: Text(
@@ -94,14 +95,14 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                   ),
                 )),
-                SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 IconButton(
                   icon: Container(
                       width: 28.w,
                       height: 24.h,
                       decoration: BoxDecoration(
                           color: Color(0xFFEB1C23),
-                          borderRadius: BorderRadius.circular(30)
+                          borderRadius: BorderRadius.circular(28.r)
                       ),
                       child: Icon(Icons.add, color: Colors.white)),
                   onPressed: productController.incrementQuantity,
@@ -140,6 +141,7 @@ class ProductDetailPage extends StatelessWidget {
                   );
                 } else {
                   productController.postReplacementOrder();
+                  // Get.back(result: OrderPage());
                 }
               },
               child: Row(

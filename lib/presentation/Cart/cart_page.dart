@@ -43,9 +43,11 @@ class CartPage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
+          }
+          // else if (snapshot.hasError) {
+          //   return Center(child: Text('Error: ${snapshot.error}'));
+          // }
+          else {
             return Obx(() {
               // Check if fetched cart items are empty after fetching
               if (cartController.fetchedcartItems.isEmpty &&
@@ -65,7 +67,7 @@ class CartPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Button(
-                      size: Size(164, 54),
+                      size: Size(160.w, 50.h),
                       color: Color(0xFFEB1C23),
                       text: Text(
                         languagecontroller.startText,
@@ -368,7 +370,7 @@ class CartPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Button(
-                      size: Size(164, 54),
+                      size: Size(160.w, 50.h),
                       color: Color(0xFFEB1C23),
                       text: Text(
                         languagecontroller.startText,

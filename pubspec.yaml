@@ -55,6 +55,7 @@ dependencies:
   cloud_firestore:
   firebase_app_check:
   flutter_localization:
+  firebase_messaging:
 
 
 

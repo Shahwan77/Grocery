@@ -18,7 +18,9 @@ import '../order_details/my_orders_view.dart';
 import '../order_details/my_ordrs.dart';
 import '../sign_up_screen/controller/signup_controller.dart';
 import 'account_login.dart';
+import 'change_password.dart';
 import 'language.dart';
+import 'notification.dart';
 
 class Account extends StatelessWidget {
   Account({super.key});
@@ -40,15 +42,15 @@ class Account extends StatelessWidget {
 
   // Translation keys corresponding to each account item
   final List<String> accountTextKeys = [
-    'notification',    // "Notification"
-    'my_orders',       // "My Orders"
+    'notification', // "Notification"
+    'my_orders', // "My Orders"
     'language',
-    'add_address',     // "Add Address"
-    'change_email',    // "Change Email"
-    'edit_profile',    // "Edit Profile"
+    'add_address', // "Add Address"
+    'change_email', // "Change Email"
+    'edit_profile', // "Edit Profile"
     'change_password', // "Change Password"
-    'change_mobile',   // "Change Mobile"
-    'logout',          // "Logout"
+    'change_mobile', // "Change Mobile"
+    'logout', // "Logout"
   ];
 
   Future<void> logout() async {
@@ -66,13 +68,15 @@ class Account extends StatelessWidget {
       // Successfully logged out
       print(response.body);
       GetStorage().remove('access_token'); // Clear the token
-      Get.snackbar('Logout', 'Successfully logged out', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Logout', 'Successfully logged out',
+          snackPosition: SnackPosition.BOTTOM);
       cartController.clearLocalCart();
-      Get.offAll(CustomBottomNavBar()); // Navigate to bottom nav (change as needed)
+      Get.offAll(
+          CustomBottomNavBar()); // Navigate to bottom nav (change as needed)
     } else {
       // Handle error
       final Map<String, dynamic> responseData = json.decode(response.body);
-      Get.snackbar('Error', responseData['message'], snackPosition: SnackPosition.BOTTOM);
+      //Get.snackbar('Error', responseData['message'], snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -95,147 +99,174 @@ class Account extends StatelessWidget {
           backgroundColor: Color(0xFFEB1C23),
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(),
-          child: token != null
-              ? FutureBuilder<User?>(
-            future: UserData().fetchUser(), // Fetch user data
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                final user = snapshot.data;
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10.h,),
-                      Container(
-                        height: 110.h,
-                        width: 320.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(26.r),
-                          color: Color(0xFFEB1C23),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(),
+            child: token != null
+                ? FutureBuilder<User?>(
+                    future: UserData().fetchUser(), // Fetch user data
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      // else if (snapshot.hasError) {
+                      //   return Center(child: Text('Error: ${snapshot.error}'));
+                      // }
+                      else if (snapshot.hasData) {
+                        final user = snapshot.data;
+                        return SingleChildScrollView(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    height: 84.h,
-                                    width: 90.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(18.r),
-                                      color: Colors.white,
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 50.sp,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10.w,
-                                  ),
-                                  Text(
-                                    user?.name ?? 'NAME', // Displaying user's name
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ],
+                              SizedBox(
+                                height: 10.h,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: 20.w,),
-                        child: ListView.builder(
-                          itemCount: accounticon.length,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final accountText = accountTextKeys[index].tr; // Directly using the translation key
-                            return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: Container(
+                              Container(
+                                height: 110.h,
+                                width: 320.w,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderRadius: BorderRadius.circular(26.r),
+                                  color: Color(0xFFEB1C23),
                                 ),
-                                child: ListTile(
-                                  leading: Container(
-                                    width: 34.w,
-                                    height: 30.h,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(30.r),
-                                    ),
-                                    child: Icon(accounticon[index]),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 14.w, vertical: 12.h),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            height: 84.h,
+                                            width: 90.w,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(18.r),
+                                              color: Colors.white,
+                                            ),
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              child: Icon(
+                                                Icons.person,
+                                                size: 50.sp,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          Text(
+                                            user?.name ??
+                                                'NAME', // Displaying user's name
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  title: Text(accountText), // Translated text
-                                  trailing: Icon(Icons.arrow_forward_ios_rounded),
-                                  onTap: () {
-                                    if (accountText == 'logout'.tr) {
-                                      Get.dialog(
-                                        AlertDialog(
-                                          title: Text('logout'.tr), // Localized title
-                                          content: Text('Are you sure you want to logout?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Get.back(); // Close the dialog
-                                              },
-                                              child: Text('No'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Get.back(); // Close the dialog
-                                                logout(); // Call the logout function
-                                              },
-                                              child: Text('Yes'),
-                                            ),
-                                          ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                ),
+                                child: ListView.builder(
+                                  itemCount: accounticon.length,
+                                  scrollDirection: Axis.vertical,
+                                  physics: BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    final accountText = accountTextKeys[index]
+                                        .tr; // Directly using the translation key
+                                    return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade200,
+                                          borderRadius:
+                                              BorderRadius.circular(12.r),
                                         ),
-                                      );
-                                    } else if (accountText == 'my_orders'.tr) {
-                                      Get.to(OrderPage()); // Navigate to My Orders
-                                    } else if (accountText == 'language'.tr) {
-
-                                      Get.to(LanguagePage());
-                                    }
-                                    else {
-                                      print('Tapped on $accountText');
-                                    }
+                                        child: ListTile(
+                                          leading: Container(
+                                            width: 34.w,
+                                            height: 30.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(30.r),
+                                            ),
+                                            child: Icon(accounticon[index]),
+                                          ),
+                                          title: Text(
+                                              accountText), // Translated text
+                                          trailing: Icon(
+                                              Icons.arrow_forward_ios_rounded),
+                                          onTap: () {
+                                            if (accountText == 'logout'.tr) {
+                                              Get.dialog(
+                                                AlertDialog(
+                                                  title: Text('logout'
+                                                      .tr), // Localized title
+                                                  content: Text(
+                                                      'Are you sure you want to logout?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Get.back(); // Close the dialog
+                                                      },
+                                                      child: Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Get.back(); // Close the dialog
+                                                        logout(); // Call the logout function
+                                                      },
+                                                      child: Text('Yes'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            } else if (accountText ==
+                                                'notification'.tr) {
+                                              Get.to(
+                                                  NotificationPage()); // Navigate to My Orders
+                                            } else if (accountText ==
+                                                'my_orders'.tr) {
+                                              Get.to(
+                                                  OrderPage()); // Navigate to My Orders
+                                            } else if (accountText ==
+                                                'language'.tr) {
+                                              Get.to(LanguagePage());
+                                            } else if (accountText ==
+                                                'change_password'.tr) {
+                                              Get.to(ChangePassword());
+                                            }
+                                            else {
+                                              print('Tapped on $accountText');
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Center(child: Text('No user data found.'));
-              }
-            },
-          )
-              : AccountLoginPage()
-        ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(child: Text('No user data found.'));
+                      }
+                    },
+                  )
+                : LoginPage()),
       ),
     );
   }

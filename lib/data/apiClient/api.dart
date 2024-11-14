@@ -1,12 +1,15 @@
+import 'package:get_storage/get_storage.dart';
+
 class Api {
+  static String shopid = GetStorage().read('selected_shop_id');
   static String BaseUrl = 'https://grocery-dev.greendomains.in';
   static String ApiUrl = '$BaseUrl/api';
   static String ImageUrl = '$BaseUrl/storage/images';
-  static String Category= '$ApiUrl/product-categories?type=grocery';
+  static String Category= '$ApiUrl/product-categories?type=grocery&shop_id=$shopid';
   static String Product= '$ApiUrl/products';
   static String CategoryProduct= '$ApiUrl/products?category_id';
   static String PopularProduct='$ApiUrl/products/popular';
-  static String DiscountProduct='$ApiUrl/products/discount';
+  static String DiscountProduct='$ApiUrl/products/discount?shop_id=$shopid';
   static String PopularCategories='$ApiUrl/product-categories/popular';
   static String Login = '$ApiUrl/login';
   static String CartPost = '$ApiUrl/carts';
@@ -19,7 +22,7 @@ class Api {
   static String Logout = '$ApiUrl/logout';
   static String User = '$ApiUrl/user';
   static String Register = '$ApiUrl/register';
-  static String CategoryLaundry= '$ApiUrl/product-categories?type=laundry';
+  static String CategoryLaundry= '$ApiUrl/product-categories?type=laundry&shop_id=$shopid';
   static String AdminOrdergrocery= '$ApiUrl/admin/orders?shop_id=1&type=grocery&status=unassigned';
   static String AdminOrderlaundry= '$ApiUrl/admin/orders?shop_id=1&type=laundry&status=unassigned';
   static String AdminInOrdergrocery= '$ApiUrl/admin/orders?shop_id=1&type=grocery&status=assigned';

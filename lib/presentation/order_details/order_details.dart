@@ -87,9 +87,6 @@ class OrderDetails extends StatelessWidget {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('Error: ${snapshot.error}'));
                             } else if (snapshot.hasData) {
                               final user = snapshot.data;
                               return Column(
@@ -309,8 +306,8 @@ class OrderDetails extends StatelessWidget {
                                   // else  if (Box.read('selectedButton') == 'laundry') ...[
                                   //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
                                   // ]
-                                  else
-                                    if (Box.read('selectedButton') == 'laundry') ...[
+
+                                    else if (Box.read('selectedButton') == 'laundry') ...[
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {

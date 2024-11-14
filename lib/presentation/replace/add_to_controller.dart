@@ -5,6 +5,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../data/apiClient/api.dart';
+import '../order_details/my_ordrs.dart';
+
 class ProductController extends GetxController {
   final int? id;
   final int? itemId;
@@ -36,7 +39,7 @@ class ProductController extends GetxController {
   }
 
   Future<void> postReplacementOrder() async {
-    final url = 'https://grocery-dev.greendomains.in/api/orders/replace/confirm';
+    final url = '${Api.ApiUrl}/orders/replace/confirm';
     final String? token = GetStorage().read('access_token');
     final headers = {
       'Content-Type': 'application/json',
@@ -58,6 +61,7 @@ class ProductController extends GetxController {
       final response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
+        //Get.off(OrderPage());
         print(response.body);
         print(itemId);
         print(id);

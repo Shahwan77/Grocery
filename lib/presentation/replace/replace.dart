@@ -35,9 +35,7 @@ MissingItemPage({required this.itemId});
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Failed to load order: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data == null) {
+            }  else if (!snapshot.hasData || snapshot.data == null) {
               return Center(child: Text('No order details found.'));
             } else {
               final order = snapshot.data!;

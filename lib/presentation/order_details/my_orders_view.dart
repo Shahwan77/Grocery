@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../data/apiClient/api.dart';
 import '../../data/models/my_orderview_model.dart';
@@ -57,7 +56,7 @@ class OrderViewPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('No orders found.'));
           } else if (snapshot.hasData) {
             final order = snapshot.data!.data;
 
@@ -72,7 +71,7 @@ class OrderViewPage extends StatelessWidget {
                     Text("Total Amount: ${order.totalAmount}"),
                     Text("Delivery Date: ${order.deliveryDate ?? 'N/A'}"),
                     Text("Payment Method: ${order.paymentMethod}"),
-                Text("Payment Change: ${order.paymentChange ?? 'N/A'}"),
+                    Text("Payment Change: ${order.paymentChange ?? 'N/A'}"),
                     SizedBox(height: 16),
                     Text("Items:", style: TextStyle(fontSize: 18)),
                     ListView.builder(
@@ -94,13 +93,23 @@ class OrderViewPage extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                                 title: Text(item.product.name),
-                                subtitle: Text("Price: \$${item.product.price}"),
+                                subtitle: order.type == "laundry"
+                                    ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ...item.services.map((service) {
+                                      return Text("${service.service.name}");
+                                    }).toList(),
+                                  ],
+                                )
+                                    : Text("Price: \$${item.product.price}"),
                                 trailing: Text(
                                   "Qty: ${item.quantity}",
                                   style: TextStyle(color: Color(0xFFEB1C23)),
                                 ),
                               ),
-                              if (item.replaceItems != null && item.replaceItems.isNotEmpty)
+                              // Show "View Replacements" button only if not laundry
+                              if (order.type != "laundry" && item.replaceItems.isNotEmpty)
                                 TextButton(
                                   onPressed: () {
                                     Get.to(
@@ -114,7 +123,6 @@ class OrderViewPage extends StatelessWidget {
                                     style: TextStyle(color: Color(0xFFEB1C23)),
                                   ),
                                 ),
-
                             ],
                           ),
                         );

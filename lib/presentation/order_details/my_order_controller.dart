@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 import '../../data/models/my_order_model.dart';
 import '../../data/models/my_orderview_model.dart';
@@ -12,9 +13,11 @@ class MyOrderController extends GetxController {
 
   Future<List<myOrder>> fetchOrder() async {
     final String? token = box.read('access_token');
-    final String? type = box.read('selectedButton');
+    final String? type = box.read('selectedButton')??'grocery';
+    final String? selectedShopId = GetStorage().read('selected_shop_id');
+
     final response = await http.get(
-      Uri.parse('https://grocery-dev.greendomains.in/api/orders?shop_id=1&type=$type'),
+      Uri.parse('${Api.ApiUrl}/orders?shop_id=1&type=$type'),
       headers: {
         'Authorization': 'Bearer $token',
       },

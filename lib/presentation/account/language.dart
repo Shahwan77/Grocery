@@ -1,11 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
-import '../../l10n/app_localizations.dart';
-import '../../widgets/button/button.dart';
 import '../Language Selection/language_controller.dart';
 
 class LanguagePage extends StatelessWidget {
@@ -19,112 +15,119 @@ class LanguagePage extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Container(
+              height: 22.h,
+              width: 26.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: Color(0xFFEB1C23),
+                  size: 20.sp,
+                ),
+              ),
+            ),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          backgroundColor: Color(0xFFEB1C23),
+          title: Text(
+            controller.languageText, // Use language text from controller
+            style: TextStyle(color: Colors.white),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: Container(
+                  width: 40.w,
+                  height: 22.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Icon(
+                    Icons.check,
+                    color: Color(0xFFEB1C23),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         body: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 20.w,vertical: 26.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 26.h),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Obx(() => LanguageOption(
+                language: "English",
+                isSelected: controller.selectedLanguage.value == 'English',
+                onTap: () => controller.selectLanguage('English'),
+              )),
               SizedBox(height: 20.h),
-              Text(
-                controller.selectLanguageText,
-                style: GoogleFonts.roboto(
-                    color: Colors.black, fontSize: 20.sp),
-              ),
-              SizedBox(height: 10.h),
-              GestureDetector(
-                onTap: () {
-                  controller.selectLanguage('English');
-                  Get.back();
-                },
-                child: Obx(() => Container(
-                  width: 120.w,
-                  height: 36.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1.5,
-                      color: controller.selectedLanguage.value ==
-                          'English'
-                          ? Color(0xFFEB1C23)
-                          : Colors.grey,
-                    ),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          controller.englishText,
-                          style: GoogleFonts.roboto(
-                            fontSize: 20.sp,
-                            color: controller
-                                .selectedLanguage.value ==
-                                'English'
-                                ? Color(0xFFEB1C23)
-                                : Colors.grey,
-                          ),
-                        ),
-                        if (controller.selectedLanguage.value ==
-                            'English')
-                          Icon(
-                            Icons.check_circle,
-                            color: Color(0xFFEB1C23),
-                            size: 24.sp,
-                          ),
-                      ],
-                    ),
-                  ),
-                )),
-              ),
-              SizedBox(height: 10.h),
-              GestureDetector(
-                onTap: () {
-                  controller.selectLanguage('Arabic');
-                  Get.back();
-                },
-                child: Obx(() => Container(
-                  width: 120.w,
-                  height: 36.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1.5,
-                      color: controller.selectedLanguage.value ==
-                          'Arabic'
-                          ? Color(0xFFEB1C23)
-                          : Colors.grey,
-                    ),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          controller.arabicText,
-                          style: GoogleFonts.roboto(
-                            fontSize: 20.sp,
-                            color: controller
-                                .selectedLanguage.value ==
-                                'Arabic'
-                                ? Color(0xFFEB1C23)
-                                : Colors.grey,
-                          ),
-                        ),
-                        if (controller.selectedLanguage.value ==
-                            'Arabic')
-                          Icon(
-                            Icons.check_circle,
-                            color: Color(0xFFEB1C23),
-                            size: 24.sp,
-                          ),
-                      ],
-                    ),
-                  ),
-                )),
-              ),
+              Obx(() => LanguageOption(
+                language: 'عربي',
+                isSelected: controller.selectedLanguage.value == 'Arabic',
+                onTap: () => controller.selectLanguage('Arabic'),
+              )),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LanguageOption extends StatelessWidget {
+  final String language;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const LanguageOption({
+    Key? key,
+    required this.language,
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 14.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(
+            color: isSelected ? Color(0xFFEB1C23) : Colors.grey,
+            width: 1.5,
+          ),
+          boxShadow: [
+            if (isSelected)
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                offset: Offset(0, 2),
+                blurRadius: 4,
+              ),
+          ],
+        ),
+        child: Text(
+          language,
+          style: GoogleFonts.roboto(
+            fontSize: 18.sp,
+            color:Colors.black,
+            fontWeight: FontWeight.w600
           ),
         ),
       ),

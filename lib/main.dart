@@ -10,7 +10,9 @@ import 'package:grocery/presentation/Language%20Selection/language_selection.dar
 import 'package:grocery/presentation/replace/replace.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
+import 'package:grocery/tstts.dart';
 import 'Admin/orders_list.dart';
+import 'firebase.dart';
 import 'l10n/app_localizations.dart'; // Import your localization class
 
 Future<void> main() async {
@@ -24,6 +26,7 @@ Future<void> main() async {
         projectId: "grocery-4a4ff",
       )
   );
+  await FirebaseApi().initNotifications();
   await FirebaseAppCheck.instance.activate();
   runApp(const MyApp());
 }
@@ -53,7 +56,7 @@ class MyApp extends StatelessWidget {
           Locale('es'), // Spanish
         ],
         title: 'Flutter Demo',
-         //home: MissingItemPage(),
+         // home: ProductCategoriesPage(),
          initialRoute: AppRoutes.Splash,
          getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,

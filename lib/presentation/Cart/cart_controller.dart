@@ -116,11 +116,11 @@ class CartController extends GetxController {
         if (success) {
           fetchedcartItems.add(newItem);
         } else {
-          Get.snackbar('Error', 'Failed to update cart.');
+          //Get.snackbar('Error', 'Failed to update cart.');
         }
       });
     } else {
-      saveCartItems(); // Save locally if no token
+      saveCartItems();
     }
   }
 
@@ -137,7 +137,7 @@ class CartController extends GetxController {
         // } else {
         //   fetchedcartItems.refresh();
         // }
-        // saveCartItems();
+        saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
           postCartItems(token, fetchedcartItems[itemIndex], 'grocery');
@@ -267,68 +267,61 @@ class CartController extends GetxController {
 
   Future<bool> postCartItems(
       String token, Map<String, dynamic> cartItem, String type) async {
-    GetStorage Box = GetStorage();
-    String Type = Box.read('selectedButton');
+    final String Type = box.read('selectedButton') ?? 'grocery';
+    final String? selectedShopId = GetStorage().read('selected_shop_id');
+
+    if (selectedShopId == null) {
+      print("Error: 'shop_id' is missing.");
+      return false;
+    }
+
+    final body = {
+      'type': Type,
+      'shop_id': selectedShopId,
+      'items': [
+        {
+          'product_id': cartItem['product_id'],
+          'quantity': cartItem['quantity'],
+          'services': cartItem['service'],
+        }
+      ]
+    };
+
+    print("Request Body: $body");
+
     try {
-      // Create the dynamic body based on the cart type (grocery or laundry)
-      final body = {
-        'type': Type,
-        'shop_id':1,
-        'items':
-        [
-          {
-            'product_id': cartItem['product_id'],
-            'quantity': cartItem['quantity'],
-            'services':  cartItem['service'],
-
-          }
-        ]
-      };
-
-      // Print debug information to verify the body content
-      print("Request Body: $body");
-
-      // Send the POST request to the API
       final response = await http.post(
-        Uri.parse(Api.CartPost), // Make sure Api.CartPost has the correct URL
+        Uri.parse(Api.CartPost),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode(body), // Convert the body to JSON
+        body: jsonEncode(body),
       );
 
-      // Handle the response
       if (response.statusCode == 200) {
-        print(response.body);
         final data = jsonDecode(response.body);
-
-        if (data['success']) {
-          Get.snackbar('Success', data['message']);
-          // Fetch updated cart items after a successful post
-          await fetchCartItems(
-              token, Type); // Pass the type (grocery or laundry)
+        if (data['success'] == true) {
+          await fetchCartItems(token, Type);
           return true;
         } else {
-          Get.snackbar(
-              'Error', 'Failed to add items to cart: ${data['message']}');
+          print("Failed to add items to cart: ${data['message']}");
           return false;
         }
       } else {
         print('Error: ${response.statusCode} - ${response.reasonPhrase}');
-        Get.snackbar(
-            'Error', 'Failed to post cart item: ${response.reasonPhrase}');
         return false;
       }
     } catch (e) {
       print('Error occurred: $e');
-      Get.snackbar('Error', 'An error occurred while posting the cart item.');
       return false;
     }
   }
 
+
   Future<void> fetchCartItems(String token, String type) async {
     GetStorage Box = GetStorage();
+    final String? selectedShopId = GetStorage().read('selected_shop_id');
     String Type = Box.read('selectedButton')??'grocery';
     String baseUri = Type == 'grocery'
         ? Api.CartGetgrocery
@@ -336,7 +329,7 @@ class CartController extends GetxController {
         ? Api.CartGetlaundry
         : Api.CartGetgrocery;
     final uri = Uri.parse(baseUri).replace(queryParameters: {
-      'shop_id': '1',
+      'shop_id': selectedShopId,
       'type': Type,
     });
 

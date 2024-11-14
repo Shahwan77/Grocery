@@ -77,7 +77,8 @@ class OrderItem {
   final int productId;
   final int quantity;
   final Product product;
-  final List<ReplaceItem> replaceItems; // Add this line
+  final List<Service> services;
+  final List<ReplaceItem> replaceItems;
 
   OrderItem({
     required this.id,
@@ -85,10 +86,14 @@ class OrderItem {
     required this.productId,
     required this.quantity,
     required this.product,
-    required this.replaceItems, // Update constructor
+    required this.services,
+    required this.replaceItems,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
+    var servicesList = json['services'] as List;
+    List<Service> services = servicesList.map((i) => Service.fromJson(i)).toList();
+
     var replaceItemsList = json['replace_items'] as List;
     List<ReplaceItem> replaceItems = replaceItemsList.map((i) => ReplaceItem.fromJson(i)).toList();
 
@@ -98,11 +103,11 @@ class OrderItem {
       productId: json['product_id'],
       quantity: json['quantity'],
       product: Product.fromJson(json['product']),
-      replaceItems: replaceItems, // Add this line
+      services: services,
+      replaceItems: replaceItems,
     );
   }
 }
-
 
 class Product {
   final int id;
@@ -129,6 +134,7 @@ class Product {
     );
   }
 }
+
 class ReplaceItem {
   final int id;
   final int shopId;
@@ -157,6 +163,52 @@ class ReplaceItem {
       confirm: json['confirm'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+    );
+  }
+}
+
+class Service {
+  final int id;
+  final int orderItemId;
+  final int serviceId;
+  final String price;
+  final String createdAt;
+  final String updatedAt;
+  final ServiceDetails service; // New field to include service details
+
+  Service({
+    required this.id,
+    required this.orderItemId,
+    required this.serviceId,
+    required this.price,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.service,
+  });
+
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return Service(
+      id: json['id'],
+      orderItemId: json['order_item_id'],
+      serviceId: json['service_id'],
+      price: json['price'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      service: ServiceDetails.fromJson(json['service']), // Parsing the nested service object
+    );
+  }
+}
+
+class ServiceDetails {
+  final int id;
+  final String name;
+
+  ServiceDetails({required this.id, required this.name});
+
+  factory ServiceDetails.fromJson(Map<String, dynamic> json) {
+    return ServiceDetails(
+      id: json['id'],
+      name: json['name'],
     );
   }
 }

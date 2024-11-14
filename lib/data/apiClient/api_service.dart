@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../../data/models/category_model.dart';
 import '../../../data/apiClient/api.dart';
 import '../models/models.dart';
+import '../models/promotion_model.dart';
 
 class ApiService {
   final box = GetStorage();
@@ -12,18 +13,28 @@ class ApiService {
     final response = await http.get(Uri.parse(Api.Category));
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'] as List;
-      return data.map((category) => Category.fromJson(category)).toList();
+      print(response.request);
+      final data = jsonDecode(response.body)['data'];
+      if (data != null && data is List) {
+        return data.map((category) => Category.fromJson(category)).toList();
+      } else {
+        throw Exception('No category data found');
+      }
     } else {
       throw Exception('Failed to load categories');
     }
   }
 
+
+
+
   Future<List<Models>> fetchPopularProducts() async {
     final token = box.read('access_token');
+    final String? selectedStoreId = box.read('selected_shop_id');
+
     final String apiUrl = token != null
         ? 'https://grocery-dev.greendomains.in/api/products/popular/cart'
-        : Api.PopularProduct;
+        :'${Api.PopularProduct}?shop_id=$selectedStoreId';
 
     final response = await http.get(
       Uri.parse(apiUrl),
@@ -45,7 +56,8 @@ class ApiService {
   }
 
   Future<List<Models>> fetchCategoryProducts(int categoryId, String type) async {
-    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId&type=$type&shop_id=1'));
+    final String? selectedStoreId = box.read('selected_shop_id');
+    final response = await http.get(Uri.parse('${Api.CategoryProduct}=$categoryId&type=$type&shop_id=$selectedStoreId'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -62,7 +74,9 @@ class ApiService {
   }
 
   Future<List<Models>> fetchTabs(int subcategoryId, String type) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId&type=$type&shop_id=1'));
+    final String? selectedStoreId = box.read('selected_shop_id');
+
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/products?subcategory_id=$subcategoryId&type=$type&shop_id=$selectedStoreId'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -78,7 +92,10 @@ class ApiService {
   }
 
   Future<List<Models>> fetchSubcategories(int categoryId, String type) async {
-    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId&type=$type'));
+    final String? selectedStoreId = box.read('selected_shop_id');
+    //final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId&type=$type'));
+    final response = await http.get(Uri.parse('${Api.BaseUrl}/api/product-subcategories?category_id=$categoryId&type=$type&shop_id=$selectedStoreId'));
+
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -115,7 +132,10 @@ class ApiService {
     }
   }
   Future<List<Models>> fetchPopularCategories() async {
-    final response = await http.get(Uri.parse(Api.PopularCategories));
+    final String? selectedStoreId = box.read('selected_shop_id');
+    //final response = await http.get(Uri.parse(Api.PopularCategories));
+    final response = await http.get(Uri.parse('${Api.PopularCategories}?shop_id=$selectedStoreId'));
+
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -131,7 +151,25 @@ class ApiService {
     }
   }
 
+  Future<List<Promotion>> fetchPromotions() async {
+    final String type = GetStorage().read('selectedButton') ?? 'grocery';
+    final String? selectedShopId = GetStorage().read('selected_shop_id');
+    final String token = GetStorage().read('access_token');
+    final url = Uri.parse('https://grocery-dev.greendomains.in/api/promotions?shop_id=$selectedShopId&type=$type');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['data'];
+      return data.map((json) => Promotion.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load promotions');
+    }
+  }
 
   Future<List<Category>> fetchLaundryCategories() async {
     final response = await http.get(Uri.parse(Api.CategoryLaundry));
@@ -143,6 +181,7 @@ class ApiService {
       throw Exception('Failed to load categories');
     }
   }
+
 
 
 }
