@@ -71,6 +71,29 @@ class SignupPage extends StatelessWidget {
                   signupController.selectedCountryCode.value = phone.countryCode; // Store the country code
                 },
               ),
+              // CustomTextfield(
+              //   controller: signupController.mobileNoController,
+              //   fillclr: Colors.grey.shade200,
+              //   bdrds: 10.r,
+              //   preffix: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         Icon(Icons.phone, color: Color(0xFFEB1C23)),
+              //         Text(
+              //           '+971 ',  // Static UAE country code
+              //           style: TextStyle(color: Colors.black),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              //   hint: 'Enter your phone number',
+              //   keytype: TextInputType.phone,
+              //   onchange: (value) {
+              //     signupController.selectedCountryCode.value = '+971'; // Store the UAE country code
+              //   },
+              // ),
 
               SizedBox(height: 8.h),
               CustomTextfield(

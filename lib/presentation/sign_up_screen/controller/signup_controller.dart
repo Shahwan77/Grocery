@@ -146,7 +146,7 @@ class SignupController extends GetxController {
         isRegistrationSuccessful.value = true;
         // Parse the response
         final registerResponse = RegisterResponse.fromJson(jsonDecode(response.body));
-
+print(response.body);
         // Access the token
         String? accessToken = registerResponse.user.accessToken;
 

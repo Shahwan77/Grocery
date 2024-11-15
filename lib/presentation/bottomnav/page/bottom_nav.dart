@@ -112,7 +112,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: _buildIcon('assets/notification.svg', 5, bottomNavController),
-                  label: 'Notification',
+                  label: languagecontroller.notificationText,
                 ),
               ],
               selectedItemColor: Color(0xFFEB1C23),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/Categories/categories_page.dart';
+import 'package:grocery/presentation/Categories/laundry_categories.dart';
 import 'package:grocery/presentation/Most%20Popular/most_popular_page.dart';
 import 'package:grocery/presentation/Popular%20Products/popular_product_page.dart';
 import 'package:grocery/presentation/Top%20Discount%20Products/top_discount_page.dart';
@@ -72,7 +73,7 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 if (controller.isLaundrySelected.value)
-                  CategoriesPage()
+                  LaundryCategories()
                 else if (controller.isOfferSelected.value)
                  PromotionsPage()
                 else

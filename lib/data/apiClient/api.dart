@@ -2,6 +2,7 @@ import 'package:get_storage/get_storage.dart';
 
 class Api {
   static String shopid = GetStorage().read('selected_shop_id');
+  static String type = GetStorage().read('selectedButton') ?? 'grocery';
   static String BaseUrl = 'https://grocery-dev.greendomains.in';
   static String ApiUrl = '$BaseUrl/api';
   static String ImageUrl = '$BaseUrl/storage/images';

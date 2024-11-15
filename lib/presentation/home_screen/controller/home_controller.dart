@@ -12,6 +12,7 @@ import 'package:http/http.dart'as http;
 
 class HomeController extends GetxController {
   var categories = <Category>[].obs;
+  var categories12 = <Category>[].obs;
   var popularProducts = <Models>[].obs;
   var discountProducts = <Models>[].obs;
   var popularCategories = <Models>[].obs;
@@ -29,13 +30,26 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    fetchCategories();
-    fetchPopularProducts();
-    fetchDiscountProducts();
-    fetchPopularCategories();
-    fetchPromotions();
     super.onInit();
+
+    final String? selectedButton = GetStorage().read('selectedButton');
+
+    if (selectedButton == null) {
+      fetchCategories();
+      GetStorage().write('selectedButton', 'grocery');
+      selectedIndex.value = 0;
+    } else if (selectedButton == 'grocery') {
+      fetchCategories();
+      selectedIndex.value = 0;
+    } else if (selectedButton == 'laundry') {
+      fetchLaundry();
+      selectedIndex.value = 1;
+    } else if (selectedButton == 'promotion') {
+      fetchPromotions();
+      selectedIndex.value = 2;
+    }
   }
+
 
   Future<void> fetchCategories() async {
     try {
@@ -57,7 +71,7 @@ class HomeController extends GetxController {
   Future<void> fetchLaundry() async {
     try {
       final categoryList = await _apiService.fetchLaundryCategories();
-      categories.value = categoryList;
+      categories12.value = categoryList;
     } catch (e) {
       print('Error fetching categories: $e');
     } finally {

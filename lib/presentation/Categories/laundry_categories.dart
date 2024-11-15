@@ -11,7 +11,7 @@ import '../Language Selection/language_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 import 'categories_detail.dart';
 
-class CategoriesPage extends StatelessWidget {
+class LaundryCategories extends StatelessWidget {
   final HomeController categoryController = Get.put(HomeController());
   final WelcomeController languagecontroller = Get.put(WelcomeController());
 
@@ -48,7 +48,7 @@ class CategoriesPage extends StatelessWidget {
           ),
         ),
         FutureBuilder(
-          future: categoryController.fetchCategories(),
+          future: categoryController.fetchLaundry(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return GridView.builder(
@@ -61,7 +61,7 @@ class CategoriesPage extends StatelessWidget {
                   mainAxisSpacing: 10.h,
                   childAspectRatio: 0.7,
                 ),
-                itemCount: categoryController.categories.length,
+                itemCount: categoryController.categories12.length,
                 itemBuilder: (context, index) {
                   return Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
@@ -91,7 +91,7 @@ class CategoriesPage extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               return Center(child: Text("Error loading categories."));
-            } else if (categoryController.categories.isEmpty) {
+            } else if (categoryController.categories12.isEmpty) {
               return Center(child: Text("No categories found."));
             } else {
               return GridView.builder(
@@ -105,9 +105,9 @@ class CategoriesPage extends StatelessWidget {
                   childAspectRatio: 0.7,
                   mainAxisExtent: 120,
                 ),
-                itemCount: categoryController.categories.length,
+                itemCount: categoryController.categories12.length,
                 itemBuilder: (context, index) {
-                  final category = categoryController.categories[index];
+                  final category = categoryController.categories12[index];
                   return GestureDetector(
                     onTap: () {
                       Get.to(() => DetailPage(

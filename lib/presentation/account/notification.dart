@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../Language Selection/language_controller.dart';
 import '../order_details/my_orders_view.dart';
 import 'notification_controller.dart';
 
 class NotificationPage extends StatelessWidget {
   final NotificationController controller = Get.put(NotificationController());
+  final WelcomeController languagecontroller = Get.put(WelcomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class NotificationPage extends StatelessWidget {
           ),
           iconTheme: IconThemeData(color: Colors.white),
           backgroundColor: Color(0xFFEB1C23),
-          title: Text('Notifications', style: TextStyle(color: Colors.white)),      ),
+          title: Text(languagecontroller.notificationText, style: TextStyle(color: Colors.white)),      ),
         body: FutureBuilder(
           future: controller.fetchNotifications(),
           builder: (context, snapshot) {

@@ -177,6 +177,7 @@ print(bix.read('selectedButton'));
 
       // Check the response
       if (response.statusCode == 200) {
+        print(body);
         print('Order placed successfully: ${response.body}');
         cartController.clearLocalCart();
         GetStorage().remove('status');

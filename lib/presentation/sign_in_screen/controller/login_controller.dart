@@ -97,10 +97,10 @@ class LoginController extends GetxController {
   }
 
   String? validatePassword(String value) {
-    isPasswordValid.value = value.length >= 6;
+    isPasswordValid.value = value.length >= 8;
     return isPasswordValid.value
         ? null
-        : 'Password must be at least 6 characters long';
+        : 'Password must be at least 8 characters long';
   }
 
   @override
