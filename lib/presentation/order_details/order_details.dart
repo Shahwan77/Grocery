@@ -147,7 +147,7 @@ class OrderDetails extends StatelessWidget {
                                                     padding: EdgeInsets.symmetric(
                                                         horizontal: 8.w),
                                                     child: Text(
-                                                      "\$${cartController.total_amount.value}",
+                                                      "\AED${cartController.total_amount.value}",
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -202,11 +202,12 @@ class OrderDetails extends StatelessWidget {
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              '01-08-2024',
+                              cartController.currentDate,
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600),
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
                             )
                           ],
                         ),
@@ -367,7 +368,7 @@ class OrderDetails extends StatelessWidget {
                                   cartController.getCartItems().isNotEmpty) ...[
                                 Obx(() {
                                   return Text(
-                                    "\$${cartController.total_amount.value}",
+                                    "\AED${cartController.total_amount.value}",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.sp,
@@ -441,7 +442,7 @@ class OrderDetails extends StatelessWidget {
                                   cartController.getCartItems().isNotEmpty) ...[
                                 Obx(() {
                                   return Text(
-                                    "\$${cartController.total_amount.value}",
+                                    "\AED${cartController.total_amount.value}",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.sp,

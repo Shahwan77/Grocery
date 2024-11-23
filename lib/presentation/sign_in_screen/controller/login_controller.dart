@@ -67,7 +67,8 @@ class LoginController extends GetxController {
             // Removed the userType check and navigation logic
             if (cartController.cartItems.isNotEmpty) {
               for (var cartItem in cartController.cartItems) {
-                await cartController.postCartItems(accessToken, cartItem, 'grocery'); // or 'laundry'
+                await cartController.postCartItems( cartItem,); // or 'laundry'
+               // print(cartController.postCartItems(accessToken, cartItem, 'grocery'));
               }
             }
 

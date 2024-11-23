@@ -40,7 +40,7 @@ class MyOrderController extends GetxController {
   Future<Orderview> fetchOrderview(String orderId) async {
     final String? token = box.read('access_token');
     final response = await http.get(
-      Uri.parse('https://grocery-dev.greendomains.in/api/orders/$orderId'),
+      Uri.parse('${Api.ApiUrl}/orders/$orderId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

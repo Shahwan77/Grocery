@@ -95,12 +95,12 @@ class ProductsController extends GetxController {
 
       for (var service in item.services!) {
         // Print each service before checking
-        print('Checking Service ID: ${service.id}, Service Price: ${service.price}');
+        print('Checking Service ID: ${service.id}, Service Price: ${service.pivot.price}');
 
         // Ensure the service ID is part of the selected services
         if (selectedServices[item.id]!.contains(service.id)) {
           // Safely parse service price
-          double servicePrice = double.tryParse(service.price) ?? 0.0;
+          double servicePrice = double.tryParse(service.pivot.price) ?? 0.0;
           print('Adding Service Price: $servicePrice');
           totalPrice += servicePrice; // Add the service price
           print('Updated Total Price: $totalPrice');
@@ -118,6 +118,44 @@ class ProductsController extends GetxController {
     return totalPriceString;
   }
 
+  // String calculatePromotionPrice(Models item) {
+  //   print('Item Price: ${item.promotionPrice}');
+  //
+  //   // Parse the item price from string to double
+  //   double itemPrice = double.tryParse(item.promotionPrice.toString()) ?? 0.0;
+  //   print('Parsed Item Price: $itemPrice');
+  //
+  //   // Initialize total price with item price
+  //   double totalPrice = itemPrice;
+  //
+  //   // Check if selected services and item services are valid
+  //   if (selectedServices[item.id] != null && item.services != null) {
+  //     print('Selected Services for ${item.id}: ${selectedServices[item.id]}');
+  //
+  //     for (var service in item.services!) {
+  //       // Print each service before checking
+  //       print('Checking Service ID: ${service.id}, Service Price: ${service.pivot.price}');
+  //
+  //       // Ensure the service ID is part of the selected services
+  //       if (selectedServices[item.id]!.contains(service.id)) {
+  //         // Safely parse service price
+  //         double servicePrice = double.tryParse(service.pivot.price) ?? 0.0;
+  //         print('Adding Service Price: $servicePrice');
+  //         totalPrice += servicePrice; // Add the service price
+  //         print('Updated Total Price: $totalPrice');
+  //       } else {
+  //         print('Service ID ${service.id} is not selected.');
+  //       }
+  //     }
+  //   } else {
+  //     print('No selected services or item services are null.');
+  //   }
+  //
+  //   // Return the total price as a string formatted to 2 decimal places
+  //   String totalPriceString = totalPrice.toStringAsFixed(2);
+  //   print('Total Price Calculated: $totalPriceString');
+  //   return totalPriceString;
+  // }
 
 
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart'as http;
 import '../../data/models/promo_model.dart';
 
@@ -18,6 +19,7 @@ class PromoController extends GetxController {
   }
 
   Future<void> fetchPromotion() async {
+
     isLoading.value = true;
     errorMessage.value = '';
     final String? token = GetStorage().read('access_token');
@@ -25,13 +27,14 @@ class PromoController extends GetxController {
 
     try {
       final response = await http.get(
-        Uri.parse('https://grocery-dev.greendomains.in/api/promotions/$promId'),
+        Uri.parse('${Api.ApiUrl}/promotions/$promId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
       );
 
       if (response.statusCode == 200) {
+        print('feeeeeeeeeeeeeeeeeeeeeeeee');
         final jsonData = json.decode(response.body);
         if (jsonData['success'] == true && jsonData['data'] != null) {
           promotionResponse.value = PromotionResponse.fromJson(jsonData);

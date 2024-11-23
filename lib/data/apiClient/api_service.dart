@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../../data/models/category_model.dart';
 import '../../../data/apiClient/api.dart';
 import '../models/models.dart';
+import '../models/most_popular_model.dart';
 import '../models/promotion_model.dart';
 
 class ApiService {
@@ -29,17 +30,13 @@ class ApiService {
 
 
   Future<List<Models>> fetchPopularProducts() async {
-    final token = box.read('access_token');
     final String? selectedStoreId = box.read('selected_shop_id');
 
-    final String apiUrl = token != null
-        ? 'https://grocery-dev.greendomains.in/api/products/popular/cart'
-        :'${Api.PopularProduct}?shop_id=$selectedStoreId';
+    // Use the selected store ID to build the API URL
+    final String apiUrl = '${Api.PopularProduct}';
 
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Add token to headers if it exists
-    );
+    // Make the API request without checking the token
+    final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -106,42 +103,37 @@ class ApiService {
     }
   }
   Future<List<Models>> fetchDiscountProducts() async {
-    final token = box.read('access_token');
-    // Determine the API endpoint based on the token's presence
-    final String apiUrl = token != null
-        ? 'https://grocery-dev.greendomains.in/api/products/discount/cart'
-        : Api.DiscountProduct;
+    // Directly use the Api.DiscountProduct URL without checking for token
+    final String apiUrl = Api.DiscountProduct;
 
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: token != null ? {'Authorization': 'Bearer $token'} : null, // Add token to headers if it exists
-    );
+    // Make the API request without checking the token
+    final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
-      print('Token: $token');
       final data = jsonDecode(response.body);
       if (data['success']) {
         return (data['data'] as List)
-            .map((item) => Models.fromJson(item)) // Make sure to use the correct model
+            .map((item) => Models.fromJson(item)) // Use the correct model
             .toList();
       } else {
-        throw Exception('Failed to load popular products');
+        throw Exception('Failed to load discount products');
       }
     } else {
-      throw Exception('Failed to fetch popular products');
+      throw Exception('Failed to fetch discount products');
     }
   }
-  Future<List<Models>> fetchPopularCategories() async {
+
+  Future<List<MostCategory>> fetchPopularCategories() async {
     final String? selectedStoreId = box.read('selected_shop_id');
     //final response = await http.get(Uri.parse(Api.PopularCategories));
-    final response = await http.get(Uri.parse('${Api.PopularCategories}?shop_id=$selectedStoreId'));
+    final response = await http.get(Uri.parse('${Api.PopularCategories}'));
 
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['success']) {
         return (data['data'] as List)
-            .map((item) => Models.fromJson(item))
+            .map((item) => MostCategory.fromJson(item))
             .toList();
       } else {
         throw Exception('Failed to load popular products');
@@ -151,30 +143,12 @@ class ApiService {
     }
   }
 
-  Future<List<Promotion>> fetchPromotions() async {
-    final String type = GetStorage().read('selectedButton') ?? 'grocery';
-    final String? selectedShopId = GetStorage().read('selected_shop_id');
-    final String token = GetStorage().read('access_token');
-    final url = Uri.parse('https://grocery-dev.greendomains.in/api/promotions?shop_id=$selectedShopId&type=$type');
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body)['data'];
-      return data.map((json) => Promotion.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load promotions');
-    }
-  }
 
   Future<List<Category>> fetchLaundryCategories() async {
     final response = await http.get(Uri.parse(Api.CategoryLaundry));
 
     if (response.statusCode == 200) {
+      print(response.request);
       final data = jsonDecode(response.body)['data'] as List;
       return data.map((category) => Category.fromJson(category)).toList();
     } else {

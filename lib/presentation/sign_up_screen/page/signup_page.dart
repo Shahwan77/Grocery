@@ -55,47 +55,50 @@ class SignupPage extends StatelessWidget {
                 hint: 'Name',
               ),
               SizedBox(height: 24.h),
-              IntlPhoneField(
-                controller: signupController.mobileNoController,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
-                  fillColor: Colors.grey.shade200,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                initialCountryCode: 'IN',
-                onChanged: (phone) {
-                  signupController.selectedCountryCode.value = phone.countryCode; // Store the country code
-                },
-              ),
-              // CustomTextfield(
+              // IntlPhoneField(
               //   controller: signupController.mobileNoController,
-              //   fillclr: Colors.grey.shade200,
-              //   bdrds: 10.r,
-              //   preffix: Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         Icon(Icons.phone, color: Color(0xFFEB1C23)),
-              //         Text(
-              //           '+971 ',  // Static UAE country code
-              //           style: TextStyle(color: Colors.black),
-              //         ),
-              //       ],
+              //   decoration: InputDecoration(
+              //     contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+              //     fillColor: Colors.grey.shade200,
+              //     filled: true,
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(10.r),
+              //       borderSide: BorderSide.none,
               //     ),
               //   ),
-              //   hint: 'Enter your phone number',
-              //   keytype: TextInputType.phone,
-              //   onchange: (value) {
-              //     signupController.selectedCountryCode.value = '+971'; // Store the UAE country code
+              //   initialCountryCode: 'IN',
+              //   onChanged: (phone) {
+              //     signupController.selectedCountryCode.value = phone.countryCode; // Store the country code
               //   },
               // ),
 
-              SizedBox(height: 8.h),
+
+              CustomTextfield(
+                controller: signupController.mobileNoController,
+                fillclr: Colors.grey.shade200,
+                bdrds: 10.r,
+                preffix: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      //Image.asset('assets/uae.png',width: 20.w,),
+                      Icon(Icons.phone, color: Color(0xFFEB1C23)),
+                      Text(
+                        '+971 ',  // Static UAE country code
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+               // hint: 'Enter your phone number',
+                keytype: TextInputType.phone,
+                onchange: (value) {
+                  signupController.selectedCountryCode.value = '+971'; // Store the UAE country code
+                },
+              ),
+
+              SizedBox(height: 24.h),
               CustomTextfield(
                 fillclr: Colors.grey.shade200,
                 bdrds: 10.r,

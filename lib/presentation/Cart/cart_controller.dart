@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import '../../data/apiClient/api.dart';
@@ -17,6 +18,7 @@ class CartController extends GetxController {
   var total_quantity = "0".obs;
   final box = GetStorage();
   GetStorage Box = GetStorage();
+  String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   @override
   void onInit() {
     super.onInit();
@@ -24,7 +26,7 @@ class CartController extends GetxController {
     if (isLoggedIn()) {
       final token = box.read('access_token');
       if (token != null) {
-        fetchCartItems(token, 'grocery');
+        fetchCartItems();
       }
     }
   }
@@ -47,6 +49,7 @@ class CartController extends GetxController {
     printStoredItems();
   }
 
+
   int get uniqueItemCount => cartItems.length;
 
   int get itemCount =>
@@ -60,7 +63,7 @@ class CartController extends GetxController {
   void afterLogin() {
     final token = box.read('access_token');
     if (token != null) {
-      fetchCartItems(token, 'grocery');
+      fetchCartItems();
     }
   }
 
@@ -112,7 +115,7 @@ class CartController extends GetxController {
 
     final token = box.read('access_token');
     if (token != null) {
-      postCartItems(token, newItem, isLaundry ? 'laundry' : 'grocery').then((success) {
+      postCartItems(newItem,).then((success) {
         if (success) {
           fetchedcartItems.add(newItem);
         } else {
@@ -140,7 +143,7 @@ class CartController extends GetxController {
         saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
-          postCartItems(token, fetchedcartItems[itemIndex], 'grocery');
+          postCartItems(fetchedcartItems[itemIndex]);
         }
       }
     } else {
@@ -266,14 +269,23 @@ class CartController extends GetxController {
   }
 
   Future<bool> postCartItems(
-      String token, Map<String, dynamic> cartItem, String type) async {
-    final String Type = box.read('selectedButton') ?? 'grocery';
+     Map<String, dynamic> cartItem) async {
+    String Type = box.read('selectedButton') ?? 'grocery';
+    final String token = box.read('access_token');
     final String? selectedShopId = GetStorage().read('selected_shop_id');
 
     if (selectedShopId == null) {
       print("Error: 'shop_id' is missing.");
       return false;
     }
+
+    if (Type == 'promotion') {
+      Type = 'grocery';
+    }
+    if (Type == 'aj') {
+      Type = 'grocery';
+    }
+
 
     final body = {
       'type': Type,
@@ -282,7 +294,10 @@ class CartController extends GetxController {
         {
           'product_id': cartItem['product_id'],
           'quantity': cartItem['quantity'],
-          'services': cartItem['service'],
+          if (Type == 'grocery')
+            'price': cartItem['price'],
+          if (Type == 'laundry')
+            'services': cartItem['service'],
         }
       ]
     };
@@ -300,9 +315,11 @@ class CartController extends GetxController {
       );
 
       if (response.statusCode == 200) {
+        print("Body:$body");
+        print("Response: ${response.body}");
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
-          await fetchCartItems(token, Type);
+          await fetchCartItems();
           return true;
         } else {
           print("Failed to add items to cart: ${data['message']}");
@@ -319,10 +336,14 @@ class CartController extends GetxController {
   }
 
 
-  Future<void> fetchCartItems(String token, String type) async {
+  Future<void> fetchCartItems() async {
     GetStorage Box = GetStorage();
+    final String token = box.read('access_token');
     final String? selectedShopId = GetStorage().read('selected_shop_id');
     String Type = Box.read('selectedButton')??'grocery';
+    if (Type == 'promotion') {
+      Type = 'grocery';
+    }
     String baseUri = Type == 'grocery'
         ? Api.CartGetgrocery
         : Type == 'laundry'

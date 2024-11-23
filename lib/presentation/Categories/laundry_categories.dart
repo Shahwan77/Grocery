@@ -61,7 +61,7 @@ class LaundryCategories extends StatelessWidget {
                   mainAxisSpacing: 10.h,
                   childAspectRatio: 0.7,
                 ),
-                itemCount: categoryController.categories12.length,
+                itemCount: categoryController.categories.length,
                 itemBuilder: (context, index) {
                   return Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
@@ -91,7 +91,7 @@ class LaundryCategories extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               return Center(child: Text("Error loading categories."));
-            } else if (categoryController.categories12.isEmpty) {
+            } else if (categoryController.categories.isEmpty) {
               return Center(child: Text("No categories found."));
             } else {
               return GridView.builder(
@@ -105,9 +105,9 @@ class LaundryCategories extends StatelessWidget {
                   childAspectRatio: 0.7,
                   mainAxisExtent: 120,
                 ),
-                itemCount: categoryController.categories12.length,
+                itemCount: categoryController.categories.length,
                 itemBuilder: (context, index) {
-                  final category = categoryController.categories12[index];
+                  final category = categoryController.categories[index];
                   return GestureDetector(
                     onTap: () {
                       Get.to(() => DetailPage(

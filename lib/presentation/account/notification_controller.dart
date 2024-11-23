@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -19,7 +20,7 @@ class NotificationController extends GetxController {
 
     isLoading.value = true;
     final url = Uri.parse(
-        'https://grocery-dev.greendomains.in/api/notifications?shop_id=$selectedStoreId&user_id=$userId'
+        '${Api.ApiUrl}/notifications?shop_id=$selectedStoreId&user_id=$userId'
     );
 
     try {
@@ -52,7 +53,7 @@ class NotificationController extends GetxController {
 
     try {
       final response = await http.post(
-        Uri.parse("https://grocery-dev.greendomains.in/api/notifications"),
+        Uri.parse("${Api.ApiUrl}/notifications"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

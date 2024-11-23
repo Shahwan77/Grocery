@@ -120,6 +120,9 @@ class CustomBottomNavBar extends StatelessWidget {
               showUnselectedLabels: true,
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
+              selectedFontSize: 10.sp,
+              unselectedFontSize: 10.sp,
+
             );
           },
         ),

@@ -26,7 +26,8 @@ class MostPopularPage extends StatelessWidget {
         }
 
         if (homeController.popularCategories.isEmpty) {
-          return Center(child: Text('No popular products found.'));
+          return
+            Center(child: Text('No popular products found.'));
         }
 
         return Column(

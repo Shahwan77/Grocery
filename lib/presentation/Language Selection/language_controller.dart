@@ -27,6 +27,7 @@ class WelcomeController extends GetxController {
   String get searchText => 'search_here'.tr;
   String get seeallText => 'see_all'.tr;
   String get categoriesText => 'categories'.tr;
+  String get customizedcakeText => 'customized_cake'.tr;
   String get mostText => 'most_popular_categories'.tr;
   String get popularText => 'popular_products'.tr;
   String get topText => 'top_discount_products'.tr;

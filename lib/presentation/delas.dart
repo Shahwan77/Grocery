@@ -34,47 +34,49 @@ class DealsPage extends StatelessWidget {
             return Center(child: Text('Failed to load deals.'));
           }
 
-          return GridView.builder(
-            itemCount: dealController.deals.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              mainAxisSpacing: 10.h,
-              crossAxisSpacing: 10.w,
-              mainAxisExtent: GetStorage().read('selectedButton') == 'laundry' ? 220.h : 190.h,
-            ),
-            itemBuilder: (context, index) {
-              final deal = dealController.deals[index];
-              return IntrinsicHeight(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 8.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [BoxShadow(color: Colors.grey.shade400)],
-                    borderRadius: BorderRadius.circular(15.r),
-                    border: Border.all(color: Colors.grey.shade100),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.favorite_border),
-                            Icon(Icons.info_outline),
-                          ],
-                        ),
-                        Center(
-                          child: Image.network(
-                            fit: BoxFit.cover,
-                            width: 100.w,
-                            '${Api.ImageUrl}/products/${deal.product.image}',
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              itemCount: dealController.deals.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+                mainAxisSpacing: 10.h,
+                //crossAxisSpacing: 10.w,
+                mainAxisExtent: GetStorage().read('selectedButton') == 'laundry' ? 220.h : 170.h,
+              ),
+              itemBuilder: (context, index) {
+                final deal = dealController.deals[index];
+                return IntrinsicHeight(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [BoxShadow(color: Colors.grey.shade400)],
+                      borderRadius: BorderRadius.circular(15.r),
+                      border: Border.all(color: Colors.grey.shade100),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.favorite_border),
+                              Icon(Icons.info_outline),
+                            ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
+                          Center(
+                            child: Image.network(
+                              fit: BoxFit.cover,
+                              height: 90.h,
+                              width: 90.w,
+                              '${Api.ImageUrl}/products/${deal.product.image}',
+                            ),
+                          ),
+
+                          Center(
                             child: Text(
                               deal.product.name,
                               style: TextStyle(
@@ -85,68 +87,70 @@ class DealsPage extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    '\$${deal.product.price}',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
-                                      fontWeight: FontWeight.w700,
+                          SizedBox(height: 10.h,),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w,),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '\AED${deal.product.price}',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey,
+                                        decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '\$${deal.promotionPrice}',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w700,
+                                    SizedBox(width: 4.w,),
+                                    Text(
+                                      '\AED${deal.promotionPrice}',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Obx(() {
-                                final isInLocalCart = cartController.isInCart(deal.product.id);
-                                final isInServerCart = cartController.fetchedcartItems
-                                    .any((fetchedItem) => fetchedItem['product_id'] == deal.product.id);
+                                  ],
+                                ),
+                                Obx(() {
+                                  final isInLocalCart = cartController.isInCart(deal.product.id);
+                                  final isInServerCart = cartController.fetchedcartItems
+                                      .any((fetchedItem) => fetchedItem['product_id'] == deal.product.id);
 
-                                final isInCart = isInLocalCart || isInServerCart;
+                                  final isInCart = isInLocalCart || isInServerCart;
 
-                                return GestureDetector(
-                                  onTap: isInCart
-                                      ? null
-                                      : () {
-                                    cartController.toggleCart(
-                                      deal.product.id,
-                                      deal.product.name,
-                                      deal.promotionPrice as String,
-                                      deal.product.image,
-                                      {},
-                                    );
-                                  },
-                                  child: Icon(
-                                    isInCart
-                                        ? Icons.shopping_cart
-                                        : Icons.shopping_cart_outlined,
-                                    color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
-                                  ),
-                                );
-                              }),
-                            ],
+                                  return GestureDetector(
+                                    onTap: isInCart
+                                        ? null
+                                        : () {
+                                      cartController.toggleCart(
+                                        deal.product.id,
+                                        deal.product.name,
+                                        deal.promotionPrice as String,
+                                        deal.product.image,
+                                        {},
+                                      );
+                                    },
+                                    child: Icon(
+                                      isInCart
+                                          ? Icons.shopping_cart
+                                          : Icons.shopping_cart_outlined,
+                                      color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),

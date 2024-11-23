@@ -92,8 +92,47 @@ class TopDiscountPage extends StatelessWidget {
                     height: 220.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: homeController.discountProducts.length,
+                      itemCount: homeController.discountProducts.length > 2
+                          ? 2
+                          : homeController.discountProducts.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == homeController.discountProducts.length) {
+                          return Container(
+                            width: 50.w,
+                            margin: EdgeInsets.symmetric(horizontal: 8.w),
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 50.w,
+                                        height: 50.w,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.w,
+                                          color: Color(0xFFEB1C23),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                Future.delayed(Duration(seconds: 2), () {
+                                  Navigator.of(context).pop();
+                                  Get.to(TopDiscountView());
+                                });
+                              },
+                              child: Icon(
+                                size: 40.sp,
+                                Icons.arrow_forward,
+                                color: Color(0xFFEB1C23),
+                              ),
+                            ),
+                          );
+                        }
                         final item = homeController.discountProducts[index];
                         return Container(
                           width: 150.w,
@@ -120,24 +159,24 @@ class TopDiscountPage extends StatelessWidget {
                                       return GestureDetector(
                                         onTap: () {
                                           favoriteController.toggleFavorite(
-                                            item.name,
+                                            item.product.name,
                                             item.price.toString(),
-                                            item.image,
+                                            item.product.image,
                                           );
 
                                           Get.snackbar(
-                                            favoriteController.isFavorite(item.name)
+                                            favoriteController.isFavorite(item.product.name)
                                                 ? 'Added to Favorites'
                                                 : 'Removed from Favorites',
-                                            '${item.name} has been ${favoriteController.isFavorite(item.name) ? 'added to' : 'removed from'} your favorites.',
+                                            '${item.product.name} has been ${favoriteController.isFavorite(item.product.name) ? 'added to' : 'removed from'} your favorites.',
                                             snackPosition: SnackPosition.TOP,
                                           );
                                         },
                                         child: Icon(
-                                          favoriteController.isFavorite(item.name)
+                                          favoriteController.isFavorite(item.product.name)
                                               ? Icons.favorite
                                               : Icons.favorite_border,
-                                          color: favoriteController.isFavorite(item.name)
+                                          color: favoriteController.isFavorite(item.product.name)
                                               ? Color(0xFFEB1C23)
                                               : Colors.grey,
                                         ),
@@ -151,7 +190,7 @@ class TopDiscountPage extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Image.network(
-                                    '${Api.ImageUrl}/products/${item.image}',
+                                    '${Api.ImageUrl}/products/${item.product.image}',
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),
@@ -160,7 +199,7 @@ class TopDiscountPage extends StatelessWidget {
                                   padding: EdgeInsets.all(8.0),
                                   child: Center(
                                     child: Text(
-                                      item.name,
+                                      item.product.name,
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
@@ -175,44 +214,62 @@ class TopDiscountPage extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        '\$${item.price}',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w700,
+                                      // Check if promotionPrice is null
+                                      if (item.promotionPrice == null)
+                                        Text(
+                                          '\AED${item.price}',
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        )
+                                      else
+                                      // If promotionPrice is not null, show both prices
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '\AED${item.price}',
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w700,
+                                                decoration: TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                            Text(
+                                              '\AED${item.promotionPrice}',
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
                                       Obx(() {
                                         final isInLocalCart = cartController.isInCart(item.id);
                                         final isInServerCart = cartController.fetchedcartItems
                                             .any((fetchedItem) => fetchedItem['product_id'] == item.id);
 
-                                        final isInCart = isInLocalCart || isInServerCart; // Check if item is in local or server cart
-
+                                        final isInCart = isInLocalCart || isInServerCart;
+                                        String priceToPost = item.price.toString();
+                                        if (item.promotionPrice != null) {
+                                          priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                        }
                                         return GestureDetector(
-                                          onTap: isInCart // Disable onTap if already in cart
-                                              ? null // Disable the action if item is already in the cart
+                                          onTap: isInCart
+                                              ? null
                                               : () {
                                             cartController.toggleCart(
-                                              item.id, // Product ID
-                                              item.name,
-                                              item.price,
-                                              item.image,{}
+                                              item.id,
+                                              item.product.name,
+                                              priceToPost,
+                                              item.product.image,
+                                              {},
                                             );
-
-                                            // Get.snackbar(
-                                            //   cartController.isInCart(item.id)
-                                            //       ? 'Added to Cart'
-                                            //       : 'Removed from Cart',
-                                            //   '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
-                                            //   snackPosition: SnackPosition.TOP,
-                                            // );
                                           },
                                           child: Icon(
-                                            isInCart
-                                                ? Icons.shopping_cart // Show filled cart if item is in cart
-                                                : Icons.shopping_cart_outlined, // Show empty cart if item is not in cart
-                                            color: isInCart ? Color(0xFFEB1C23) : Colors.grey, // Change icon color
+                                            isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                                            color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
                                           ),
                                         );
                                       }),

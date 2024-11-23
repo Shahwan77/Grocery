@@ -39,7 +39,7 @@ class CartPage extends StatelessWidget {
       ),
       body: FutureBuilder<void>(
         future: cartController.fetchCartItems(
-            token ?? '', 'grocery'), // Fetch the cart items
+           ), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -203,7 +203,7 @@ class CartPage extends StatelessWidget {
                                         Spacer(),
 
                                         if (Box.read('selectedButton') == 'laundry') ...[
-                                          Column(
+                                          if(Box.read('access_token') != null)...[ Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
                                               final serviceName = (service is Map && service['name'] != null)
@@ -212,22 +212,39 @@ class CartPage extends StatelessWidget {
                                               print('Services: ${item['services']}');
                                               return Text(
                                                 serviceName,
-                                                style: TextStyle(fontSize: 16),
+                                                style: TextStyle(fontSize: 14.sp),
                                               );
                                             }).toList(),
-                                          ),
+                                          ),],
+                                          if(Box.read('access_token')==null)...[
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: (item['service'] as List<dynamic>?)?.map<Widget>((service) {
+                                                final serviceName = (service is Map && service['name'] != null)
+                                                    ? service['name']
+                                                    : 'Unknown Service';
+                                                return Text(
+                                                  serviceName,
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                );
+                                              }).toList() ?? [Text('No Services Available')],
+                                            ),
+                                          ],
                                         ],
 
                                         // if (Box.read('selectedButton') == 'laundry') ...[
                                         //   Text('${item['services'].join(', ')}', style: TextStyle(fontSize: 16)),
                                         // ],
+
                                         Visibility(
                                           visible: Box.read('selectedButton') != 'laundry',
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                item['price'],
+                                                '${item['price'] ?? '0'}',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 14.sp,
@@ -317,7 +334,7 @@ class CartPage extends StatelessWidget {
                             SizedBox(width: 10),
                             Obx(() {
                               return Text(
-                                "\$${cartController.total_amount.value}",
+                                "\AED${cartController.total_amount.value}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.sp,

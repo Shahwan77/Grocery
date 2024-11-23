@@ -22,7 +22,7 @@ class CategoriesNavbar extends StatelessWidget {
         backgroundColor: Color(0xFFEB1C23),
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-         languagecontroller.categoriesText,
+          languagecontroller.categoriesText,
           style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,

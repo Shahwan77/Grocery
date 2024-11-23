@@ -59,7 +59,7 @@ class DetailPage extends StatelessWidget {
                   bottom: TabBar(labelStyle: TextStyle(color: Colors.black),isScrollable: true,
                     tabs: [
                       Tab(text: "",),
-                      ...subcategories.map((subcategory) => Tab(text: subcategory.name,)).toList(),
+                      ...subcategories.map((subcategory) => Tab(text: subcategory.product.name,)).toList(),
                       //Tab(text: 'Favorites'), // Add favorites tab
                     ],
                   ),
@@ -84,7 +84,7 @@ class DetailPage extends StatelessWidget {
                               return GridView.builder(
                                 padding: EdgeInsets.all(8.0),
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: Box.read('selectedButton') == 'laundry' ? 2 : 3,
+                                  crossAxisCount: Box.read('selectedButton') == 'laundry' ? 2 : 2,
                                   crossAxisSpacing: 12.0,
                                   mainAxisSpacing: 20.0,
                                   mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 284 : 200,
@@ -121,9 +121,9 @@ class DetailPage extends StatelessWidget {
                                                         return GestureDetector(
                                                           onTap: () {
                                                             final itemData = {
-                                                              'name': item.name,
-                                                              'price': item.price,
-                                                              'image': item.image,
+                                                              'name': item.product.name,
+                                                              'price': item.product.price,
+                                                              'image': item.product.image,
                                                             };
 
                                                             favoriteController.toggleFavorite(
@@ -141,10 +141,10 @@ class DetailPage extends StatelessWidget {
                                                             );
                                                           },
                                                           child: Icon(
-                                                            favoriteController.isFavorite(item.name)
+                                                            favoriteController.isFavorite(item.product.name)
                                                                 ? Icons.favorite
                                                                 : Icons.favorite_border,
-                                                            color: favoriteController.isFavorite(item.name)
+                                                            color: favoriteController.isFavorite(item.product.name)
                                                                 ? Color(0xFFEB1C23)
                                                                 : Colors.grey,
                                                           ),
@@ -158,9 +158,9 @@ class DetailPage extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Center(
-                                                  child: item.image.isNotEmpty
+                                                  child: item.product.image.isNotEmpty
                                                       ? Image.network(
-                                                    '${Api.ImageUrl}/products/${item.image}',
+                                                    '${Api.ImageUrl}/products/${item.product.image}',
                                                     fit: BoxFit.cover,
                                                     height: 80.h,
                                                     width: 80.w,
@@ -177,7 +177,7 @@ class DetailPage extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Text(
-                                                  item.name,
+                                                  item.product.name,
                                                   style: TextStyle(
                                                     fontSize: 12.sp,
                                                     fontWeight: FontWeight.w700,
@@ -191,7 +191,7 @@ class DetailPage extends StatelessWidget {
                                                   child:Padding(
                                                     padding:  EdgeInsets.symmetric(horizontal: 10.w),
                                                     child: Column(
-                                                      children: item.services!.map((service) {
+                                                      children: item.services.map((service) {
                                                         return Obx(() {
                                                           bool isSelected = productController.selectedServices[item.id]?.contains(service.id) ?? false;
                                                           return GestureDetector(
@@ -201,7 +201,7 @@ class DetailPage extends StatelessWidget {
                                                               if (newValue) {
                                                                 selectedServices[service.id] = {
                                                                   'name': service.name,
-                                                                  'price': service.price,
+                                                                  'price': service.pivot.price,
                                                                 };
                                                               } else {
                                                                 selectedServices.remove(service.id);
@@ -251,7 +251,7 @@ class DetailPage extends StatelessWidget {
                                                                   ),
                                                                 ),
                                                                 Text(
-                                                                  "\$${service.price}",
+                                                                  "\$${service.pivot.price}",
                                                                   style: TextStyle(
                                                                     fontSize: 12.sp,
                                                                     fontWeight: FontWeight.w500,
@@ -276,7 +276,8 @@ class DetailPage extends StatelessWidget {
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Obx(() {
+                                                      Box.read('selectedButton') == 'laundry'
+                                                     ? Obx(() {
                                                         // Calculate the total price based on selected services
                                                         final totalPrice =
                                                         productController.calculateTotalPrice(item);
@@ -288,47 +289,70 @@ class DetailPage extends StatelessWidget {
                                                             fontWeight: FontWeight.w700,
                                                           ),
                                                         );
-                                                      }),
+                                                      }):
+                                                      (item.promotionPrice == null
+                                                      // Display the regular price if no promotion price
+                                                          ? Text(
+                                                        '\AED${item.price}',
+                                                        style: TextStyle(
+                                                          fontSize: 10.sp,
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      )
+                                                      // If promotion price is not null, show both prices
+                                                          : Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            '\AED${item.price}',
+                                                            style: TextStyle(
+                                                              fontSize: 10.sp,
+                                                              fontWeight: FontWeight.w700,
+                                                              decoration: TextDecoration.lineThrough,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            '\AED${item.promotionPrice}',
+                                                            style: TextStyle(
+                                                              fontSize: 10.sp,
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+
                                                       Obx(() {
-                                                        final isInLocalCart = cartController.isInCart(item.id);
+                                                        final isInLocalCart = cartController.isInCart(item.productId);
                                                         final isInServerCart = cartController.fetchedcartItems
-                                                            .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+                                                            .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
 
                                                         final isInCart = isInLocalCart || isInServerCart;
-                                                        final isLaundry = Box.read('selectedButton') == 'laundry';
-
+                                                        String priceToPost = item.price.toString();
+                                                        if (item.promotionPrice != null) {
+                                                          priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                                        }
                                                         return GestureDetector(
-                                                          onTap: (isInCart && !isLaundry)
+                                                          onTap: isInCart
                                                               ? null
                                                               : () {
-                                                            // Pass the selected services along with item details
                                                             cartController.toggleCart(
-                                                              item.id,
-                                                              item.name,
-                                                              item.price,
-                                                              item.image,
+                                                              item.productId,
+                                                              item.product.name,
+                                                              priceToPost,
+                                                              item.product.image,
                                                               selectedServices,
                                                             );
-
-                                                            Get.snackbar(
-                                                              cartController.isInCart(item.id) ? 'Added to Cart' : 'Removed from Cart',
-                                                              '${item.name} has been ${cartController.isInCart(item.id) ? 'added to' : 'removed from'} your cart.',
-                                                              snackPosition: SnackPosition.BOTTOM,
-                                                            );
-                                                            selectedServices.clear();
-                                                            productController.clearCheckboxes();
                                                           },
                                                           child: Icon(
-                                                            isInCart && !isLaundry
-                                                                ? Icons.shopping_cart
-                                                                : Icons.shopping_cart_outlined,
-                                                            color: isInCart && !isLaundry ? Color(0xFFEB1C23) : Colors.green.shade800,
+                                                            isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                                                            color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
                                                           ),
                                                         );
                                                       }),
                                                     ],
                                                   ),
                                                 ),
+
                                               ],
                                             ),
                                           ),

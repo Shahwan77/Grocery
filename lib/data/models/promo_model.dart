@@ -67,6 +67,7 @@ class PromoProduct {
   final String discountValue;
   final String promotionPrice;
   final Product product;
+  final int quantityLimit;
 
   PromoProduct({
     required this.id,
@@ -75,6 +76,7 @@ class PromoProduct {
     required this.discountValue,
     required this.promotionPrice,
     required this.product,
+    required this.quantityLimit,
   });
 
   factory PromoProduct.fromJson(Map<String, dynamic> json) {
@@ -85,6 +87,7 @@ class PromoProduct {
       discountValue: json['discount_value'],
       promotionPrice: json['promotion_price'],
       product: Product.fromJson(json['product']),
+      quantityLimit: json['quantity_limit'],
     );
   }
 }

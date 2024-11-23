@@ -9,23 +9,23 @@ import 'package:grocery/presentation/home_screen/controller/home_controller.dart
 import '../../data/apiClient/api.dart';
 
 class PromotionsPage extends StatelessWidget {
-  final HomeController promotionsController = Get.put(HomeController());
+  final HomeController controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Obx(() {
-          if (promotionsController.isLoading.value) {
+          if (controller.isLoading.value) {
             return Center(child: CircularProgressIndicator());
-          } else if (promotionsController.promotionsList.isEmpty) {
+          } else if (controller.promotionsList.isEmpty) {
             return Center(child: Text('No promotions available'));
           } else {
             return ListView.builder(
               shrinkWrap: true,
-              itemCount: promotionsController.promotionsList.length,
+              itemCount: controller.promotionsList.length,
               itemBuilder: (context, index) {
-                final promotion = promotionsController.promotionsList[index];
+                final promotion = controller.promotionsList[index];
                 return GestureDetector(
                   onTap: () {
                     Get.to(() => PromoProductsPage(promotionName: promotion.name));

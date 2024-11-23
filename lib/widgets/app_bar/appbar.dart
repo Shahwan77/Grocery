@@ -203,6 +203,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: GestureDetector(
                   onTap: () {
                     homeController.selectedIndex.value = 3;
+                    homeController.fetchAjProducts();
+                    box.write('selectedButton', 'aj');
+                    String selectedButton = box.read('selectedButton'); // Retrieve value from local storage
+                    print('Selected Button: $selectedButton');
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

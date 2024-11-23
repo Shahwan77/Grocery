@@ -102,7 +102,7 @@ class OrderViewPage extends StatelessWidget {
                                     }).toList(),
                                   ],
                                 )
-                                    : Text("Price: \$${item.product.price}"),
+                                    : Text("Price: \AED${item.product.price}"),
                                 trailing: Text(
                                   "Qty: ${item.quantity}",
                                   style: TextStyle(color: Color(0xFFEB1C23)),

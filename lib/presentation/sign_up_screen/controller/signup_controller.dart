@@ -124,9 +124,10 @@ class SignupController extends GetxController {
   Future<void> registerUser() async {
     isLoading.value = true;
 
-    //const String url = 'https://grocery-dev.greendomains.in/api/register';
     try {
       final String? selectedStoreId = GetStorage().read('selected_shop_id');
+      final double? latitude = GetStorage().read('latitude');
+      final double? longitude = GetStorage().read('longitude');
 
       final response = await http.post(
         Uri.parse(Api.Register),
@@ -139,18 +140,22 @@ class SignupController extends GetxController {
           'password': passwordController.text,
           'password_confirmation': passwordConfirmController.text,
           'shop_id': selectedStoreId,
+          'latitude': latitude, // Add latitude
+          'longitude': longitude, // Add longitude
         }),
       );
 
       if (response.statusCode == 201) {
         isRegistrationSuccessful.value = true;
+
         // Parse the response
         final registerResponse = RegisterResponse.fromJson(jsonDecode(response.body));
-print(response.body);
+        print(response.body);
+
         // Access the token
         String? accessToken = registerResponse.user.accessToken;
 
-        // Store the access token (you can use GetStorage for this)
+        // Store the access token
         await GetStorage().write('access_token', accessToken);
 
         Get.snackbar('Success', 'Registration successful!',
@@ -159,7 +164,7 @@ print(response.body);
         if (cartController.cartItems.isNotEmpty) {
           // Post each cart item after login
           for (var cartItem in cartController.cartItems) {
-            await cartController.postCartItems(accessToken!, cartItem, 'grocery');
+            await cartController.postCartItems(cartItem);
           }
         }
 
@@ -169,7 +174,7 @@ print(response.body);
         print('Registered User Details:');
         print('Name: ${nameController.text}');
         print('Mobile No: ${mobileNoController.text}');
-        Get.offAll(() => CustomBottomNavBar()); // Replace HomePage with your desired page
+        Get.offAll(() => CustomBottomNavBar()); // Navigate to desired page
       } else {
         Get.snackbar('Error', 'Failed to register user: ${response.body}',
             snackPosition: SnackPosition.BOTTOM);
@@ -216,4 +221,5 @@ print(response.body);
     otpController.dispose();
     super.onClose();
   }
+
 }

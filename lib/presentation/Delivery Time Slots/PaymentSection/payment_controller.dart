@@ -127,6 +127,7 @@ class PaymentMethodController extends GetxController {
       return {
         "product_id": item['product_id'],
         "quantity": item['quantity'],
+        "price":item['price'],
         "services": (item['services'] as List<dynamic>?)?.map((serviceItem) {
           return {
             "id": serviceItem['id'],

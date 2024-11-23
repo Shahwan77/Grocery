@@ -4,22 +4,26 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/data/apiClient/api.dart';
 import '../../../data/apiClient/api_service.dart';
+import '../../../data/models/aj_models.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/models.dart';
+import '../../../data/models/most_popular_model.dart';
 import '../../../data/models/promotion_model.dart';
 import '../../Cart/cart_controller.dart';
 import 'package:http/http.dart'as http;
 
 class HomeController extends GetxController {
   var categories = <Category>[].obs;
-  var categories12 = <Category>[].obs;
+  // var categories12 = <Category>[].obs;
   var popularProducts = <Models>[].obs;
   var discountProducts = <Models>[].obs;
-  var popularCategories = <Models>[].obs;
-  var isLoading = true.obs;
+  var popularCategories = <MostCategory>[].obs;
   var promotionsList = <Promotion>[].obs;
+  var ajProducts = <AjProduct>[].obs;
+  var isLoading = true.obs;
   var selectedIndex = 0.obs;
   var isLaundrySelected = false.obs;
+  var isAjSelected = false.obs;
   var isOfferSelected = false.obs;
   var isGrocerySelected = false.obs;
   final ApiService _apiService = ApiService();
@@ -48,6 +52,10 @@ class HomeController extends GetxController {
       fetchPromotions();
       selectedIndex.value = 2;
     }
+    else if (selectedButton == 'aj') {
+      fetchAjProducts();
+      selectedIndex.value = 3;
+    }
   }
 
 
@@ -64,14 +72,15 @@ class HomeController extends GetxController {
 
     isLaundrySelected.value = false;
     isOfferSelected.value=false;
-     isGrocerySelected = true.obs;
+    isAjSelected.value = false;
+    isGrocerySelected.value = true;
     //cartController.selectedType.value = 'grocery';
   }
 
   Future<void> fetchLaundry() async {
     try {
       final categoryList = await _apiService.fetchLaundryCategories();
-      categories12.value = categoryList;
+      categories.value = categoryList;
     } catch (e) {
       print('Error fetching categories: $e');
     } finally {
@@ -79,8 +88,9 @@ class HomeController extends GetxController {
     }
     selectedIndex.value = 1;
     isLaundrySelected.value = true;
+    isAjSelected.value = false;
     isOfferSelected.value=false;
-    isGrocerySelected = false.obs;
+    isGrocerySelected.value = false;
     //cartController.selectedType.value = 'laundry';
   }
   Future<void> fetchPromotions() async {
@@ -117,9 +127,11 @@ class HomeController extends GetxController {
     }
     isLaundrySelected.value = false;
     isOfferSelected.value = true;
-    isGrocerySelected = false.obs;
+    isGrocerySelected.value = false;
+    isAjSelected.value = false;
     selectedIndex.value = 2;
   }
+
 
   Future<void> fetchPopularProducts() async {
     try {
@@ -153,6 +165,34 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
   }
+  Future<void> fetchAjProducts() async {
+    isLoading.value = true;
+    try {
+      final response =
+      await http.get(Uri.parse("https://grocery-dev.greendomains.in/api/products/aj"));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          List<dynamic> productList = data['data'];
+          ajProducts.value =
+              productList.map((product) => AjProduct.fromJson(product)).toList();
+        } else {
+          Get.snackbar('Error', 'Failed to load products');
+        }
+      } else {
+        Get.snackbar('Error', 'Failed to connect to the API');
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+    isLaundrySelected.value = false;
+    isOfferSelected.value = false;
+    isGrocerySelected.value = false;
+    isAjSelected.value = true;
+    selectedIndex.value = 3;
+  }
 
   Future<void> refreshData() async {
     isLoading.value = true;
@@ -160,16 +200,18 @@ class HomeController extends GetxController {
     await fetchDiscountProducts();
     await fetchPopularCategories();
 
-    // Check the selected index and fetch data accordingly
-    if (selectedIndex.value == 2) {
-      await fetchPromotions();  // Fetch promotions when selectedIndex is 2
+
+
+    if (selectedIndex.value == 3) {
+      await fetchAjProducts();
+    } else if (selectedIndex.value == 2) {
+      await fetchPromotions();
     } else if (selectedIndex.value == 1) {
-      await fetchLaundry();  // Fetch laundry categories when selectedIndex is 1
+      await fetchLaundry();
     } else {
-      await fetchCategories();  // Fetch regular categories for any other selectedIndex
+      await fetchCategories();
     }
 
     isLoading.value = false;
   }
-
 }

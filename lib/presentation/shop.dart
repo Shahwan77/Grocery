@@ -74,9 +74,9 @@ class SelectStorePage extends StatelessWidget {
                               bool isSelected = store.id == storeController.selectedStoreId.value;
 
                               return Card(
-                                color: isSelected ? Colors.red.shade100 : Colors.white, // Set blue if selected, else white
+                                color: isSelected ?  Color(0xFFEB1C23) : Colors.white, // Set blue if selected, else white
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 elevation: 4,
                                 child: Column(
@@ -117,6 +117,7 @@ class SelectStorePage extends StatelessWidget {
                                             store.name,
                                             style: TextStyle(
                                               fontSize: 18.sp,
+                                              color:  isSelected ? Colors.white : Colors.black,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -124,7 +125,7 @@ class SelectStorePage extends StatelessWidget {
                                           Text(
                                             store.address ?? 'No address',
                                             style: TextStyle(
-                                              color: Colors.grey.shade600,
+                                              color: isSelected ? Colors.white : Colors.grey.shade600,
                                               fontSize: 14.sp,
                                             ),
                                           ),
@@ -148,7 +149,7 @@ class SelectStorePage extends StatelessWidget {
                   width: double.infinity,
                   child: Button(
                     size: Size(300.w, 50.h),
-                    color: Colors.red,
+                    color:  Color(0xFFEB1C23),
                     text: Text(
                       'Continue',
                       style: TextStyle(

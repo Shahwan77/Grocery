@@ -91,7 +91,7 @@ class SubcategoryPage extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No products available for ${subcategory.name}'));
+          return Center(child: Text('No products available for ${subcategory.product.name}'));
         } else {
           final products = snapshot.data!;
           return GridView.builder(
@@ -146,9 +146,9 @@ class SubcategoryPage extends StatelessWidget {
                             ),
                           ),
                           Center(
-                            child: product.image.isNotEmpty
+                            child: product.product.image.isNotEmpty
                                 ? Image.network(
-                              'https://grocery-dev.greendomains.in/storage/images/products/${product.image}',
+                              'https://grocery-dev.greendomains.in/storage/images/products/${product.product.image}',
                               fit: BoxFit.cover,
                               height: 80.h,
                               width: 80.w,
@@ -162,7 +162,7 @@ class SubcategoryPage extends StatelessWidget {
                           Padding(
                             padding:  EdgeInsets.symmetric(horizontal: 6.w),
                             child: Text(
-                              product.name,
+                              product.product.name,
                               style: TextStyle(fontWeight: FontWeight.w600),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -174,7 +174,7 @@ class SubcategoryPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  product.price.isNotEmpty ? product.price : '00',
+                                  product.price.toString().isNotEmpty ? product.price.toString() : '00',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
@@ -193,16 +193,16 @@ class SubcategoryPage extends StatelessWidget {
                                         : () {
                                       cartController.toggleCart(
                                         product.id, // Product ID
-                                        product.name,
-                                        product.price,
-                                        product.image,{}
+                                        product.product.name,
+                                        product.product.price,
+                                        product.product.image,{}
                                       );
 
                                       Get.snackbar(
                                         cartController.isInCart(product.id)
                                             ? 'Added to Cart'
                                             : 'Removed from Cart',
-                                        '${product.name} has been ${cartController.isInCart(product.id) ? 'added to' : 'removed from'} your cart.',
+                                        '${product.product.name} has been ${cartController.isInCart(product.id) ? 'added to' : 'removed from'} your cart.',
                                         snackPosition: SnackPosition.TOP,
                                       );
                                     },

@@ -37,7 +37,7 @@ class SeeAllPage extends StatelessWidget {
           backgroundColor: Color(0xFFEB1C23),
           iconTheme: IconThemeData(color: Colors.white),
           title: Text(
-           languagecontroller.seeallText,
+            languagecontroller.seeallText,
             style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -63,7 +63,7 @@ class SeeAllPage extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     Get.to(() => DetailPage(categoryId: category.id.toString(), categoryName: category.name,));
-      
+
                   },
                   child: Column(
                     children: [
@@ -73,7 +73,7 @@ class SeeAllPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border:
-                              Border.all(color: Color(0xFFEB1C23), width: 1),
+                          Border.all(color: Color(0xFFEB1C23), width: 1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
@@ -83,7 +83,7 @@ class SeeAllPage extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child:category.image != null && category.image!.isNotEmpty
-                                ?Image.network(
+                                    ?Image.network(
                                   '${Api.ImageUrl}/categories/${category.image}',
                                   fit: BoxFit.cover,
                                   height: 100, // Image height
@@ -95,10 +95,10 @@ class SeeAllPage extends StatelessWidget {
                                   ),
                                 )
                                     : Icon(
-                              Icons.hide_image_outlined,
-                              size: 90.sp,
-                                color: Colors.grey,
-                              ),
+                                  Icons.hide_image_outlined,
+                                  size: 90.sp,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                             Padding(
@@ -114,12 +114,12 @@ class SeeAllPage extends StatelessWidget {
                                       child: Padding(
                                         padding:  EdgeInsets.symmetric(horizontal: 6.w),
                                         child: Text(
-                                                                        category.name,
-                                                                        style: TextStyle(
-                                          fontSize: 10.sp, color: Colors.white),
+                                          category.name,
+                                          style: TextStyle(
+                                              fontSize: 10.sp, color: Colors.white),
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
-                                                                      ),
+                                        ),
                                       )
                                   )
                               ),
@@ -127,7 +127,7 @@ class SeeAllPage extends StatelessWidget {
                           ],
                         ),
                       ),
-      
+
                     ],
                   ),
                 );

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:grocery/presentation/OTP%20Field/otp_field.dart';
 import 'package:grocery/presentation/account/change_password.dart';
@@ -8,6 +9,8 @@ import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
 import '../../../widgets/button/button.dart';
 import '../../../widgets/textfield/custom_textfield.dart';
 import '../../Language Selection/language_controller.dart';
+import '../../sign_up_screen/controller/location_controller.dart';
+import '../../sign_up_screen/controller/signup_controller.dart';
 import '../controller/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,7 +20,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginController loginController = Get.put(LoginController());
     final WelcomeController languagecontroller = Get.put(WelcomeController());
-
+    final LocationController locationController = Get.put(LocationController());
+    final SignupController signupController = Get.put(SignupController());
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
@@ -139,8 +143,19 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w,),
                     GestureDetector(
-                      onTap: () {
-                        Get.to(SignupPage());
+                      onTap: () async {
+
+                        bool permissionGranted = await locationController.getLocation();
+                        if (permissionGranted) {
+                          print('Location: ${locationController.location.value}');
+                          Get.to(SignupPage());
+                        } else {
+                          Get.snackbar(
+                            'Permission Required',
+                            locationController.location.value,
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                        }
                       },
                       child: Text(
                         languagecontroller.createhereText,

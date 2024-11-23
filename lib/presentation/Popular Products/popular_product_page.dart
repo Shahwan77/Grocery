@@ -88,7 +88,9 @@ class PopularProductPage extends StatelessWidget {
                     height: 220.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: homeController.popularProducts.length + 1,
+                      itemCount: homeController.popularProducts.length > 1
+                          ? 2
+                          : homeController.popularProducts.length + 1,
                       itemBuilder: (context, index) {
                         if (index == homeController.popularProducts.length) {
                           return Container(
@@ -119,21 +121,10 @@ class PopularProductPage extends StatelessWidget {
                                   Get.to(PopularProductsView());
                                 });
                               },
-                              child: Container(
-                                padding: EdgeInsets.all(8.w),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Color(0xFFEB1C23),
-                                    width: 2.w,
-                                  ),
-                                ),
-                                child: Icon(
-                                  size: 40.sp,
-                                  Icons.arrow_forward_ios,
-                                  color: Color(0xFFEB1C23),
-                                ),
+                              child: Icon(
+                                size: 40.sp,
+                                Icons.arrow_forward,
+                                color: Color(0xFFEB1C23),
                               ),
                             ),
                           );
@@ -161,9 +152,9 @@ class PopularProductPage extends StatelessWidget {
                                       return GestureDetector(
                                         onTap: () {
                                           final itemData = {
-                                            'name': item.name,
-                                            'price': item.price,
-                                            'image': item.image,
+                                            'name': item.product.name,
+                                            'price': item.product.price,
+                                            'image': item.product.image,
                                           };
 
                                           favoriteController.toggleFavorite(
@@ -181,10 +172,10 @@ class PopularProductPage extends StatelessWidget {
                                           );
                                         },
                                         child: Icon(
-                                          favoriteController.isFavorite(item.name)
+                                          favoriteController.isFavorite(item.product.name)
                                               ? Icons.favorite
                                               : Icons.favorite_border,
-                                          color: favoriteController.isFavorite(item.name)
+                                          color: favoriteController.isFavorite(item.product.name)
                                               ? Color(0xFFEB1C23)
                                               : Colors.grey,
                                         ),
@@ -198,7 +189,7 @@ class PopularProductPage extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Image.network(
-                                    '${Api.ImageUrl}/products/${item.image}',
+                                    '${Api.ImageUrl}/products/${item.product.image}',
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),
@@ -207,7 +198,7 @@ class PopularProductPage extends StatelessWidget {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Center(
                                     child: Text(
-                                      item.name,
+                                      item.product.name,
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
@@ -222,13 +213,37 @@ class PopularProductPage extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        '\$${item.price}',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w700,
+                                      // Check if promotionPrice is null
+                                      if (item.promotionPrice == null)
+                                        Text(
+                                          '\AED${item.price}',
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        )
+                                      else
+                                      // If promotionPrice is not null, show both prices
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '\AED${item.price}',
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w700,
+                                                decoration: TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                            Text(
+                                              '\AED${item.promotionPrice}',
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
                                       Obx(() {
                                         final isInLocalCart = cartController.isInCart(item.id);
                                         final isInServerCart = cartController.fetchedcartItems
@@ -240,11 +255,15 @@ class PopularProductPage extends StatelessWidget {
                                           onTap: isInCart
                                               ? null
                                               : () {
+                                            String priceToPost = item.price.toString();
+                                            if (item.promotionPrice != null) {
+                                              priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                            }
                                             cartController.toggleCart(
                                               item.id,
-                                              item.name,
-                                              item.price,
-                                              item.image,
+                                              item.product.name,
+                                              priceToPost,
+                                              item.product.image,
                                               {},
                                             );
                                           },
@@ -257,6 +276,7 @@ class PopularProductPage extends StatelessWidget {
                                     ],
                                   ),
                                 ),
+
                               ],
                             ),
                           ),

@@ -33,6 +33,7 @@ class DealController extends GetxController {
       );
 
       if (response.statusCode == 200) {
+        print("objectDEALSSS");
         final data = jsonDecode(response.body);
         if (data['success']) {
           deals.value = (data['data'] as List)
