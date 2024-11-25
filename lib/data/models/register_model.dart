@@ -5,7 +5,9 @@ class User {
   final String? updatedAt;
   final String? createdAt;
   final int? id;
-  final String? accessToken; // Add this line
+  final String? address;
+  final String? accessToken;
+  final String? distance; // Add this line
 
   User({
     this.name,
@@ -14,7 +16,9 @@ class User {
     this.updatedAt,
     this.createdAt,
     this.id,
-    this.accessToken, // Add this line
+    this.accessToken,
+    this.address,
+    this.distance,// Add this line
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -25,7 +29,9 @@ class User {
       updatedAt: json['updated_at']??'',
       createdAt: json['created_at']??'',
       id: json['id']??0,
-      accessToken: json['access_token']??'', // Add this line
+        address: json['address'] ?? '',
+      accessToken: json['access_token']??'',
+        distance: json['distance'] ?? ''// Add this line
     );
   }
 }

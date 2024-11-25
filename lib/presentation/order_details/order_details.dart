@@ -69,7 +69,7 @@ class OrderDetails extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                height: 96.h,
+                height: 140.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Color(0xFFEB1C23),
@@ -114,7 +114,7 @@ class OrderDetails extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        '24 United Arab Emirates 13 4 Mai Tower-\nOffice No 701 -\nالنهدة - دبي - United Arab Emirates',
+                                        user?.address??'Address',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w400,
@@ -164,6 +164,64 @@ class OrderDetails extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10.h,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            languagecontroller.issuedText,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            cartController.currentDate,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            languagecontroller.kmText,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                              BorderRadius.circular(20.r),
+                                            ),
+                                            child: IntrinsicWidth(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.w),
+                                                child: Text(
+                                                  user?.distance??'',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14.sp,
+                                                      fontWeight: FontWeight.w600),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ],
                               );
                             } else {
@@ -188,50 +246,7 @@ class OrderDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              languagecontroller.issuedText,
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              cartController.currentDate,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              languagecontroller.kmText,
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              '1.17 km',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+
                     SizedBox(
                       height: 10.h,
                     ),
@@ -325,10 +340,28 @@ class OrderDetails extends StatelessWidget {
                                     ],
                                 ],
                               ),
-      
-                              trailing: Text(
-                                calculateTotalPrice(
-                                    item['price'], item['quantity']),
+
+                              trailing: Box.read('selectedButton') == 'laundry'
+                                  ? Padding(
+                                    padding:  EdgeInsets.symmetric(vertical: 12.h),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
+                                    final servicePrice = (service is Map && service['price'] != null)
+                                        ? service['price']
+                                        : '0';
+                                    return Text(
+                                      '\$${servicePrice}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.sp,
+                                      ),
+                                    );
+                                      }).toList(),
+                                    ),
+                                  )
+                                  : Text(
+                                calculateTotalPrice(item['price'], item['quantity']),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14.sp,
@@ -415,14 +448,17 @@ class OrderDetails extends StatelessWidget {
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w500),
                               ),
-                              Text(
-                                "0.00",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.sp,
-                                  color: Colors.black,
+                              Obx(
+                                    () => Text(
+                                  "\AED${cartController.delivery_charge.value}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               )
+
                             ],
                           ),
                           Divider(
@@ -432,17 +468,22 @@ class OrderDetails extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                               languagecontroller.totalamountText,
+                                languagecontroller.totalamountText,
                                 style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.w500),
+                                  fontSize: 14.sp,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               if (cartController.isLoggedIn() &&
                                   cartController.getCartItems().isNotEmpty) ...[
                                 Obx(() {
+                                  // final totalPrice = calculateTotalAmount(
+                                  //   cartController.total_amount.value,
+                                  //   cartController.delivery_charge.value,
+                                  // );
                                   return Text(
-                                    "\AED${cartController.total_amount.value}",
+                                    "\AED${cartController.totalPrice}",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.sp,
@@ -450,9 +491,10 @@ class OrderDetails extends StatelessWidget {
                                     ),
                                   );
                                 }),
-                              ]
+                              ],
                             ],
                           ),
+
                         ],
                       ),
                     ),
@@ -523,6 +565,21 @@ String calculateTotalPrice(dynamic price, dynamic quantity) {
         quantity is int ? quantity : int.parse(quantity.toString());
 
     final double total = priceValue * quantityValue;
+
+    return total.toStringAsFixed(2);
+  } catch (e) {
+    return '0.00';
+  }
+}
+String calculateTotalAmount(dynamic amount, dynamic deliveryCharge) {
+  try {
+    final double amountValue =
+    amount is int ? amount.toDouble() : double.parse(amount.toString());
+    final double deliveryChargeValue = deliveryCharge is int
+        ? deliveryCharge.toDouble()
+        : double.parse(deliveryCharge.toString());
+
+    final double total = amountValue + deliveryChargeValue;
 
     return total.toStringAsFixed(2);
   } catch (e) {

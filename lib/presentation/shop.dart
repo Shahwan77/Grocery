@@ -116,7 +116,7 @@ class SelectStorePage extends StatelessWidget {
                                           Text(
                                             store.name,
                                             style: TextStyle(
-                                              fontSize: 18.sp,
+                                              fontSize: 14.sp,
                                               color:  isSelected ? Colors.white : Colors.black,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -126,7 +126,7 @@ class SelectStorePage extends StatelessWidget {
                                             store.address ?? 'No address',
                                             style: TextStyle(
                                               color: isSelected ? Colors.white : Colors.grey.shade600,
-                                              fontSize: 14.sp,
+                                              fontSize: 12.sp,
                                             ),
                                           ),
                                         ],

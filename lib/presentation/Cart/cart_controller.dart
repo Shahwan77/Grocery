@@ -16,6 +16,7 @@ class CartController extends GetxController {
   final BottomApiService apiService = BottomApiService();
   var total_amount = "0.00".obs;
   var total_quantity = "0".obs;
+  var delivery_charge = "0.00".obs;
   final box = GetStorage();
   GetStorage Box = GetStorage();
   String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -47,6 +48,21 @@ class CartController extends GetxController {
   void saveCartItems() {
     box.write('cartItems', cartItems);
     printStoredItems();
+  }
+
+  String get totalPrice {
+    double total = double.tryParse(total_amount.value) ?? 0.0;
+    double delivery = double.tryParse(delivery_charge.value) ?? 0.0;
+    return (total + delivery).toStringAsFixed(2);
+  }
+
+  // Optional: If you need to trigger recalculations explicitly
+  void updateTotalAmount(String amount) {
+    total_amount.value = amount;
+  }
+
+  void updateDeliveryCharge(String charge) {
+    delivery_charge.value = charge;
   }
 
 
@@ -374,8 +390,10 @@ class CartController extends GetxController {
             fetchedcartItems.assignAll(List<Map<String, dynamic>>.from(items));
             total_amount.value = data['data']['total_amount'];
             total_quantity.value = data['data']['total_quantity'].toString();
+            delivery_charge.value = data['data']['delivery_charge'].toString();
             print('Fetched Cart Items: ${fetchedcartItems.toList()}');
             print('Total Amount: ${total_amount.value}');
+            print('Delivery Charge: ${delivery_charge.value}');
           }
         }
       } else {

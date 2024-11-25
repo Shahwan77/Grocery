@@ -113,7 +113,7 @@ class PaymentMethodController extends GetxController {
     print('method: $selectedPaymentMethod');
 
     double changeAmount = convertToDouble(selectedAmount.value);
-    double totalAmount = convertToDouble(cartcontroller.total_amount.value);
+    double totalAmount = convertToDouble(cartcontroller.totalPrice);
     print('Change needed: $changeAmount');
     print('amount: $totalAmount');
 
