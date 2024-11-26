@@ -192,6 +192,7 @@ class SubcategoryPage extends StatelessWidget {
                                         ? null // Disable the action if item is already in the cart
                                         : () {
                                       cartController.toggleCart(
+                                          {}.toString(),
                                         product.id, // Product ID
                                         product.product.name,
                                         product.product.price,

@@ -185,6 +185,15 @@ class DetailPage extends StatelessWidget {
                                                   textAlign: TextAlign.center,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
+                                                // Text(
+                                                //   item.product.type,
+                                                //   style: TextStyle(
+                                                //     fontSize: 12.sp,
+                                                //     fontWeight: FontWeight.w700,
+                                                //   ),
+                                                //   textAlign: TextAlign.center,
+                                                //   overflow: TextOverflow.ellipsis,
+                                                // ),
                                                 // Use SingleChildScrollView to avoid overflow
                                                 Box.read('selectedButton') == 'laundry'
                                                     ? SingleChildScrollView(
@@ -266,9 +275,6 @@ class DetailPage extends StatelessWidget {
                                                       }).toList(),
                                                     ),
                                                   ),
-
-
-
                                                 )
                                                     : SizedBox.shrink(),
                                                 Padding(
@@ -323,8 +329,7 @@ class DetailPage extends StatelessWidget {
 
                                                       Obx(() {
                                                         final isInLocalCart = cartController.isInCart(item.productId);
-                                                        final isInServerCart = cartController.fetchedcartItems
-                                                            .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
+                                                        final isInServerCart = cartController.fetchedcartItems.any((fetchedItem) => fetchedItem['product_id'] == item.productId);
 
                                                         final isInCart = isInLocalCart || isInServerCart;
                                                         String priceToPost = item.price.toString();
@@ -336,6 +341,7 @@ class DetailPage extends StatelessWidget {
                                                               ? null
                                                               : () {
                                                             cartController.toggleCart(
+                                                             item.product.type,
                                                               item.productId,
                                                               item.product.name,
                                                               priceToPost,

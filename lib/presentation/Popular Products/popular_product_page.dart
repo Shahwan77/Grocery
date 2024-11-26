@@ -260,6 +260,7 @@ class PopularProductPage extends StatelessWidget {
                                               priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
                                             }
                                             cartController.toggleCart(
+                                              {}.toString(),
                                               item.id,
                                               item.product.name,
                                               priceToPost,

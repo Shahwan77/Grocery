@@ -5,6 +5,7 @@ class Models {
   final int shopId;
   final int productId;
   final String price;
+  final String type;
   final int popular;
   final int discount;
   final String discountType;
@@ -21,6 +22,7 @@ class Models {
     required this.shopId,
     required this.productId,
     required this.price,
+    required this.type,
     required this.popular,
     required this.discount,
     required this.discountType,
@@ -38,6 +40,7 @@ class Models {
       shopId: json['shop_id'] ?? 0,
       productId: json['product_id'] ?? 0,
       price: json['price'] ?? '0.0',
+      type: json['type'] ?? '',
       popular: json['popular'] ?? 0,
       discount: json['discount'] ?? 0,
       discountType: json['discount_type'] ?? '',
@@ -58,6 +61,7 @@ class Models {
 
 class ProductModel {
   final int id;
+  final String type;
   final String name;
   final int categoryId;
   final int? subcategoryId;
@@ -75,6 +79,7 @@ class ProductModel {
   ProductModel({
     required this.id,
     required this.name,
+    required this.type,
     required this.categoryId,
     this.subcategoryId,
     this.description,
@@ -96,6 +101,7 @@ class ProductModel {
 
     return ProductModel(
       id: json['id'] ?? 0,
+      type: json['type'] ?? '',
       name: json['name'] ?? 'Unknown',
       categoryId: json['category_id'] ?? 0,
       subcategoryId: json['subcategory_id'],

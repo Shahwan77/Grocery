@@ -84,14 +84,13 @@ class CartController extends GetxController {
   }
 
   Future<void> toggleCart(
+      String type,
       int productId,
       String itemName,
       String itemPrice,
       String itemImage,
       Map<int, Map<String, dynamic>>? selectedServices
       ) async {
-
-
     final isLaundry = Box.read('selectedButton') == 'laundry';
 
     if (!isLaundry) {
@@ -100,6 +99,8 @@ class CartController extends GetxController {
         Get.snackbar('Info', '$itemName is already in the cart.');
         return;
       }
+
+      // final String? type = box.read('selectedButton') ?? 'grocery';
 
       final itemIndex = cartItems.indexWhere((item) => item['product_id'] == productId);
       if (itemIndex >= 0) {
@@ -117,15 +118,28 @@ class CartController extends GetxController {
       });
     }
     print('fffff: ${servicesList}');
+    final type = Box.read('selectedButton') ?? 'grocery';
     // Create a new cart item
     final newItem = {
+      'type': type,
       'product_id': productId,
       'name': itemName,
-      'price': itemPrice,
+      if (type == 'grocery') 'price': itemPrice,
       'image': itemImage,
       'quantity': 1,
-      'service': servicesList
+      // Conditionally include the 'service' key
+      if (type == 'laundry') 'service': servicesList,
     };
+
+    // final newItem1 = {
+    //   'type':type,
+    //   'product_id': productId,
+    //   'name': itemName,
+    //   // 'price': itemPrice,
+    //   'image': itemImage,
+    //   'quantity': 1,
+    //   'service': servicesList
+    // };
 
     cartItems.add(newItem);
 
@@ -138,6 +152,13 @@ class CartController extends GetxController {
           //Get.snackbar('Error', 'Failed to update cart.');
         }
       });
+      // postCartItems1(newItem,).then((success) {
+      //   if (success) {
+      //     fetchedcartItems.add(newItem);
+      //   } else {
+      //     //Get.snackbar('Error', 'Failed to update cart.');
+      //   }
+      // });
     } else {
       saveCartItems();
     }
@@ -160,6 +181,7 @@ class CartController extends GetxController {
         final token = box.read('access_token');
         if (token != null) {
           postCartItems(fetchedcartItems[itemIndex]);
+          // postCartItems1(fetchedcartItems[itemIndex]);
         }
       }
     } else {
@@ -284,9 +306,7 @@ class CartController extends GetxController {
     }
   }
 
-  Future<bool> postCartItems(
-     Map<String, dynamic> cartItem) async {
-    String Type = box.read('selectedButton') ?? 'grocery';
+  Future<bool> postCartItems(Map<String, dynamic> cartItem) async {
     final String token = box.read('access_token');
     final String? selectedShopId = GetStorage().read('selected_shop_id');
 
@@ -295,30 +315,28 @@ class CartController extends GetxController {
       return false;
     }
 
-    if (Type == 'promotion') {
-      Type = 'grocery';
-    }
-    if (Type == 'aj') {
-      Type = 'grocery';
-    }
+    // Determine the type dynamically.
+    String type = cartItem['type'] ?? 'grocery';
 
-
+    // Construct the body based on the type.
     final body = {
-      'type': Type,
+      'type': type,
       'shop_id': selectedShopId,
       'items': [
-        {
+        if (type == 'grocery') {
           'product_id': cartItem['product_id'],
           'quantity': cartItem['quantity'],
-          if (Type == 'grocery')
-            'price': cartItem['price'],
-          if (Type == 'laundry')
-            'services': cartItem['service'],
+          'price': cartItem['price'],
+        } else if (type == 'laundry') {
+          'product_id': cartItem['product_id'],
+          'quantity': cartItem['quantity'],
+          'services': cartItem['service'],
         }
-      ]
+      ],
     };
 
-    print("Request Body: $body");
+    print("Request Body: $cartItem");
+    print("Formatted Body: $body");
 
     try {
       final response = await http.post(
@@ -331,7 +349,6 @@ class CartController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        print("Body:$body");
         print("Response: ${response.body}");
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
@@ -350,6 +367,7 @@ class CartController extends GetxController {
       return false;
     }
   }
+
 
 
   Future<void> fetchCartItems() async {

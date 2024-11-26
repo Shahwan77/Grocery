@@ -173,6 +173,7 @@ class PromoProductsPage extends StatelessWidget {
                                           ? null
                                           : () {
                                         cartController.toggleCart(
+                                          {}.toString(),
                                           item.id,
                                           item.product.name,
                                           priceToPost,

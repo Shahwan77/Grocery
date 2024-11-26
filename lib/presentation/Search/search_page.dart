@@ -171,6 +171,7 @@ class SearchPage extends StatelessWidget {
                                         return GestureDetector(
                                           onTap: isInCart ? null : () {
                                             cartController.toggleCart(
+                                                {}.toString(),
                                                 product.id,
                                                 product.product.name,
                                                 product.promotionPrice.toString(),

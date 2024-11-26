@@ -23,6 +23,10 @@ class CartPage extends StatelessWidget {
     final WelcomeController languagecontroller = Get.put(WelcomeController());
     final Map<String, dynamic> item;
     final token = GetStorage().read('access_token');
+    String selectedType = Box.read('selectedButton')??'';
+    List<Map<String, dynamic>> filteredCartItems = cartController.getCartItems().where((item) {
+      return item['type'] == selectedType; // Filter items based on selected type
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -39,7 +43,7 @@ class CartPage extends StatelessWidget {
       ),
       body: FutureBuilder<void>(
         future: cartController.fetchCartItems(
-           ), // Fetch the cart items
+        ), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -94,9 +98,15 @@ class CartPage extends StatelessWidget {
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
                         scrollDirection: Axis.vertical,
-                        itemCount: cartController.getCartItems().length,
+                        itemCount: token == null
+                            ? filteredCartItems.length
+                            : cartController.getCartItems().length,
                         itemBuilder: (context, index) {
-                          final item = cartController.getCartItems()[index];
+                          final item =
+                          token == null
+                              ? filteredCartItems[index]
+                              :
+                          cartController.getCartItems()[index];
                           final int productId = item['product_id'];
                           return IntrinsicHeight(
                             child: Container(

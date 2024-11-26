@@ -126,6 +126,7 @@ class DealsPage extends StatelessWidget {
                                         ? null
                                         : () {
                                       cartController.toggleCart(
+                                        {}.toString(),
                                         deal.product.id,
                                         deal.product.name,
                                         deal.promotionPrice as String,

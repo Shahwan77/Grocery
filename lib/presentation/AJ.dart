@@ -159,6 +159,7 @@ class AjPage extends StatelessWidget {
                                       ? null // Disable the action if item is already in the cart
                                       : () {
                                     cartController.toggleCart(
+                                        {}.toString(),
                                         product.id, // Product ID
                                         product.name,
                                        product.price,
