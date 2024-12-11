@@ -148,7 +148,7 @@ class SubcategoryPage extends StatelessWidget {
                           Center(
                             child: product.product.image.isNotEmpty
                                 ? Image.network(
-                              'https://grocery-dev.greendomains.in/storage/images/products/${product.product.image}',
+                              '${Api.BaseUrl}/storage/images/products/${product.product.image}',
                               fit: BoxFit.cover,
                               height: 80.h,
                               width: 80.w,
@@ -192,6 +192,7 @@ class SubcategoryPage extends StatelessWidget {
                                         ? null // Disable the action if item is already in the cart
                                         : () {
                                       cartController.toggleCart(
+                                          null,
                                           {}.toString(),
                                         product.id, // Product ID
                                         product.product.name,

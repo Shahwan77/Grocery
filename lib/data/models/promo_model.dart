@@ -65,7 +65,7 @@ class PromoProduct {
   final int productId;
   final String discountType;
   final String discountValue;
-  final String promotionPrice;
+  final double promotionPrice; // Changed from String to double
   final Product product;
   final int quantityLimit;
 
@@ -85,18 +85,19 @@ class PromoProduct {
       productId: json['product_id'],
       discountType: json['discount_type'],
       discountValue: json['discount_value'],
-      promotionPrice: json['promotion_price'],
+      promotionPrice: double.parse(json['promotion_price'] ?? '0.0'), // Parsing to double
       product: Product.fromJson(json['product']),
       quantityLimit: json['quantity_limit'],
     );
   }
 }
 
+
 class Product {
   final int id;
   final String name;
   final String image;
-  final String price;
+  final double price;
 
   Product({
     required this.id,
@@ -110,7 +111,7 @@ class Product {
       id: json['id'],
       name: json['name'],
       image: json['image'],
-      price: json['price'],
+      price: double.parse(json['price'] ?? '0.0'),
     );
   }
 }

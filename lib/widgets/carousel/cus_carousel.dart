@@ -26,11 +26,11 @@ class CusCarousel extends StatelessWidget {
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              //return Center(child: Text('Error: ${snapshot.error}'));
             }
 
             if (carouselController.banners.isEmpty) {
-              return const Center(child: Text('No promotions available.'));
+              //return const Center(child: Text('No promotions available.'));
             }
 
             return CarouselSlider(
@@ -109,7 +109,7 @@ class CusCarouselController extends GetxController {
     try {
       isLoading(true);
       final response = await http.get(
-        Uri.parse('https://grocery-dev.greendomains.in/api/promotions?shop_id=$selectedShopId'),
+        Uri.parse('${Api.ApiUrl}/promotions?shop_id=$selectedShopId'),
       );
 
       if (response.statusCode == 200) {

@@ -21,12 +21,51 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
     final WelcomeController languagecontroller = Get.put(WelcomeController());
+    final BottomNavController bottomNavController =
+        Get.put(BottomNavController());
+
     final Map<String, dynamic> item;
     final token = GetStorage().read('access_token');
-    String selectedType = Box.read('selectedButton')??'';
-    List<Map<String, dynamic>> filteredCartItems = cartController.getCartItems().where((item) {
-      return item['type'] == selectedType; // Filter items based on selected type
+    String selectedType = Box.read('selectedButton') ?? '';
+    String effectiveType = selectedType;
+
+    if (effectiveType == 'promotion') {
+      effectiveType = 'grocery';
+    }
+
+    List<Map<String, dynamic>> filteredCartItems =
+        cartController.getCartItems().where((item) {
+      return item['type'] ==
+          effectiveType; // Use the effective type for filtering
     }).toList();
+    double calculateTotal(List<Map<String, dynamic>> items) {
+      return double.parse(
+        items.fold(
+          0.00,
+              (sum, item) {
+            double price = double.tryParse(item['price'].toString()) ?? 0.00;
+            int quantity = int.tryParse(item['quantity'].toString()) ?? 1;
+            return sum + (price * quantity);
+          },
+        ).toStringAsFixed(2),
+      );
+    }
+
+    double totalPrice = 0;
+
+// Determine which list of items to use
+    final cartItems = token == null ? filteredCartItems : cartController.getCartItems();
+    totalPrice = cartItems.fold(0, (sum, item) {
+      final servicePrice = item['service'] != null
+          ? item['service'].map((service) {
+        final price = (service is Map && service['price'] != null)
+            ? double.tryParse(service['price'].toString()) ?? 0
+            : 0;
+        return price;
+      }).reduce((value, element) => value + element)
+          : 0;
+      return sum + servicePrice;
+    });
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -42,8 +81,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: Color(0xFFEB1C23),
       ),
       body: FutureBuilder<void>(
-        future: cartController.fetchCartItems(
-        ), // Fetch the cart items
+        future: cartController.fetchCartItems(), // Fetch the cart items
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -61,7 +99,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                      Lottie.asset('assets/Animation - 1724233631425.json'),
+                          Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -81,7 +119,8 @@ class CartPage extends StatelessWidget {
                             color: Colors.white),
                       ),
                       ontap: () {
-                        // Navigate to the shopping page or bottom nav
+                        bottomNavController.updateIndex(0);
+                        Get.off(() => CustomBottomNavBar());
                       },
                     )
                   ],
@@ -102,11 +141,9 @@ class CartPage extends StatelessWidget {
                             ? filteredCartItems.length
                             : cartController.getCartItems().length,
                         itemBuilder: (context, index) {
-                          final item =
-                          token == null
+                          final item = token == null
                               ? filteredCartItems[index]
-                              :
-                          cartController.getCartItems()[index];
+                              : cartController.getCartItems()[index];
                           final int productId = item['product_id'];
                           return IntrinsicHeight(
                             child: Container(
@@ -128,30 +165,30 @@ class CartPage extends StatelessWidget {
                                         width: 100.w,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(20.r),
+                                              BorderRadius.circular(20.r),
                                           color: Colors.white,
                                         ),
                                         child: Center(
                                           child: item['image'] != null &&
-                                              item['image'].isNotEmpty
+                                                  item['image'].isNotEmpty
                                               ? Image.network(
-                                            '${Api.ImageUrl}/products/${item['image']}',
-                                            width: 80.w,
-                                            height: 80.h,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error,
-                                                stackTrace) =>
-                                                Icon(
+                                                  '${Api.ImageUrl}/products/${item['image']}',
+                                                  width: 80.w,
+                                                  height: 80.h,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                          stackTrace) =>
+                                                      Icon(
+                                                    Icons.hide_image_outlined,
+                                                    size: 90.sp,
+                                                    color: Colors.grey,
+                                                  ),
+                                                )
+                                              : Icon(
                                                   Icons.hide_image_outlined,
-                                                  size: 90.sp,
+                                                  size: 60.sp,
                                                   color: Colors.grey,
                                                 ),
-                                          )
-                                              : Icon(
-                                            Icons.hide_image_outlined,
-                                            size: 60.sp,
-                                            color: Colors.grey,
-                                          ),
                                         ),
                                       ),
                                       Positioned(
@@ -165,7 +202,7 @@ class CartPage extends StatelessWidget {
                                             color: Colors.grey.shade200,
                                             borderRadius: BorderRadius.only(
                                               bottomRight:
-                                              Radius.circular(14.r),
+                                                  Radius.circular(14.r),
                                               bottomLeft: Radius.circular(14.r),
                                             ),
                                           ),
@@ -178,18 +215,19 @@ class CartPage extends StatelessWidget {
                                             ),
                                             onPressed: () {
                                               final productId =
-                                              item['product_id'];
+                                                  item['product_id'];
 
                                               if (token != null) {
                                                 cartController
                                                     .removeItemFromCart(
-                                                    productId);
+                                                        productId);
                                               } else {
                                                 cartController.removeFromCart(
-                                                  item['name'],
-                                                  item['price'],
-                                                  item['image'],
-                                                );
+                                                    item['name'],
+                                                    (item['price'] ?? 0)
+                                                        .toString(),
+                                                    item['image'],
+                                                    item['type']);
                                               }
                                             },
                                           ),
@@ -201,7 +239,7 @@ class CartPage extends StatelessWidget {
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           item['name'],
@@ -212,34 +250,131 @@ class CartPage extends StatelessWidget {
                                         ),
                                         Spacer(),
 
-                                        if (Box.read('selectedButton') == 'laundry') ...[
-                                          if(Box.read('access_token') != null)...[ Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
-                                              final serviceName = (service is Map && service['name'] != null)
-                                                  ? service['name']
-                                                  : 'Unknown Service';
-                                              print('Services: ${item['services']}');
-                                              return Text(
-                                                serviceName,
-                                                style: TextStyle(fontSize: 14.sp),
-                                              );
-                                            }).toList(),
-                                          ),],
-                                          if(Box.read('access_token')==null)...[
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: (item['service'] as List<dynamic>?)?.map<Widget>((service) {
-                                                final serviceName = (service is Map && service['name'] != null)
-                                                    ? service['name']
-                                                    : 'Unknown Service';
-                                                return Text(
-                                                  serviceName,
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                  ),
-                                                );
-                                              }).toList() ?? [Text('No Services Available')],
+                                        if (Box.read('selectedButton') ==
+                                            'laundry') ...[
+                                          if (Box.read('access_token') !=
+                                              null) ...[
+                                            Row(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: (item['services']
+                                                              as List<
+                                                                  dynamic>? ??
+                                                          [])
+                                                      .map<Widget>((service) {
+                                                    // Extract service name from the nested structure
+                                                    final serviceName = (service
+                                                                is Map &&
+                                                            service['service'] !=
+                                                                null &&
+                                                            service['service']
+                                                                    ['name'] !=
+                                                                null)
+                                                        ? service['service']
+                                                            ['name']
+                                                        : 'Unknown Service';
+                                                    print(
+                                                        'Services: ${item['services']}');
+                                                    return Text(
+                                                      serviceName,
+                                                      style: TextStyle(
+                                                          fontSize: 14.sp),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: (item['services']
+                                                              as List<
+                                                                  dynamic>? ??
+                                                          [])
+                                                      .map<Widget>((service) {
+                                                    // Extract service name from the nested structure
+                                                    final servicePrice = (service
+                                                                is Map &&
+                                                            service['service'] !=
+                                                                null &&
+                                                            service['price'] !=
+                                                                null)
+                                                        ? service['price']
+                                                        : 'Unknown Service';
+                                                    print(
+                                                        'Services: ${item['services']}');
+                                                    return Text(
+                                                      "\AED ${servicePrice}",
+                                                      style: TextStyle(
+                                                          fontSize: 14.sp),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                          if (Box.read('access_token') ==
+                                              null) ...[
+                                            Row(
+                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: (item['service']
+                                                              as List<dynamic>?)
+                                                          ?.map<Widget>(
+                                                              (service) {
+                                                        final serviceName = (service
+                                                                    is Map &&
+                                                                service != null)
+                                                            ? service['name']
+                                                            : 'Unknown Service';
+                                                        return Text(
+                                                          serviceName,
+                                                          style: TextStyle(
+                                                            fontSize: 14.sp,
+                                                          ),
+                                                        );
+                                                      }).toList() ??
+                                                      [
+                                                        Text(
+                                                            'No Services Available')
+                                                      ],
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: (item['service']
+                                                              as List<dynamic>?)
+                                                          ?.map<Widget>(
+                                                              (service) {
+                                                        final servicePrice =
+                                                            (service is Map &&
+                                                                    service !=
+                                                                        null)
+                                                                ? service[
+                                                                    'price']
+                                                                : 'Unknown Service';
+                                                        return Text(
+                                                          "\AED ${servicePrice}",
+                                                          style: TextStyle(
+                                                            fontSize: 14.sp,
+                                                          ),
+                                                        );
+                                                      }).toList() ??
+                                                      [
+                                                        Text(
+                                                            'No Services Available')
+                                                      ],
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ],
@@ -249,12 +384,14 @@ class CartPage extends StatelessWidget {
                                         // ],
 
                                         Visibility(
-                                          visible: Box.read('selectedButton') != 'laundry',
+                                          visible: Box.read('selectedButton') !=
+                                              'laundry',
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '${item['price'] ?? '0'}',
+                                                '\AED ${item['price'] ?? '0'}',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 14.sp,
@@ -262,27 +399,40 @@ class CartPage extends StatelessWidget {
                                               ),
                                               Expanded(
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     // Decrement Button
                                                     Container(
                                                       height: 30.h,
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10.r),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.r),
                                                         color: Colors.white,
                                                       ),
                                                       child: IconButton(
                                                         icon: Icon(
                                                           Icons.remove,
-                                                          color: (item['quantity'] ?? 0) > 1 ? Colors.red.shade600 : Colors.grey,
+                                                          color:
+                                                              (item['quantity'] ??
+                                                                          0) >
+                                                                      1
+                                                                  ? Colors.red
+                                                                      .shade600
+                                                                  : Colors.grey,
                                                         ),
                                                         onPressed: () {
-                                                          if ((item['quantity'] ?? 0) > 1) {
-                                                            cartController.updateQuantity(productId, -1); // Reduce quantity by 1
+                                                          if ((item['quantity'] ??
+                                                                  0) >
+                                                              1) {
+                                                            cartController
+                                                                .updateQuantity(
+                                                                    productId,
+                                                                    -1); // Reduce quantity by 1
                                                           }
                                                         },
                                                       ),
-
                                                     ),
 
                                                     SizedBox(width: 5.w),
@@ -291,7 +441,8 @@ class CartPage extends StatelessWidget {
                                                     Text(
                                                       '${item['quantity'] ?? 0}',
                                                       style: GoogleFonts.roboto(
-                                                        fontWeight: FontWeight.w600,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                         fontSize: 14.sp,
                                                       ),
                                                     ),
@@ -302,16 +453,21 @@ class CartPage extends StatelessWidget {
                                                     Container(
                                                       height: 30.h,
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10.r),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.r),
                                                         color: Colors.white,
                                                       ),
                                                       child: IconButton(
                                                         icon: Icon(
                                                           Icons.add,
-                                                          color: Colors.green.shade800,
+                                                          color: Colors
+                                                              .green.shade800,
                                                         ),
                                                         onPressed: () {
-                                                          cartController.updateQuantity(productId, 1);
+                                                          cartController
+                                                              .updateQuantity(
+                                                                  productId, 1);
                                                         },
                                                       ),
                                                     ),
@@ -321,7 +477,6 @@ class CartPage extends StatelessWidget {
                                             ],
                                           ),
                                         )
-
                                       ],
                                     ),
                                   ),
@@ -344,7 +499,7 @@ class CartPage extends StatelessWidget {
                             SizedBox(width: 10),
                             Obx(() {
                               return Text(
-                                "\AED${cartController.total_amount.value}",
+                                "\AED ${cartController.total_amount.value}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.sp,
@@ -358,6 +513,61 @@ class CartPage extends StatelessWidget {
                           height: 6.h,
                         ),
                       ],
+                      if (cartController.getCartItems().isNotEmpty) ...[
+                        if (token == null) ...[
+                          if (Box.read('selectedButton') == 'grocery') ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  languagecontroller.totalText,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                Text(
+                                  "\AED ${calculateTotal(filteredCartItems)}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                    color: Colors.green.shade800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ],
+                      if (cartController.getCartItems().isNotEmpty) ...[
+                        if (token == null) ...[
+                          if (Box.read('selectedButton') == 'laundry') ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  languagecontroller.totalText,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                Text(
+                                  "\AED ${totalPrice}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                    color: Colors.green.shade800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ],
+
                       // Show the Continue button if there are items in the cart
                       if (cartController.getCartItems().isNotEmpty) ...[
                         Button(
@@ -366,7 +576,7 @@ class CartPage extends StatelessWidget {
                           text: Text(
                             languagecontroller.continueText,
                             style:
-                            TextStyle(fontSize: 18.sp, color: Colors.white),
+                                TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
                           ontap: () async {
                             if (!cartController.isLoggedIn()) {
@@ -387,7 +597,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Center(
                       child:
-                      Lottie.asset('assets/Animation - 1724233631425.json'),
+                          Lottie.asset('assets/Animation - 1724233631425.json'),
                     ),
                     SizedBox(height: 20.h),
                     Text(
@@ -407,7 +617,8 @@ class CartPage extends StatelessWidget {
                             color: Colors.white),
                       ),
                       ontap: () {
-                        // Navigate to the shopping page or bottom nav
+                        bottomNavController.updateIndex(0);
+                        Get.off(() => CustomBottomNavBar());
                       },
                     )
                   ],

@@ -98,11 +98,16 @@ class OrderViewPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     ...item.services.map((service) {
-                                      return Text("${service.service.name}");
+                                      return Row(
+                                        children: [
+                                          Text("${service.service.name} "),
+                                         // Text(" \AED ${service.price}"),
+                                        ],
+                                      );
                                     }).toList(),
                                   ],
                                 )
-                                    : Text("Price: \AED${item.product.price}"),
+                                    : Text("Price: \AED ${item.price}"),
                                 trailing: Text(
                                   "Qty: ${item.quantity}",
                                   style: TextStyle(color: Color(0xFFEB1C23)),

@@ -128,7 +128,7 @@ class AjPage extends StatelessWidget {
                               Row(
                                 children: [
                                   Text(
-                                    '\AED${product.price}',
+                                    '\AED ${product.price}',
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       // color: Colors.grey,
@@ -159,6 +159,7 @@ class AjPage extends StatelessWidget {
                                       ? null // Disable the action if item is already in the cart
                                       : () {
                                     cartController.toggleCart(
+                                        null,
                                         {}.toString(),
                                         product.id, // Product ID
                                         product.name,

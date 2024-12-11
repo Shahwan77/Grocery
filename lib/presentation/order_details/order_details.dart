@@ -20,7 +20,7 @@ import '../sign_up_screen/controller/signup_controller.dart';
 
 class OrderDetails extends StatelessWidget {
   OrderDetails({super.key});
-  final CartController cartController = Get.put(CartController());
+  final CartController cartController = Get.find();
   final SignupController signupController = Get.put(SignupController());
   final WelcomeController languagecontroller = Get.put(WelcomeController());
 
@@ -68,174 +68,183 @@ class OrderDetails extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                height: 140.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFEB1C23),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.r),
-                    bottomRight: Radius.circular(30.r),
+              IntrinsicHeight(
+                child: Container(
+                 // height: 140.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFEB1C23),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20.r),
+                      bottomRight: Radius.circular(20.r),
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w),
-                  child: token != null
-                      ? FutureBuilder<User?>(
-                          future: UserData().fetchUser(), // Fetch user data
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasData) {
-                              final user = snapshot.data;
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 6.h),
-                                  Text(
-                                    user?.name??'Name',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.sp,
-                                    ),
-                                  ),
-                                  Text(
-                                    user?.mobileNo??'Ph no:',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13.sp,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        user?.address??'Address',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 10.sp,
-                                        ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    child: token != null
+                        ? FutureBuilder<User?>(
+                            future: UserData().fetchUser(), // Fetch user data
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else if (snapshot.hasData) {
+                                final user = snapshot.data;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //SizedBox(height: 6.h),
+                                    Text(
+                                      user?.name??'Name',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15.sp,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                           languagecontroller.totalamountText,
+                                    ),
+                                    Text(
+                                      user?.mobileNo??'Ph no:',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13.sp,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            user?.address ?? 'Address',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12.sp,
                                             ),
+                                            maxLines: 4, // Allows wrapping to a maximum of 2 lines
+                                            overflow: TextOverflow.ellipsis, // Adds an ellipsis if the text is too long
+                                            softWrap: true,
                                           ),
-                                          if (cartController.isLoggedIn() &&
-                                              cartController
-                                                  .getCartItems()
-                                                  .isNotEmpty) ...[
-                                            Obx(() {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20.r),
-                                                ),
-                                                child: IntrinsicWidth(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8.w),
-                                                    child: Text(
-                                                      "\AED${cartController.total_amount.value}",
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18.sp,
-                                                        color: Colors.black,
+                                        ),
+                                        SizedBox(width: 10.w,),
+                                        Column(
+                                          children: [
+                                            Text(
+                                             languagecontroller.totalamountText,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13.sp,
+                                              ),
+                                            ),
+                                            if (cartController.isLoggedIn() &&
+                                                cartController
+                                                    .getCartItems()
+                                                    .isNotEmpty) ...[
+                                              Obx(() {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(20.r),
+                                                  ),
+                                                  child: IntrinsicWidth(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.symmetric(
+                                                          horizontal: 8.w),
+                                                      child: Text(
+                                                        "\AED${cartController.total_amount.value}",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18.sp,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            }),
-                                          ]
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.h,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            languagecontroller.issuedText,
-                                            style: TextStyle(
+                                                );
+                                              }),
+                                            ]
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8.h,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              languagecontroller.issuedText,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text(
+                                              cartController.currentDate,
+                                              style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14.sp,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          Text(
-                                            cartController.currentDate,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              languagecontroller.kmText,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w500),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            languagecontroller.kmText,
-                                            style: TextStyle(
+                                            Container(
+                                              decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                              BorderRadius.circular(20.r),
-                                            ),
-                                            child: IntrinsicWidth(
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.w),
-                                                child: Text(
-                                                  user?.distance??'',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14.sp,
-                                                      fontWeight: FontWeight.w600),
+                                                borderRadius:
+                                                BorderRadius.circular(20.r),
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8.w),
+                                                  child: Text(
+                                                    user?.distance??'',
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 14.sp,
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Center(child: Text('No user data found.'));
-                            }
-                          },
-                        )
-                      : Center(
-                          child: Text(
-                           languagecontroller.pleaseloginText,
-                            style: TextStyle(
-                                fontSize: 18.sp, fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 10.h,)
+                                  ],
+                                );
+                              } else {
+                                return Center(child: Text('No user data found.'));
+                              }
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                             languagecontroller.pleaseloginText,
+                              style: TextStyle(
+                                  fontSize: 18.sp, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ),
               SizedBox(
@@ -324,19 +333,20 @@ class OrderDetails extends StatelessWidget {
                                   // ]
 
                                     else if (Box.read('selectedButton') == 'laundry') ...[
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
-                                          final serviceName = (service is Map && service['name'] != null)
-                                              ? service['name']
-                                              : 'Unknown Service';
-                                          print('Services: ${item['services']}');
-                                          return Text(
-                                            serviceName,
-                                            style: TextStyle(fontSize: 16),
-                                          );
-                                        }).toList(),
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: (item['services'] as List<dynamic>? ?? []).map<Widget>((service) {
+                                        // Extract service name from the nested structure
+                                        final serviceName = (service is Map && service['service'] != null && service['service']['name'] != null)
+                                            ? service['service']['name']
+                                            : 'Unknown Service';
+                                        print('Services: ${item['services']}');
+                                        return Text(
+                                          serviceName,
+                                          style: TextStyle(fontSize: 14.sp),
+                                        );
+                                      }).toList(),
+                                    ),
                                     ],
                                 ],
                               ),
@@ -351,7 +361,7 @@ class OrderDetails extends StatelessWidget {
                                         ? service['price']
                                         : '0';
                                     return Text(
-                                      '\$${servicePrice}',
+                                      '\AED${servicePrice}',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14.sp,
@@ -532,10 +542,11 @@ class OrderDetails extends StatelessWidget {
                             // } else {
                             //   print('No items in the cart.');
                             // }
-      
+
                             // Navigate to DeliveryTimeSlots
                             List<dynamic> cartItems =
                                 cartController.getCartItems();
+                            cartController.delivery_charge.value;
                             Get.to(DeliveryTimeSlots(
                               cartItems: cartItems,
                             ));

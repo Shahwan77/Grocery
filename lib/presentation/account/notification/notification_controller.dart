@@ -4,7 +4,7 @@ import 'package:grocery/data/apiClient/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../data/models/notification_model.dart';
+import '../../../data/models/notification_model.dart';
 
 class NotificationController extends GetxController {
   final notifications = <NotificationModel>[].obs;

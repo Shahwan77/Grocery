@@ -77,36 +77,41 @@ class OrderPage extends StatelessWidget {
                         itemCount: orders.length,
                         itemBuilder: (context, index) {
                           final order = orders[index];
-                          return Card(
-                            color: Colors.white,
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            elevation: 4,
-                            child: GestureDetector(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Color(0xFFEB1C23),
-                                  child: Icon(
-                                    Icons.shopping_bag,
-                                    color: Colors.white,
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(OrderViewPage(orderId: order.orderId));
+                            },
+                            child: Card(
+                              color: Colors.white,
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              elevation: 4,
+                              child: GestureDetector(
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Color(0xFFEB1C23),
+                                    child: Icon(
+                                      Icons.shopping_bag,
+                                      color: Colors.white,
+                                    ),
                                   ),
+                                  title: Text('Order ID: ${order.orderId}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16.sp,
+                                      )),
+                                  subtitle: Text('Status: ${order.status}',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 14.sp,
+                                      )),
+                                  trailing: GestureDetector(
+                                    onTap: () {
+                                      print('object');
+                                      Get.to(OrderViewPage(orderId: order.orderId));
+                                    },
+                                      child: Icon(Icons.arrow_forward_ios,
+                                          size: 16)),
                                 ),
-                                title: Text('Order ID: ${order.orderId}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16.sp,
-                                    )),
-                                subtitle: Text('Status: ${order.status}',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 14.sp,
-                                    )),
-                                trailing: GestureDetector(
-                                  onTap: () {
-                                    print('object');
-                                    Get.to(OrderViewPage(orderId: order.orderId));
-                                  },
-                                    child: Icon(Icons.arrow_forward_ios,
-                                        size: 16)),
                               ),
                             ),
                           );

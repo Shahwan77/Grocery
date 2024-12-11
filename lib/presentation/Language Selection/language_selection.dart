@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import '../../l10n/app_localizations.dart';
@@ -56,6 +57,7 @@ class WelcomePage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         controller.selectLanguage('English');
+                        print("LANGUAGE: ${GetStorage().read('selectedLanguage') ?? 'English'}");
                       },
                       child: Obx(() => Container(
                         width: 120.w,
@@ -102,6 +104,7 @@ class WelcomePage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         controller.selectLanguage('Arabic');
+                        print("LANGUAGE: ${GetStorage().read('selectedLanguage')??'English'}");
                       },
                       child: Obx(() => Container(
                         width: 120.w,
@@ -155,7 +158,8 @@ class WelcomePage extends StatelessWidget {
                           fontSize: 18, color: Colors.white),
                     ),
                   ontap: () {
-                    Get.off(SelectStorePage());
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SelectStorePage(),));
+                    print("LANGUAGE: ${GetStorage().read('selectedLanguage') ?? 'English'}");
                   },
                 ),
               ],

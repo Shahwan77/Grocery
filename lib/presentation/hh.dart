@@ -1,81 +1,107 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-
-class LocationPage extends StatefulWidget {
-  @override
-  _LocationPageState createState() => _LocationPageState();
-}
-
-class _LocationPageState extends State<LocationPage> {
-  String _locationMessage = "Getting current location...";
-
-  // Function to get current location
-  Future<void> _getCurrentLocation() async {
-    // Check if location services are enabled
-    bool _serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!_serviceEnabled) {
-      setState(() {
-        _locationMessage = "Location service is not enabled";
-      });
-      return;
-    }
-
-    // Check for location permission
-    LocationPermission _permissionGranted = await Geolocator.checkPermission();
-    if (_permissionGranted == LocationPermission.denied) {
-      // Request permission if not granted
-      _permissionGranted = await Geolocator.requestPermission();
-      if (_permissionGranted != LocationPermission.whileInUse &&
-          _permissionGranted != LocationPermission.always) {
-        setState(() {
-          _locationMessage = "Location permission denied";
-        });
-        return;
-      }
-    }
-
-    // Get the current position
-    Position _position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    setState(() {
-      _locationMessage =
-      "Lat: ${_position.latitude}, Long: ${_position.longitude}";
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();  // Get location as soon as the page is loaded
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Current Location"),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _locationMessage,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _getCurrentLocation,
-                child: Text("Get Current Location"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:get/get.dart';
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+//
+// class AuthService {
+//   static const String baseUrl = 'https://grocery-dev.greendomains.in/api';
+//
+//   Future<Map<String, dynamic>> resetPassword(
+//       String mobileNo, String newPassword, String confirmPassword) async {
+//     final url = Uri.parse('$baseUrl/reset-password');
+//
+//     final body = {
+//       'mobile_no': mobileNo,
+//       'new_password': newPassword,
+//       'new_password_confirmation': confirmPassword,
+//     };
+//
+//     try {
+//       final response = await http.post(
+//         url,
+//         headers: {'Content-Type': 'application/json'},
+//         body: json.encode(body),
+//       );
+//
+//       if (response.statusCode == 200) {
+//         return json.decode(response.body); // Successful response
+//       } else {
+//         return {'error': json.decode(response.body)['message']};
+//       }
+//     } catch (e) {
+//       return {'error': 'Failed to connect to server'};
+//     }
+//   }
+// }
+//
+// class ResetPasswordController extends GetxController {
+//   final AuthService _authService = AuthService();
+//   RxBool isLoading = false.obs;
+//
+//   Future<void> resetPassword(String mobileNo, String newPassword, String confirmPassword) async {
+//     isLoading.value = true;
+//
+//     final result = await _authService.resetPassword(mobileNo, newPassword, confirmPassword);
+//     isLoading.value = false;
+//
+//     if (result.containsKey('error')) {
+//       Get.snackbar('Error', result['error'], snackPosition: SnackPosition.BOTTOM);
+//     } else {
+//       Get.snackbar('Success', 'Password reset successfully!', snackPosition: SnackPosition.BOTTOM);
+//     }
+//   }
+// }
+//
+//
+// class ResetPasswordPage extends StatelessWidget {
+//   final ResetPasswordController controller = Get.put(ResetPasswordController());
+//
+//   final TextEditingController mobileController = TextEditingController();
+//   final TextEditingController passwordController = TextEditingController();
+//   final TextEditingController confirmPasswordController = TextEditingController();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Reset Password'),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             TextField(
+//               controller: mobileController,
+//               decoration: InputDecoration(labelText: 'Mobile Number'),
+//               keyboardType: TextInputType.phone,
+//             ),
+//             TextField(
+//               controller: passwordController,
+//               decoration: InputDecoration(labelText: 'New Password'),
+//               obscureText: true,
+//             ),
+//             TextField(
+//               controller: confirmPasswordController,
+//               decoration: InputDecoration(labelText: 'Confirm Password'),
+//               obscureText: true,
+//             ),
+//             SizedBox(height: 20),
+//             Obx(() => controller.isLoading.value
+//                 ? CircularProgressIndicator()
+//                 : ElevatedButton(
+//               onPressed: () {
+//                 controller.resetPassword(
+//                   mobileController.text,
+//                   passwordController.text,
+//                   confirmPasswordController.text,
+//                 );
+//               },
+//               child: Text('Reset Password'),
+//             )),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

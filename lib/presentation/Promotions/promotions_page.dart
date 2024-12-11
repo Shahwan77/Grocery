@@ -18,9 +18,11 @@ class PromotionsPage extends StatelessWidget {
         Obx(() {
           if (controller.isLoading.value) {
             return Center(child: CircularProgressIndicator());
-          } else if (controller.promotionsList.isEmpty) {
-            return Center(child: Text('No promotions available'));
-          } else {
+          }
+          // else if (controller.promotionsList.isEmpty) {
+          //   return Center(child: Text('No promotions available'));
+          // }
+          else {
             return ListView.builder(
               shrinkWrap: true,
               itemCount: controller.promotionsList.length,

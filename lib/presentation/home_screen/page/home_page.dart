@@ -97,15 +97,14 @@ class HomePage extends StatelessWidget {
                 else if (controller.isGrocerySelected.value)
                   Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-
-                          var data = promotionController.promotionResponse.value!.data;
-                          Get.to(() => PromoProductsPage(promotionName: data.name));
-                        },
-                        child: CusCarousel(),
-                      ),
-
+                      if (promotionController.promotionResponse.value != null )
+                        GestureDetector(
+                          onTap: () {
+                            var data = promotionController.promotionResponse.value!.data;
+                            Get.to(() => PromoProductsPage(promotionName: data.name));
+                          },
+                          child: CusCarousel(),
+                        ),
 
                       SizedBox(height: 10.h),
                       CategoriesPage(), // General categories
@@ -142,6 +141,7 @@ class HomePage extends StatelessWidget {
                       //     ],
                       //   ),
                       // ),
+                      SizedBox(height: ScreenUtil().screenWidth >600?40.h:1.h),
                       MostPopularPage(),
                       PopularProductPage(),
                       TopDiscountPage(),

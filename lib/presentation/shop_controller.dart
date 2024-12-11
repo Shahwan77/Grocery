@@ -11,7 +11,6 @@ class StoreController extends GetxController {
   var isLoading = true.obs;
   final box = GetStorage();
 
-  // Make selectedStoreId an observable so it can be reacted upon in the UI
   var selectedStoreId = ''.obs;
 
   Future<void> fetchShops() async {
@@ -22,7 +21,6 @@ class StoreController extends GetxController {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['success']) {
-          // Parse the shop data into Shop objects and store them in the RxMap
           shops.value = Map<String, Shop>.fromIterable(
             responseData['data'],
             key: (item) => item['id'].toString(),

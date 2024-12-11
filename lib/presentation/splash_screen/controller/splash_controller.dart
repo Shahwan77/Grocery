@@ -8,6 +8,8 @@ import 'package:grocery/presentation/bottomnav/page/bottom_nav.dart';
 import 'package:grocery/presentation/home_screen/page/home_page.dart';
 import 'package:grocery/routes/app_routes.dart';
 
+import '../../Language Selection/language_selection.dart';
+
 class SplashController extends GetxController {
   final box = GetStorage();
   @override
@@ -19,12 +21,14 @@ class SplashController extends GetxController {
     await Future.delayed(Duration(seconds: 4));
 
     bool isLoggedIn = box.read('isLoggedIn') ?? false;
+    bool isSignUp = box.read('isSignUp') ?? false;
 
-    if (isLoggedIn) {
-      // Navigate to OrdersList if already logged in
+    if (isSignUp) {
+      Get.offAll(() => CustomBottomNavBar());
+    } else if (isLoggedIn) {
       Get.offAll(() => CustomBottomNavBar());
     } else {
-      Get.offNamed('/language');
+      Get.offAll(() => WelcomePage());
     }
   }
   // Future<void> _init() async {

@@ -146,35 +146,54 @@ class SearchPage extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      (product.promotionPrice == null
+                                      // Display the regular price if no promotion price
+                                          ? Text(
                                         '\AED${product.price}',
-                                        style: TextStyle(
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.w700,
-                                            decoration: TextDecoration.lineThrough
-                                        ),
-                                      ),
-                                      Text(
-                                        '\AED${product.promotionPrice}',
                                         style: TextStyle(
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w700,
                                         ),
-                                      ),
+                                      )
+                                      // If promotion price is not null, show both prices
+                                          : Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '\AED${product.price}',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w700,
+                                              decoration: TextDecoration.lineThrough,
+                                            ),
+                                          ),
+                                          Text(
+                                            '\AED${product.promotionPrice}',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      )),
                                       Obx(() {
                                         final isInLocalCart = cartController.isInCart(product.id);
                                         final isInServerCart = cartController.fetchedcartItems
                                             .any((fetchedItem) => fetchedItem['product_id'] == product.id);
 
                                         final isInCart = isInLocalCart || isInServerCart;
-
+                                        String priceToPost = product.price.toString();
+                                        if (product.promotionPrice != null) {
+                                          priceToPost = product.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                        }
                                         return GestureDetector(
                                           onTap: isInCart ? null : () {
                                             cartController.toggleCart(
+                                                null,
                                                 {}.toString(),
                                                 product.id,
                                                 product.product.name,
-                                                product.promotionPrice.toString(),
+                                                priceToPost,
                                                 product.product.image,
                                                 {}
                                             );

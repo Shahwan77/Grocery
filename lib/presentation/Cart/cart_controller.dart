@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -56,6 +58,7 @@ class CartController extends GetxController {
     return (total + delivery).toStringAsFixed(2);
   }
 
+
   // Optional: If you need to trigger recalculations explicitly
   void updateTotalAmount(String amount) {
     total_amount.value = amount;
@@ -84,6 +87,7 @@ class CartController extends GetxController {
   }
 
   Future<void> toggleCart(
+      int? Id,
       String type,
       int productId,
       String itemName,
@@ -118,9 +122,13 @@ class CartController extends GetxController {
       });
     }
     print('fffff: ${servicesList}');
-    final type = Box.read('selectedButton') ?? 'grocery';
+    var type = Box.read('selectedButton') ?? 'grocery';
+    if (type == 'promotion') {
+      type = 'grocery';
+    }
     // Create a new cart item
     final newItem = {
+     'promotion_item_id': Id,
       'type': type,
       'product_id': productId,
       'name': itemName,
@@ -267,7 +275,7 @@ class CartController extends GetxController {
       } catch (e) {
         print("Error removing item: $e");
       }
-      // removeItemLocally(productId);
+     // removeItemLocally(productId);
     }
   }
 
@@ -289,7 +297,7 @@ class CartController extends GetxController {
     }
   }
 
-  void removeFromCart(String itemName, String itemPrice, String itemImage) {
+  void removeFromCart(String itemName, String itemPrice, String itemImage,String type) {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
       cartItems.removeAt(itemIndex);
@@ -312,11 +320,15 @@ class CartController extends GetxController {
 
     if (selectedShopId == null) {
       print("Error: 'shop_id' is missing.");
+      Get.snackbar('Error', "'shop_id' is missing.", snackPosition: SnackPosition.BOTTOM);
       return false;
     }
 
     // Determine the type dynamically.
     String type = cartItem['type'] ?? 'grocery';
+    if (type == 'promotion') {
+      type = 'grocery';
+    }
 
     // Construct the body based on the type.
     final body = {
@@ -327,6 +339,7 @@ class CartController extends GetxController {
           'product_id': cartItem['product_id'],
           'quantity': cartItem['quantity'],
           'price': cartItem['price'],
+          "promotion_item_id": cartItem['promotion_item_id']
         } else if (type == 'laundry') {
           'product_id': cartItem['product_id'],
           'quantity': cartItem['quantity'],
@@ -356,14 +369,21 @@ class CartController extends GetxController {
           return true;
         } else {
           print("Failed to add items to cart: ${data['message']}");
+          Get.snackbar('Error', data['message'], snackPosition: SnackPosition.BOTTOM);
           return false;
         }
       } else {
         print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+        Get.snackbar(
+          'Error',
+          'Failed to add items to cart. Status Code: ${response.statusCode}',
+          snackPosition: SnackPosition.BOTTOM,
+        );
         return false;
       }
     } catch (e) {
       print('Error occurred: $e');
+      Get.snackbar('Error', 'An unexpected error occurred: $e', snackPosition: SnackPosition.BOTTOM);
       return false;
     }
   }

@@ -1,168 +1,159 @@
-// import 'dart:convert';
-//
-// import 'package:flutter/material.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:geocoding/geocoding.dart';
 // import 'package:get/get.dart';
+// import 'package:get_storage/get_storage.dart';
+// import 'package:grocery/data/apiClient/api.dart';
 // import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:latlong2/latlong.dart';
 //
-// import 'data/apiClient/api.dart';
-//
-// class PromoPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Promotions'),
-//       ),
-//       body: GetX<PromotionController>(
-//         init: PromotionController(),
-//         builder: (controller) {
-//           if (controller.isLoading.value) {
-//             return Center(child: CircularProgressIndicator());
-//           }
-//           if (controller.errorMessage.value.isNotEmpty) {
-//             return Center(child: Text(controller.errorMessage.value));
-//           }
-//           return ListView.builder(
-//             itemCount: controller.promotions.length,
-//             itemBuilder: (context, index) {
-//               var promotion = controller.promotions[index];
-//               return Image.network('${Api.ImageUrl}/promotions/${promotion.banner}');
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-// class PromotionController extends GetxController {
-//   var promotions = <Promotion>[].obs;
+// class AddressController extends GetxController {
 //   var isLoading = false.obs;
-//   var errorMessage = ''.obs;
+//   var responseMessage = ''.obs;
+//   final TextEditingController addressController = TextEditingController();
 //
-//   // Token for Authorization
-//   final String token = '884|R3GiZ08wFtLAAgp5k9yqdaZC2ZJ7EyUuF17rQOrr3fbbf201';
+//   var currentLocation = LatLng(0, 0).obs;
 //
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     fetchPromotions();
-//   }
-//
-//   Future<void> fetchPromotions() async {
-//     isLoading.value = true;
+//   Future<void> fetchCoordinates(String address) async {
+//     if (address.isEmpty) return;
 //     try {
-//       final response = await http.get(
-//         Uri.parse('https://grocery-dev.greendomains.in/api/promotions?shop_id=1&type=grocery'),
-//         headers: {
-//           'Authorization': 'Bearer $token', // Pass the token here
-//         },
-//       );
-//
-//       if (response.statusCode == 200) {
-//         var jsonResponse = json.decode(response.body);
-//         var promotionsList = (jsonResponse['data'] as List)
-//             .map((promotion) => Promotion.fromJson(promotion))
-//             .toList();
-//         promotions.assignAll(promotionsList);
-//       } else {
-//         errorMessage.value = 'Failed to load promotions';
+//       isLoading.value = true;
+//       List<Location> locations = await locationFromAddress(address);
+//       if (locations.isNotEmpty) {
+//         currentLocation.value = LatLng(locations[0].latitude, locations[0].longitude);
 //       }
 //     } catch (e) {
-//       errorMessage.value = 'Error: $e';
+//       Get.snackbar('Error', 'Failed to fetch location: $e');
+//     } finally {
+//       isLoading.value = false;
+//     }
+//   }
+//
+//   Future<void> postAddress() async {
+//     isLoading.value = true;
+//     final String token = GetStorage().read('access_token');
+//     try {
+//       final response = await http.post(
+//         Uri.parse("${Api.ApiUrl}/address"),
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': 'Bearer $token',
+//         },
+//         body: jsonEncode({"address": addressController.text}),
+//       );
+//
+//       if (response.statusCode == 201) {
+//         Get.back();
+//         responseMessage.value = "Address updated successfully!";
+//       } else {
+//         responseMessage.value =
+//         "Failed to post address: ${response.statusCode}";
+//       }
+//     } catch (e) {
+//       responseMessage.value = "An error occurred: $e";
 //     } finally {
 //       isLoading.value = false;
 //     }
 //   }
 // }
-// class Promotion {
-//   final int id;
-//   final String promotionId;
-//   final String name;
-//   final String description;
-//   final String status;
-//   final String start;
-//   final String end;
-//   final String banner;
-//   final List<Item> items;
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_map/flutter_map.dart';
+// import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+// import 'package:latlong2/latlong.dart';
+// import 'package:get/get.dart';
+// import 'address_controller.dart';
 //
-//   Promotion({
-//     required this.id,
-//     required this.promotionId,
-//     required this.name,
-//     required this.description,
-//     required this.status,
-//     required this.start,
-//     required this.end,
-//     required this.banner,
-//     required this.items,
-//   });
+// class AddressPage extends StatelessWidget {
+//   final AddressController controller = Get.put(AddressController());
+//   final MapController mapController = MapController(); // Updated for controlling the map
 //
-//   factory Promotion.fromJson(Map<String, dynamic> json) {
-//     var list = json['items'] as List;
-//     List<Item> itemsList = list.map((i) => Item.fromJson(i)).toList();
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         leading: IconButton(
+//           icon: Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
+//           onPressed: () {
+//             Get.back();
+//           },
+//         ),
+//         backgroundColor: const Color(0xFFEB1C23),
+//         title: const Text(
+//           'Address',
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       body: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.all(16.0),
+//             child: TextField(
+//               controller: controller.addressController,
+//               maxLines: 3,
+//               decoration: InputDecoration(
+//                 prefixIcon: const Icon(Icons.location_on, color: Color(0xFFEB1C23)),
+//                 labelText: 'Address',
+//                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+//                 focusedBorder: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                   borderSide: const BorderSide(color: Color(0xFFEB1C23), width: 2),
+//                 ),
+//                 hintText: 'Enter your full address here',
+//               ),
+//             ),
+//           ),
+//           Obx(() => controller.isLoading.value
+//               ? const Center(child: CircularProgressIndicator(color: Color(0xFFEB1C23)))
+//               : ElevatedButton(
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: const Color(0xFFEB1C23),
+//               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//             ),
+//             onPressed: () async {
+//               await controller.fetchCoordinates(controller.addressController.text);
+//               mapController.move(controller.currentLocation.value, 15.0); // Update map position
+//             },
+//             child: const Text('Submit Address'),
+//           )),
+//           Expanded(
+//             child: Obx(() {
+//               return FlutterMap(
+//                 mapController: mapController, // Use mapController for control
+//                 options: MapOptions(
+//                   initialCenter: controller.currentLocation.value, // Use initialCenter
+//                   initialZoom: 15.0, // Use initialZoom
+//                 ),
+//                 children: [
+//                   TileLayer(
+//                     urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+//                     subdomains: ['a', 'b', 'c'],
+//                   ),
+//                   CurrentLocationLayer(), // Layer to show the user's current location
+//                   MarkerLayer(
+//                     markers: [
+//                       Marker(
+//                         point: controller.currentLocation.value,
+//                         width: 40,
+//                         height: 40,
+//                         child: Icon(
+//                           Icons.location_pin,
+//                           size: 40,
+//                           color: Colors.red,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               );
+//             }),
+//           ),
 //
-//     return Promotion(
-//       id: json['id'],
-//       promotionId: json['promotion_id'],
-//       name: json['name'],
-//       description: json['description'],
-//       status: json['status'].toString(),
-//       start: json['start'],
-//       end: json['end'],
-//       banner: json['banner'],
-//       items: itemsList,
+//         ],
+//       ),
 //     );
 //   }
 // }
-//
-// class Item {
-//   final int id;
-//   final int productId;
-//   final String discountType;
-//   final String discountValue;
-//   final String promotionPrice;
-//   final Product product;
-//
-//   Item({
-//     required this.id,
-//     required this.productId,
-//     required this.discountType,
-//     required this.discountValue,
-//     required this.promotionPrice,
-//     required this.product,
-//   });
-//
-//   factory Item.fromJson(Map<String, dynamic> json) {
-//     return Item(
-//       id: json['id'],
-//       productId: json['product_id'],
-//       discountType: json['discount_type'],
-//       discountValue: json['discount_value'],
-//       promotionPrice: json['promotion_price'],
-//       product: Product.fromJson(json['product']),
-//     );
-//   }
-// }
-//
-// class Product {
-//   final int id;
-//   final String name;
-//   final String image;
-//   final String price;
-//
-//   Product({
-//     required this.id,
-//     required this.name,
-//     required this.image,
-//     required this.price,
-//   });
-//
-//   factory Product.fromJson(Map<String, dynamic> json) {
-//     return Product(
-//       id: json['id'],
-//       name: json['name'],
-//       image: json['image'],
-//       price: json['price'],
-//     );
-//   }
-// }
+

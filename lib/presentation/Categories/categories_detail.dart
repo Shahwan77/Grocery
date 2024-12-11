@@ -84,10 +84,10 @@ class DetailPage extends StatelessWidget {
                               return GridView.builder(
                                 padding: EdgeInsets.all(8.0),
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: Box.read('selectedButton') == 'laundry' ? 2 : 2,
-                                  crossAxisSpacing: 12.0,
-                                  mainAxisSpacing: 20.0,
-                                  mainAxisExtent: Box.read('selectedButton') == 'laundry' ? 284 : 200,
+                                  crossAxisCount:  2,
+                                  crossAxisSpacing: Box.read('selectedButton') == 'laundry' ? 20 : 20,
+                                  mainAxisSpacing: Box.read('selectedButton') == 'laundry' ? 20 : 30,
+                                  mainAxisExtent: ScreenUtil().screenWidth >600? Box.read('selectedButton') == 'laundry' ? 400 :290 : Box.read('selectedButton') == 'grocery'?200:280,
                                 ),
                                 itemCount: productController.productItems.length,
                                 itemBuilder: (context, index) {
@@ -98,7 +98,7 @@ class DetailPage extends StatelessWidget {
                                       IntrinsicHeight(
                                         child: IntrinsicWidth(
                                           child: Container(
-                                            width: 160.w,
+                                            width: 180.w,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.circular(8.r),
@@ -117,39 +117,44 @@ class DetailPage extends StatelessWidget {
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Obx(() {
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            final itemData = {
-                                                              'name': item.product.name,
-                                                              'price': item.product.price,
-                                                              'image': item.product.image,
-                                                            };
-
-                                                            favoriteController.toggleFavorite(
-                                                              itemData['name']!,
-                                                              itemData['price']!,
-                                                              itemData['image']!,
-                                                            );
-
-                                                            Get.snackbar(
-                                                              favoriteController.isFavorite(itemData['name']!)
-                                                                  ? 'Added to Favorites'
-                                                                  : 'Removed from Favorites',
-                                                              '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                                              snackPosition: SnackPosition.BOTTOM,
-                                                            );
-                                                          },
-                                                          child: Icon(
-                                                            favoriteController.isFavorite(item.product.name)
-                                                                ? Icons.favorite
-                                                                : Icons.favorite_border,
-                                                            color: favoriteController.isFavorite(item.product.name)
-                                                                ? Color(0xFFEB1C23)
-                                                                : Colors.grey,
-                                                          ),
-                                                        );
-                                                      }),
+                                                      Icon(
+                                                        Icons.favorite_border,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      // Obx(() {
+                                                      //   return GestureDetector(
+                                                      //     onTap: () {
+                                                      //       final itemData = {
+                                                      //         'name': item.product.name,
+                                                      //         'price': item.product.price,
+                                                      //         'image': item.product.image,
+                                                      //       };
+                                                      //
+                                                      //       favoriteController.toggleFavorite(
+                                                      //         itemData['name']!,
+                                                      //         itemData['price']!,
+                                                      //         itemData['image']!,
+                                                      //       );
+                                                      //
+                                                      //       Get.snackbar(
+                                                      //         favoriteController.isFavorite(itemData['name']!)
+                                                      //             ? 'Added to Favorites'
+                                                      //             : 'Removed from Favorites',
+                                                      //         '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                                      //         snackPosition: SnackPosition.BOTTOM,
+                                                      //       );
+                                                      //     },
+                                                      //     child:
+                                                      //     Icon(
+                                                      //       favoriteController.isFavorite(item.product.name)
+                                                      //           ? Icons.favorite
+                                                      //           : Icons.favorite_border,
+                                                      //       color: favoriteController.isFavorite(item.product.name)
+                                                      //           ? Color(0xFFEB1C23)
+                                                      //           : Colors.grey,
+                                                      //     ),
+                                                      //   );
+                                                      // }),
                                                       Icon(
                                                         Icons.info_outline,
                                                         color: Colors.green.shade800,
@@ -248,21 +253,22 @@ class DetailPage extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              SizedBox(width: 7.w,),
+                                                              SizedBox(width: 5.w,),
                                                                 Expanded(
                                                                   child: Text(
                                                                     service.name,
                                                                     style: TextStyle(
-                                                                      fontSize: 12.sp,
+                                                                      fontSize: 10.sp,
                                                                       fontWeight: FontWeight.w500,
                                                                       color: Colors.grey.shade600,
                                                                     ),
                                                                   ),
                                                                 ),
+                                                                SizedBox(width: 2.w,),
                                                                 Text(
-                                                                  "\$${service.pivot.price}",
+                                                                  "\AED ${service.pivot.price}",
                                                                   style: TextStyle(
-                                                                    fontSize: 12.sp,
+                                                                    fontSize: 10.sp,
                                                                     fontWeight: FontWeight.w500,
                                                                     color: Colors.grey.shade600,
                                                                   ),
@@ -289,7 +295,7 @@ class DetailPage extends StatelessWidget {
                                                         productController.calculateTotalPrice(item);
                                                         print(totalPrice);
                                                         return Text(
-                                                          '\$${totalPrice}',
+                                                          '\AED ${totalPrice}',
                                                           style: TextStyle(
                                                             fontSize: 12.sp,
                                                             fontWeight: FontWeight.w700,
@@ -299,7 +305,7 @@ class DetailPage extends StatelessWidget {
                                                       (item.promotionPrice == null
                                                       // Display the regular price if no promotion price
                                                           ? Text(
-                                                        '\AED${item.price}',
+                                                        '\AED ${item.price}',
                                                         style: TextStyle(
                                                           fontSize: 10.sp,
                                                           fontWeight: FontWeight.w700,
@@ -310,7 +316,7 @@ class DetailPage extends StatelessWidget {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            '\AED${item.price}',
+                                                            '\AED ${item.price}',
                                                             style: TextStyle(
                                                               fontSize: 10.sp,
                                                               fontWeight: FontWeight.w700,
@@ -318,7 +324,7 @@ class DetailPage extends StatelessWidget {
                                                             ),
                                                           ),
                                                           Text(
-                                                            '\AED${item.promotionPrice}',
+                                                            '\AED ${item.promotionPrice}',
                                                             style: TextStyle(
                                                               fontSize: 10.sp,
                                                               fontWeight: FontWeight.w700,
@@ -341,6 +347,7 @@ class DetailPage extends StatelessWidget {
                                                               ? null
                                                               : () {
                                                             cartController.toggleCart(
+                                                              null,
                                                              item.product.type,
                                                               item.productId,
                                                               item.product.name,

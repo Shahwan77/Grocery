@@ -8,6 +8,7 @@ class User {
   final String? address;
   final String? accessToken;
   final String? distance; // Add this line
+  final String? image;
 
   User({
     this.name,
@@ -19,6 +20,7 @@ class User {
     this.accessToken,
     this.address,
     this.distance,// Add this line
+    this.image,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -31,7 +33,8 @@ class User {
       id: json['id']??0,
         address: json['address'] ?? '',
       accessToken: json['access_token']??'',
-        distance: json['distance'] ?? ''// Add this line
+        distance: json['distance'] ?? '',// Add this line
+      image: json['image'] ?? '',
     );
   }
 }

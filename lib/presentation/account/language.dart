@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Language Selection/language_controller.dart';
 
@@ -71,7 +72,10 @@ class LanguagePage extends StatelessWidget {
               Obx(() => LanguageOption(
                 language: "English",
                 isSelected: controller.selectedLanguage.value == 'English',
-                onTap: () => controller.selectLanguage('English'),
+                onTap:() {
+                  controller.selectLanguage('English');
+                  print("LANGUAGE: ${GetStorage().read('selectedLanguage')}");
+                },
               )),
               SizedBox(height: 20.h),
               Obx(() => LanguageOption(

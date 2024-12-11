@@ -37,26 +37,28 @@ class HomeController extends GetxController {
     super.onInit();
 
     final String? selectedButton = GetStorage().read('selectedButton');
+    print('Selected Button: $selectedButton'); // Debugging
 
-    if (selectedButton == null) {
-      fetchCategories();
-      GetStorage().write('selectedButton', 'grocery');
-      selectedIndex.value = 0;
-    } else if (selectedButton == 'grocery') {
-      fetchCategories();
-      selectedIndex.value = 0;
-    } else if (selectedButton == 'laundry') {
-      fetchLaundry();
-      selectedIndex.value = 1;
-    } else if (selectedButton == 'promotion') {
-      fetchPromotions();
-      selectedIndex.value = 2;
-    }
-    else if (selectedButton == 'aj') {
-      fetchAjProducts();
-      selectedIndex.value = 3;
+    switch (selectedButton) {
+      case 'grocery':
+        fetchCategories();
+        break;
+      case 'laundry':
+        fetchLaundry();
+        break;
+      case 'promotion':
+        fetchPromotions();
+        break;
+      case 'aj':
+        fetchAjProducts();
+        break;
+      default:
+      // Default to grocery if no value is stored
+        fetchCategories();
+        GetStorage().write('selectedButton', 'grocery');
     }
   }
+
 
 
   Future<void> fetchCategories() async {
@@ -74,6 +76,7 @@ class HomeController extends GetxController {
     isOfferSelected.value=false;
     isAjSelected.value = false;
     isGrocerySelected.value = true;
+    updateSelectedState(0);
     //cartController.selectedType.value = 'grocery';
   }
 
@@ -169,7 +172,7 @@ class HomeController extends GetxController {
     isLoading.value = true;
     try {
       final response =
-      await http.get(Uri.parse("https://grocery-dev.greendomains.in/api/products/aj"));
+      await http.get(Uri.parse("${Api.ApiUrl}/products/aj"));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
@@ -196,11 +199,6 @@ class HomeController extends GetxController {
 
   Future<void> refreshData() async {
     isLoading.value = true;
-    await fetchPopularProducts();
-    await fetchDiscountProducts();
-    await fetchPopularCategories();
-
-
 
     if (selectedIndex.value == 3) {
       await fetchAjProducts();
@@ -214,4 +212,13 @@ class HomeController extends GetxController {
 
     isLoading.value = false;
   }
+
+  void updateSelectedState(int index) {
+    selectedIndex.value = index;
+    isGrocerySelected.value = index == 0;
+    isLaundrySelected.value = index == 1;
+    isOfferSelected.value = index == 2;
+    isAjSelected.value = index == 3;
+  }
+
 }

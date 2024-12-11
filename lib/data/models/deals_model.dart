@@ -1,40 +1,40 @@
 class Deal {
   final int id;
   final int shopId;
-  final int productId;
+  final int? productId; // Made nullable
   final String price;
   final bool popular;
-  final int discount;
-  final String discountType;
-  final String discountValue;
-  final String promotionPrice;
-  final Product product;
+  final int? discount; // Made nullable
+  final String? discountType; // Made nullable
+  final String? discountValue; // Made nullable
+  final String? promotionPrice; // Made nullable
+  final Product? product; // Made nullable
 
   Deal({
     required this.id,
     required this.shopId,
-    required this.productId,
+    this.productId,
     required this.price,
     required this.popular,
-    required this.discount,
-    required this.discountType,
-    required this.discountValue,
-    required this.promotionPrice,
-    required this.product,
+    this.discount,
+    this.discountType,
+    this.discountValue,
+    this.promotionPrice,
+    this.product,
   });
 
   factory Deal.fromJson(Map<String, dynamic> json) {
     return Deal(
-      id: json['id'],
-      shopId: json['shop_id'],
-      productId: json['product_id'],
-      price: json['price'],
+      id: json['id'] ?? 0, // Default to 0 if null
+      shopId: json['shop_id'] ?? 0, // Default to 0 if null
+      productId: json['product_id'], // Nullable
+      price: json['price'] ?? '', // Default to an empty string if null
       popular: json['popular'] == 1,
-      discount: json['discount'],
-      discountType: json['discount_type'],
-      discountValue: json['discount_value'],
-      promotionPrice: json['promotion_price'],
-      product: Product.fromJson(json['product']),
+      discount: json['discount'], // Nullable
+      discountType: json['discount_type'], // Nullable
+      discountValue: json['discount_value'], // Nullable
+      promotionPrice: json['promotion_price'], // Nullable
+      product: json['product'] != null ? Product.fromJson(json['product']) : null, // Handle null
     );
   }
 }
@@ -54,10 +54,10 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      name: json['name'],
-      image: json['image'],
-      price: json['price'],
+      id: json['id'] ?? 0, // Default to 0 if null
+      name: json['name'] ?? '', // Default to empty string if null
+      image: json['image'] ?? '', // Default to empty string if null
+      price: json['price'] ?? '', // Default to empty string if null
     );
   }
 }

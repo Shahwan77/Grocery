@@ -4,10 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:grocery/presentation/OTP%20Field/otp_field.dart';
-import 'package:grocery/presentation/account/change_password.dart';
+import 'package:grocery/presentation/account/change_password/change_password.dart';
 import 'package:grocery/presentation/sign_up_screen/page/signup_page.dart';
 import '../../../widgets/button/button.dart';
 import '../../../widgets/textfield/custom_textfield.dart';
+import '../../Forgot_password_otp.dart';
 import '../../Language Selection/language_controller.dart';
 import '../../sign_up_screen/controller/location_controller.dart';
 import '../../sign_up_screen/controller/signup_controller.dart';
@@ -35,11 +36,11 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: 100.h),
                 Text(
                   languagecontroller.LoginText,
-                  style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w800),
+                  style: TextStyle(fontSize: ScreenUtil().screenWidth >600?20.sp:30.sp, fontWeight: FontWeight.w800),
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'Hey, Enter your account credentials to log in to your account.',
+                  languagecontroller.logyouraccountText,
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp),
                 ),
                 SizedBox(height: 40.h),
@@ -104,7 +105,7 @@ class LoginPage extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                     // Get.to(ChangePassword());
+                      Get.to(ForgotPasswordOtp());
                     },
                     child: Text(
                       languagecontroller.forgotpassText,

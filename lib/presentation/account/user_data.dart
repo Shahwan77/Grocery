@@ -33,33 +33,33 @@ class UserData {
   }
 }
 
-class MyAppstatata extends StatelessWidget {
-  final UserData userData = UserData();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('User Info')),
-      body: FutureBuilder<User?>(
-        future: userData.fetchUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final user = snapshot.data!;
-            return Center(
-              child: Text(
-                'Name: ${user.name}', // Displaying the user's name
-                style: TextStyle(fontSize: 20),
-              ),
-            );
-          } else {
-            return Center(child: Text('No user data found.'));
-          }
-        },
-      ),
-    );
-  }
-}
+// class MyAppstatata extends StatelessWidget {
+//   final UserData userData = UserData();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('User Info')),
+//       body: FutureBuilder<User?>(
+//         future: userData.fetchUser(),
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return Center(child: CircularProgressIndicator());
+//           } else if (snapshot.hasError) {
+//             return Center(child: Text('Error: ${snapshot.error}'));
+//           } else if (snapshot.hasData) {
+//             final user = snapshot.data!;
+//             return Center(
+//               child: Text(
+//                 'Name: ${user.name}', // Displaying the user's name
+//                 style: TextStyle(fontSize: 20),
+//               ),
+//             );
+//           } else {
+//             return Center(child: Text('No user data found.'));
+//           }
+//         },
+//       ),
+//     );
+//   }
+// }

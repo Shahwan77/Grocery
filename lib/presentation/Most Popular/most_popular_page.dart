@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/apiClient/api.dart';
 import '../Cart/cart_controller.dart';
+import '../Categories/categories_detail.dart';
 import '../Language Selection/language_controller.dart';
 import '../home_screen/controller/home_controller.dart';
 import 'most_popular_view.dart';
@@ -27,7 +28,7 @@ class MostPopularPage extends StatelessWidget {
 
         if (homeController.popularCategories.isEmpty) {
           return
-            Center(child: Text('No popular products found.'));
+            Center(child: Text(''));
         }
 
         return Column(
@@ -41,7 +42,7 @@ class MostPopularPage extends StatelessWidget {
                     languagecontroller.mostText,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 18.sp,
+                      fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
                     ),
                   ),
                   GestureDetector(
@@ -89,49 +90,58 @@ class MostPopularPage extends StatelessWidget {
                   itemCount: homeController.popularCategories.length,
                   itemBuilder: (context, index) {
                     final item = homeController.popularCategories[index];
-                    return Container(
-                      width: 140.w,
-                      margin: EdgeInsets.symmetric(horizontal: 8.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [BoxShadow(color: Colors.grey)],
-                        borderRadius: BorderRadius.circular(15.r),
-                        border: Border.all(color: Colors.grey.shade100),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            '${Api.ImageUrl}/categories/${item.image}',
+                    final category = homeController.categories[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Get.to(() => DetailPage(
+                          categoryId: category.id.toString(),
+                          categoryName: category.name,
+                        ));
+                      },
+                      child: Container(
+                        width: 140.w,
+                        margin: EdgeInsets.symmetric(horizontal: 8.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [BoxShadow(color: Colors.grey)],
+                          borderRadius: BorderRadius.circular(15.r),
+                          border: Border.all(color: Colors.grey.shade100),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              '${Api.ImageUrl}/categories/${item.image}',
+                            ),
+                            fit: BoxFit.contain,
+                            alignment: Alignment(0, -1),
                           ),
-                          fit: BoxFit.contain,
-                          alignment: Alignment(0, -1),
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 5.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-                            child: Center(
-                              child: Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w700,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.r),
                                 ),
-                                textAlign: TextAlign.start,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 5.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                              child: Center(
+                                child: Text(
+                                  item.name,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },

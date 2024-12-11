@@ -21,6 +21,8 @@ class CustomTextfield extends StatelessWidget {
   final void Function(String?)? on_saveds; // Add this parameter
   final String? Function(String?)? Validators;
   final TextInputType? keytype;
+  final int? minLines;
+  final int? maxLines;
 
   const CustomTextfield({
     Key? key,
@@ -37,6 +39,8 @@ class CustomTextfield extends StatelessWidget {
     this.validator,
     this.controller,
     this.on_saveds,
+    this.maxLines,
+    this.minLines,
     this.Validators,  this.hint, this.pref, this.keytype,
   }) : super(key: key);
 
@@ -49,6 +53,8 @@ class CustomTextfield extends StatelessWidget {
       keyboardType: keytype,
       controller:controller ,
       onSaved: on_saveds,
+      // maxLines: minLines,
+      // minLines: minLines,
       decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
         filled: true,
         fillColor: fillclr,

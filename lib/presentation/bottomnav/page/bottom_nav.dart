@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:grocery/presentation/account/notification.dart';
+import 'package:grocery/presentation/account/notification/notification.dart';
 import '../../Cart/cart_controller.dart';
 import '../../Cart/cart_page.dart';
 import '../../Language Selection/language_controller.dart';

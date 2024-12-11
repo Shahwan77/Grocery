@@ -1,20 +1,15 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; // Import this for localization
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Language%20Selection/TranslationService.dart';
-import 'package:grocery/presentation/Language%20Selection/language_selection.dart';
-import 'package:grocery/presentation/hh.dart';
-import 'package:grocery/presentation/replace/replace.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
-import 'package:grocery/tstts.dart';
-import 'Admin/orders_list.dart';
 import 'firebase.dart';
-import 'l10n/app_localizations.dart'; // Import your localization class
+import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   await GetStorage.init();

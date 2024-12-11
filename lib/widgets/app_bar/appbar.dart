@@ -52,7 +52,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               // Grocery Container
               Obx(() => Container(
-                height: 64.h,
+                height: ScreenUtil().screenWidth >600?78.h:64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.r),
@@ -97,7 +97,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               // Laundry Container
               Obx(() => Container(
-                height: 64.h,
+                height: ScreenUtil().screenWidth >600?78.h:64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.r),
@@ -141,7 +141,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               // Offers Container
               Obx(() => Container(
-                height: 64.h,
+                height: ScreenUtil().screenWidth >600?78.h:64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.r),
@@ -185,7 +185,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               // AJ Container
               Obx(() => Container(
-                height: 64.h,
+                height: ScreenUtil().screenWidth >600?78.h:64.h,
                 width: 74.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.r),

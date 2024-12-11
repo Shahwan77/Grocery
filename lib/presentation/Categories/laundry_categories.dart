@@ -91,9 +91,9 @@ class LaundryCategories extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               return Center(child: Text("Error loading categories."));
-            } else if (categoryController.categories.isEmpty) {
-              return Center(child: Text("No categories found."));
-            } else {
+            } else if (categoryController.categories.isEmpty || categoryController.categories.every((category) => category.type != 'laundry')) {
+              return Center(child: Text("No laundry items found"));
+            }  else {
               return GridView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
                 shrinkWrap: true,

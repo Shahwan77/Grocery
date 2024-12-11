@@ -27,10 +27,12 @@ class PopularProductPage extends StatelessWidget {
           if (snapshot.hasError) {
             // Show error message if something went wrong
             return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (homeController.popularProducts.isEmpty) {
+          }
+          else if (homeController.popularProducts.isEmpty) {
             // Show a message if no products are found
-            return Center(child: Text("No popular products found."));
-          } else {
+            return Center(child: Text(""));
+          }
+          else {
             // Show popular products if data is successfully fetched
             return Column(
               children: [
@@ -43,7 +45,7 @@ class PopularProductPage extends StatelessWidget {
                         languageController.popularText,
                         style: GoogleFonts.roboto(
                           fontWeight: FontWeight.w600,
-                          fontSize: 18.sp,
+                          fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
                         ),
                       ),
                       GestureDetector(
@@ -148,39 +150,43 @@ class PopularProductPage extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Obx(() {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          final itemData = {
-                                            'name': item.product.name,
-                                            'price': item.product.price,
-                                            'image': item.product.image,
-                                          };
-
-                                          favoriteController.toggleFavorite(
-                                            itemData['name']!,
-                                            itemData['price']!,
-                                            itemData['image']!,
-                                          );
-
-                                          Get.snackbar(
-                                            favoriteController.isFavorite(itemData['name']!)
-                                                ? 'Added to Favorites'
-                                                : 'Removed from Favorites',
-                                            '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                            snackPosition: SnackPosition.TOP,
-                                          );
-                                        },
-                                        child: Icon(
-                                          favoriteController.isFavorite(item.product.name)
-                                              ? Icons.favorite
-                                              : Icons.favorite_border,
-                                          color: favoriteController.isFavorite(item.product.name)
-                                              ? Color(0xFFEB1C23)
-                                              : Colors.grey,
-                                        ),
-                                      );
-                                    }),
+                                    // Obx(() {
+                                    //   return GestureDetector(
+                                    //     onTap: () {
+                                    //       final itemData = {
+                                    //         'name': item.product.name,
+                                    //         'price': item.product.price,
+                                    //         'image': item.product.image,
+                                    //       };
+                                    //
+                                    //       favoriteController.toggleFavorite(
+                                    //         itemData['name']!,
+                                    //         itemData['price']!,
+                                    //         itemData['image']!,
+                                    //       );
+                                    //
+                                    //       Get.snackbar(
+                                    //         favoriteController.isFavorite(itemData['name']!)
+                                    //             ? 'Added to Favorites'
+                                    //             : 'Removed from Favorites',
+                                    //         '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                    //         snackPosition: SnackPosition.TOP,
+                                    //       );
+                                    //     },
+                                    //     child: Icon(
+                                    //       favoriteController.isFavorite(item.product.name)
+                                    //           ? Icons.favorite
+                                    //           : Icons.favorite_border,
+                                    //       color: favoriteController.isFavorite(item.product.name)
+                                    //           ? Color(0xFFEB1C23)
+                                    //           : Colors.grey,
+                                    //     ),
+                                    //   );
+                                    // }),
+                                    Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.grey,
+                                    ),
                                     Icon(
                                       Icons.info_outline,
                                       color: Colors.green.shade800,
@@ -245,9 +251,9 @@ class PopularProductPage extends StatelessWidget {
                                           ],
                                         ),
                                       Obx(() {
-                                        final isInLocalCart = cartController.isInCart(item.id);
+                                        final isInLocalCart = cartController.isInCart(item.productId);
                                         final isInServerCart = cartController.fetchedcartItems
-                                            .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+                                            .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
 
                                         final isInCart = isInLocalCart || isInServerCart;
 
@@ -260,8 +266,9 @@ class PopularProductPage extends StatelessWidget {
                                               priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
                                             }
                                             cartController.toggleCart(
+                                              null,
                                               {}.toString(),
-                                              item.id,
+                                              item.productId,
                                               item.product.name,
                                               priceToPost,
                                               item.product.image,

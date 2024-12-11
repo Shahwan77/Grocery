@@ -34,7 +34,7 @@ class TopDiscountPage extends StatelessWidget {
         } else if (snapshot.connectionState == ConnectionState.done) {
           // After the future is complete, display the data or handle empty list
           if (homeController.discountProducts.isEmpty) {
-            return Center(child: Text('No Discount Products Available'));
+            return Center(child: Text(''));
           } else {
             return Column(
               children: [
@@ -47,7 +47,7 @@ class TopDiscountPage extends StatelessWidget {
                         languagecontroller.topText,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 18.sp,
+                          fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
                         ),
                       ),
                       GestureDetector(
@@ -155,33 +155,37 @@ class TopDiscountPage extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Obx(() {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          favoriteController.toggleFavorite(
-                                            item.product.name,
-                                            item.price.toString(),
-                                            item.product.image,
-                                          );
-
-                                          Get.snackbar(
-                                            favoriteController.isFavorite(item.product.name)
-                                                ? 'Added to Favorites'
-                                                : 'Removed from Favorites',
-                                            '${item.product.name} has been ${favoriteController.isFavorite(item.product.name) ? 'added to' : 'removed from'} your favorites.',
-                                            snackPosition: SnackPosition.TOP,
-                                          );
-                                        },
-                                        child: Icon(
-                                          favoriteController.isFavorite(item.product.name)
-                                              ? Icons.favorite
-                                              : Icons.favorite_border,
-                                          color: favoriteController.isFavorite(item.product.name)
-                                              ? Color(0xFFEB1C23)
-                                              : Colors.grey,
-                                        ),
-                                      );
-                                    }),
+                                    // Obx(() {
+                                    //   return GestureDetector(
+                                    //     onTap: () {
+                                    //       favoriteController.toggleFavorite(
+                                    //         item.product.name,
+                                    //         item.price.toString(),
+                                    //         item.product.image,
+                                    //       );
+                                    //
+                                    //       Get.snackbar(
+                                    //         favoriteController.isFavorite(item.product.name)
+                                    //             ? 'Added to Favorites'
+                                    //             : 'Removed from Favorites',
+                                    //         '${item.product.name} has been ${favoriteController.isFavorite(item.product.name) ? 'added to' : 'removed from'} your favorites.',
+                                    //         snackPosition: SnackPosition.TOP,
+                                    //       );
+                                    //     },
+                                    //     child: Icon(
+                                    //       favoriteController.isFavorite(item.product.name)
+                                    //           ? Icons.favorite
+                                    //           : Icons.favorite_border,
+                                    //       color: favoriteController.isFavorite(item.product.name)
+                                    //           ? Color(0xFFEB1C23)
+                                    //           : Colors.grey,
+                                    //     ),
+                                    //   );
+                                    // }),
+                                    Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.grey,
+                                    ),
                                     Icon(
                                       Icons.info_outline,
                                       color: Colors.green.shade800,
@@ -246,9 +250,9 @@ class TopDiscountPage extends StatelessWidget {
                                           ],
                                         ),
                                       Obx(() {
-                                        final isInLocalCart = cartController.isInCart(item.id);
+                                        final isInLocalCart = cartController.isInCart(item.productId);
                                         final isInServerCart = cartController.fetchedcartItems
-                                            .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+                                            .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
 
                                         final isInCart = isInLocalCart || isInServerCart;
                                         String priceToPost = item.price.toString();
@@ -260,8 +264,9 @@ class TopDiscountPage extends StatelessWidget {
                                               ? null
                                               : () {
                                             cartController.toggleCart(
+                                              null,
                                               {}.toString(),
-                                              item.id,
+                                              item.productId,
                                               item.product.name,
                                               priceToPost,
                                               item.product.image,

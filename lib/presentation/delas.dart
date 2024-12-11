@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-
 import '../data/apiClient/api.dart';
 import 'Cart/cart_controller.dart';
 import 'deals_controller.dart';
@@ -43,7 +41,8 @@ class DealsPage extends StatelessWidget {
                 childAspectRatio: 0.8,
                 mainAxisSpacing: 10.h,
                 //crossAxisSpacing: 10.w,
-                mainAxisExtent: GetStorage().read('selectedButton') == 'laundry' ? 220.h : 170.h,
+                //mainAxisExtent: GetStorage().read('selectedButton') == 'laundry' ? 220.h : 170.h,
+                mainAxisExtent: 170.h,
               ),
               itemBuilder: (context, index) {
                 final deal = dealController.deals[index];
@@ -72,13 +71,13 @@ class DealsPage extends StatelessWidget {
                               fit: BoxFit.cover,
                               height: 90.h,
                               width: 90.w,
-                              '${Api.ImageUrl}/products/${deal.product.image}',
+                              '${Api.ImageUrl}/products/${deal.product?.image}',
                             ),
                           ),
 
                           Center(
                             child: Text(
-                              deal.product.name,
+                              deal.product!.name,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -93,44 +92,57 @@ class DealsPage extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
+                                (deal.promotionPrice == null
+                                // Display the regular price if no promotion price
+                                    ? Text(
+                                  '\AED ${deal.price}',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                )
+                                // If promotion price is not null, show both prices
+                                    : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '\AED${deal.product.price}',
+                                      '\AED ${deal.price}',
                                       style: TextStyle(
                                         fontSize: 10.sp,
-                                        color: Colors.grey,
-                                        decoration: TextDecoration.lineThrough,
                                         fontWeight: FontWeight.w700,
+                                        decoration: TextDecoration.lineThrough,
                                       ),
                                     ),
-                                    SizedBox(width: 4.w,),
                                     Text(
-                                      '\AED${deal.promotionPrice}',
+                                      '\AED ${deal.promotionPrice}',
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ],
-                                ),
+                                )),
                                 Obx(() {
-                                  final isInLocalCart = cartController.isInCart(deal.product.id);
+                                  final isInLocalCart = cartController.isInCart(deal.product!.id);
                                   final isInServerCart = cartController.fetchedcartItems
-                                      .any((fetchedItem) => fetchedItem['product_id'] == deal.product.id);
+                                      .any((fetchedItem) => fetchedItem['product_id'] == deal.product!.id);
 
                                   final isInCart = isInLocalCart || isInServerCart;
-
+                                  String priceToPost = deal.price.toString();
+                                  if (deal.promotionPrice != null) {
+                                    priceToPost = deal.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                  }
                                   return GestureDetector(
                                     onTap: isInCart
                                         ? null
                                         : () {
                                       cartController.toggleCart(
+                                        null,
                                         {}.toString(),
-                                        deal.product.id,
-                                        deal.product.name,
-                                        deal.promotionPrice as String,
-                                        deal.product.image,
+                                        deal.product!.id,
+                                        deal.product!.name,
+                                        priceToPost,
+                                        deal.product!.image,
                                         {},
                                       );
                                     },

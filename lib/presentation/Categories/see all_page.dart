@@ -56,7 +56,8 @@ class SeeAllPage extends StatelessWidget {
                   crossAxisCount: 3,
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 40.0,
-                  mainAxisExtent: 180),
+                  mainAxisExtent: ScreenUtil().screenWidth >600?280:180
+              ),
               itemCount: categoryController.categories.length,
               itemBuilder: (context, index) {
                 final category = categoryController.categories[index];
@@ -102,7 +103,9 @@ class SeeAllPage extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 24.7.h),
+                              padding: EdgeInsets.only(
+                                top: ScreenUtil().screenWidth > 600 ? 53.h : 24.7.h,
+                              ),
                               child: Container(
                                   height: 24.2.h,
                                   width: 140.w,

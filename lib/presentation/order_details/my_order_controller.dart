@@ -13,11 +13,13 @@ class MyOrderController extends GetxController {
 
   Future<List<myOrder>> fetchOrder() async {
     final String? token = box.read('access_token');
-    final String? type = box.read('selectedButton')??'grocery';
+    String? type = box.read('selectedButton')??'grocery';
     final String? selectedShopId = GetStorage().read('selected_shop_id');
-
+    if (type == 'promotion') {
+      type = 'grocery';
+    }
     final response = await http.get(
-      Uri.parse('${Api.ApiUrl}/orders?shop_id=1&type=$type'),
+      Uri.parse('${Api.ApiUrl}/orders?shop_id=$selectedShopId&type=$type'),
       headers: {
         'Authorization': 'Bearer $token',
       },

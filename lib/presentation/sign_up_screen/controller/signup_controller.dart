@@ -26,7 +26,9 @@ class SignupController extends GetxController {
   Get.find<CartController>();
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
@@ -105,9 +107,12 @@ class SignupController extends GetxController {
       return;
     }
 
+    isLoading.value = true; // Start loading
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId.value, smsCode: otp);
+        verificationId: verificationId.value,
+        smsCode: otp,
+      );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
       Get.snackbar('Success', 'Phone number verified successfully!',
@@ -118,6 +123,8 @@ class SignupController extends GetxController {
       Get.snackbar('Error', 'Failed to verify OTP: $e',
           snackPosition: SnackPosition.BOTTOM);
       print('Error: $e');
+    } finally {
+      isLoading.value = false; // Stop loading
     }
   }
 
@@ -128,6 +135,7 @@ class SignupController extends GetxController {
       final String? selectedStoreId = GetStorage().read('selected_shop_id');
       final double? latitude = GetStorage().read('latitude');
       final double? longitude = GetStorage().read('longitude');
+      final String? language = GetStorage().read('selectedLanguage') ?? 'English';
 
       final response = await http.post(
         Uri.parse(Api.Register),
@@ -136,12 +144,15 @@ class SignupController extends GetxController {
         },
         body: jsonEncode({
           'name': nameController.text,
+          'address': addressController.text,
           'mobile_no': mobileNoController.text,
+          'email' : emailController.text,
           'password': passwordController.text,
           'password_confirmation': passwordConfirmController.text,
           'shop_id': selectedStoreId,
           'latitude': latitude, // Add latitude
           'longitude': longitude, // Add longitude
+          'language' : language
         }),
       );
 
@@ -157,15 +168,20 @@ class SignupController extends GetxController {
 
         // Store the access token
         await GetStorage().write('access_token', accessToken);
-
+        GetStorage().write('isSignUp', true);
         Get.snackbar('Success', 'Registration successful!',
             snackPosition: SnackPosition.BOTTOM);
 
         if (cartController.cartItems.isNotEmpty) {
-          // Post each cart item after login
-          // for (var cartItem in cartController.cartItems) {
-          //   await cartController.postCartItems(cartItem);
-          //   await cartController.postCartItems1(cartItem);
+          for (var cartItem in cartController.cartItems) {
+            await cartController.postCartItems( cartItem,);
+            //await cartController.postCartItems1( cartItem,);
+            // print(cartController.postCartItems(accessToken, cartItem, 'grocery'));
+          }
+          // for (var cartItem2 in cartController.cartItems) {
+          //   //await cartController.postCartItems( cartItem,);
+          //   await cartController.postCartItems1( cartItem2,);
+          //   // print(cartController.postCartItems(accessToken, cartItem, 'grocery'));
           // }
         }
 
@@ -174,7 +190,9 @@ class SignupController extends GetxController {
 
         print('Registered User Details:');
         print('Name: ${nameController.text}');
+        print('Adress: ${addressController.text}');
         print('Mobile No: ${mobileNoController.text}');
+        print('Email: ${emailController.text}');
         Get.offAll(() => CustomBottomNavBar()); // Navigate to desired page
       } else {
         Get.snackbar('Error', 'Failed to register user: ${response.body}',
@@ -193,30 +211,90 @@ class SignupController extends GetxController {
   // Form validation logic
   bool _validateForm() {
     if (nameController.text.isEmpty ||
+        addressController.text.isEmpty ||
         mobileNoController.text.isEmpty ||
+        emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         passwordConfirmController.text.isEmpty) {
       Get.snackbar('Error', 'Please fill all fields',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
+
+    if (passwordController.text.length < 8) {
+      Get.snackbar('Error', 'Password must be at least 8 characters long',
+          snackPosition: SnackPosition.BOTTOM);
+      return false;
+    }
+
     if (passwordController.text != passwordConfirmController.text) {
       Get.snackbar('Error', 'Passwords do not match',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
+
     if (!isChecked.value) {
       Get.snackbar('Error', 'Please agree to the terms',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
+
     return true;
   }
+
+  Future<void> validateMobile() async {
+    final String mobileNumber = mobileNoController.text;
+
+    if (mobileNumber.isEmpty) {
+      Get.snackbar('Error', 'Mobile number is required',
+          snackPosition: SnackPosition.BOTTOM);
+      isRegistrationSuccessful.value = false; // Set to false on error
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Api.ApiUrl}/validate-mobile'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'mobile_no': mobileNoController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response if needed
+        final responseData = jsonDecode(response.body);
+        //Get.snackbar('Success', 'Mobile number validated successfully!',
+            //snackPosition: SnackPosition.BOTTOM);
+        print('Response: $responseData');
+
+        isRegistrationSuccessful.value = true; // Set to true on success
+      } else {
+        Get.snackbar('Error', 'Validation failed: ${response.body}',
+            snackPosition: SnackPosition.BOTTOM);
+        isRegistrationSuccessful.value = false; // Set to false on failure
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred: $e',
+          snackPosition: SnackPosition.BOTTOM);
+      print('Error: $e');
+      isRegistrationSuccessful.value = false; // Set to false on error
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 
   @override
   void onClose() {
     nameController.dispose();
+    addressController.dispose();
     mobileNoController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     passwordConfirmController.dispose();
     otpController.dispose();

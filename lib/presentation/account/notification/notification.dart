@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../Language Selection/language_controller.dart';
-import '../order_details/my_orders_view.dart';
+import '../../Language Selection/language_controller.dart';
+import '../../order_details/my_orders_view.dart';
 import 'notification_controller.dart';
 
 class NotificationPage extends StatelessWidget {

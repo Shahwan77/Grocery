@@ -1,12 +1,33 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class WelcomeController extends GetxController {
-  var selectedLanguage = 'English'.obs;
+  var selectedLanguage = ''.obs;
+  final box = GetStorage();
+  @override
+  void onInit() {
+    super.onInit();
+
+    // selectedLanguage.value = box.read('selectedLanguage') ?? 'English';
+    //
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (selectedLanguage.value == 'Arabic') {
+    //     Get.updateLocale(Locale('ar'));
+    //   } else {
+    //     Get.updateLocale(Locale('en'));
+    //   }
+    // });
+  }
+
+
+
 
   void selectLanguage(String language) {
     selectedLanguage.value = language;
+    box.write('selectedLanguage', language);
 
     if (language == 'English') {
       Get.updateLocale(Locale('en'));
@@ -14,6 +35,7 @@ class WelcomeController extends GetxController {
       Get.updateLocale(Locale('ar'));
     }
   }
+
   String get arabicText => 'Arabic';
   String get englishText => 'English';
   String get selectLanguageText => 'select_language'.tr;
@@ -42,6 +64,7 @@ class WelcomeController extends GetxController {
   String get pleaseloginText => 'please_login'.tr;
   String get LoginText => 'Login'.tr;
   String get loginText => 'login'.tr;
+  String get logyouraccountText => 'log_your_account'.tr;
   String get loginsubText => 'login_sub'.tr;
   String get phonenoText => 'phone_no'.tr;
   String get enternoText => 'enter_no'.tr;
@@ -94,6 +117,43 @@ class WelcomeController extends GetxController {
   String get inprogressText => 'in_progress'.tr;
   String get completeText => 'complete'.tr;
   String get unassignedText => 'unassigned'.tr;
+  String get addressText => 'address'.tr;
+  String get youraddressText => 'your_address'.tr;
+  String get submitText => 'submit'.tr;
+  String get emailText=> 'email'.tr;
+  String get youremailText => 'your_email'.tr;
+  String get profileText => 'profile'.tr;
+  String get yournameText => 'your_name'.tr;
+  String get createnewpasswordText => 'create_new_password'.tr;
+  String get yournewpasswordText => 'your_new_password'.tr;
+  String get currentpasswordText => 'current_password'.tr;
+  String get newpasswordText => 'new_password'.tr;
+  String get confirmpassword => 'confirm_password'.tr;
+  String get resetpassword => 'reset_password'.tr;
+  String get changenumberText => 'change_number'.tr;
+  String get yournumberText => 'your_number'.tr;
+  String get sendanotpText => 'send_an_otp'.tr;
+  String get sendotpText => 'send_otp'.tr;
+  String get yourotpText => 'your_otp'.tr;
+  String get verifyotpText => 'verify_otp'.tr;
+  String get personaldetailsText => 'personal_details'.tr;
+  String get agreetoText => 'agree_to'.tr;
+  String get termsuseText => 'terms_use'.tr;
+  String get andText => 'and'.tr;
+  String get privacypolicyText => 'privacy_policy'.tr;
+  String get thisappText => 'this_app'.tr;
+  String get haveaccountText => 'have_account'.tr;
+  String get loginhereText => 'login_here'.tr;
+  String get registerText => 'register'.tr;
+  String get verificationText => 'verification'.tr;
+  String get enterOTPsentText => 'enter_OTP_sent_to'.tr;
+  String get verifyText => 'verify'.tr;
+  String get resendOTPText => 'resend_OTP'.tr;
+  String get selectstoreText => 'select_store'.tr;
+  String get choosestoreText => 'choose_store'.tr;
+  String get nameText => 'name'.tr;
+  String get forgotpasswordText => 'forgot_password'.tr;
+
 
 
 

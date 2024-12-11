@@ -18,7 +18,7 @@ class PaymentMethodController extends GetxController {
   var selectedAmount = ''.obs; // Store selected amount
   final DeliveryTimeController deliveryTimeController =
       DeliveryTimeController();
-  final CartController cartController = CartController();
+  final CartController cartController = Get.find();
   final box = GetStorage();
   var cashCheckedList = [false, false, false, false].obs;
   var cardCheckedList = [false, false, false].obs;
@@ -95,6 +95,7 @@ class PaymentMethodController extends GetxController {
   }
 
   Future<void> postOrder() async {
+
     GetStorage bix = GetStorage();
     final DeliveryTimeController controller =
         Get.find<DeliveryTimeController>();
@@ -114,6 +115,11 @@ class PaymentMethodController extends GetxController {
 
     double changeAmount = convertToDouble(selectedAmount.value);
     double totalAmount = convertToDouble(cartcontroller.totalPrice);
+    double delivery = convertToDouble(cartController.delivery_charge.value.isNotEmpty
+        ? cartController.delivery_charge.value
+        : '0.0');
+
+
     print('Change needed: $changeAmount');
     print('amount: $totalAmount');
 
@@ -122,21 +128,27 @@ class PaymentMethodController extends GetxController {
       print('Change amount is null, setting to $changeAmount');
     }
 
-    List<Map<String, dynamic>> items =
-    cartcontroller.getCartItems().map((item) {
+    List<Map<String, dynamic>> items = cartcontroller.getCartItems().map((item) {
       return {
         "product_id": item['product_id'],
         "quantity": item['quantity'],
-        "price":item['price'],
+        "price": item['price'],
         "services": (item['services'] as List<dynamic>?)?.map((serviceItem) {
+          final serviceId = serviceItem['service']?['id'];
+          // Ensure `service_id` is valid
+          if (serviceId == null) {
+            print("Invalid service_id for service: $serviceItem");
+            return null;
+          }
           return {
-            "id": serviceItem['id'],
-            "name": serviceItem['name'],
+            "id": serviceId, // Nested `service_id`
+            "name": serviceItem['service']?['name'] ?? 'Unknown Service',
             "price": serviceItem['price'],
           };
-        }).toList() ?? [],
+        }).where((service) => service != null).toList(), // Filter out invalid services
       };
     }).toList();
+
 
     print('Items: $items');
 print(bix.read('selectedButton'));
@@ -159,6 +171,7 @@ print(bix.read('selectedButton'));
         "method": selectedPaymentMethod.value.toLowerCase(),
         "change": changeAmount == 0 ? null : changeAmount
       },
+      "delivery_charge":delivery,
       "total": {
         "count": cartcontroller.total_quantity.value,
         "amount": totalAmount,

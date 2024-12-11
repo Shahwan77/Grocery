@@ -28,7 +28,7 @@ class CategoriesPage extends StatelessWidget {
                 languagecontroller.categoriesText,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 18.sp,
+                  fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
                 ),
               ),
               GestureDetector(
@@ -91,9 +91,12 @@ class CategoriesPage extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               return Center(child: Text("Error loading categories."));
-            } else if (categoryController.categories.isEmpty) {
-              return Center(child: Text("No categories found."));
-            } else {
+            }
+            // else if (categoryController.categories.isEmpty || categoryController.categories.every((category) => category.type != 'grocery')) {
+            //   return Center(child: Text("No grocery items found"));
+            // }
+            else {
+              final limitedCategories = categoryController.categories.take(12).toList();
               return GridView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
                 shrinkWrap: true,
@@ -105,9 +108,9 @@ class CategoriesPage extends StatelessWidget {
                   childAspectRatio: 0.7,
                   mainAxisExtent: 120,
                 ),
-                itemCount: categoryController.categories.length,
+                itemCount: limitedCategories.length,
                 itemBuilder: (context, index) {
-                  final category = categoryController.categories[index];
+                  final category = limitedCategories[index];
                   return GestureDetector(
                     onTap: () {
                       Get.to(() => DetailPage(

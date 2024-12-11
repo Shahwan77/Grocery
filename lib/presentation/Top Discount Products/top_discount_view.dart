@@ -45,12 +45,12 @@ class TopDiscountView extends StatelessWidget {
             return Center(child: Text("No categories found."));
           } else {
             return GridView.builder(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(10.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
-                mainAxisSpacing: 10.0,
-                mainAxisExtent: 220,
+                mainAxisSpacing: 20.0,
+                mainAxisExtent: ScreenUtil().screenWidth >600?260:220,
               ),
               itemCount: productsController.discountProducts.length,
               itemBuilder: (context, index) {
@@ -78,39 +78,43 @@ class TopDiscountView extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Obx(() {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        final itemData = {
-                                          'name': item.product.name,
-                                          'price': item.product.price,
-                                          'image': item.product.image,
-                                        };
-
-                                        favoriteController.toggleFavorite(
-                                          itemData['name']!,
-                                          itemData['price']!,
-                                          itemData['image']!,
-                                        );
-
-                                        Get.snackbar(
-                                          favoriteController.isFavorite(itemData['name']!)
-                                              ? 'Added to Favorites'
-                                              : 'Removed from Favorites',
-                                          '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                          snackPosition: SnackPosition.BOTTOM,
-                                        );
-                                      },
-                                      child: Icon(
-                                        favoriteController.isFavorite(item.product.name)
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: favoriteController.isFavorite(item.product.name)
-                                            ? Color(0xFFEB1C23)
-                                            : Colors.grey,
-                                      ),
-                                    );
-                                  }),
+                                  // Obx(() {
+                                  //   return GestureDetector(
+                                  //     onTap: () {
+                                  //       final itemData = {
+                                  //         'name': item.product.name,
+                                  //         'price': item.product.price,
+                                  //         'image': item.product.image,
+                                  //       };
+                                  //
+                                  //       favoriteController.toggleFavorite(
+                                  //         itemData['name']!,
+                                  //         itemData['price']!,
+                                  //         itemData['image']!,
+                                  //       );
+                                  //
+                                  //       Get.snackbar(
+                                  //         favoriteController.isFavorite(itemData['name']!)
+                                  //             ? 'Added to Favorites'
+                                  //             : 'Removed from Favorites',
+                                  //         '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
+                                  //         snackPosition: SnackPosition.BOTTOM,
+                                  //       );
+                                  //     },
+                                  //     child: Icon(
+                                  //       favoriteController.isFavorite(item.product.name)
+                                  //           ? Icons.favorite
+                                  //           : Icons.favorite_border,
+                                  //       color: favoriteController.isFavorite(item.product.name)
+                                  //           ? Color(0xFFEB1C23)
+                                  //           : Colors.grey,
+                                  //     ),
+                                  //   );
+                                  // }),
+                                  Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.grey,
+                                  ),
                                   Icon(
                                     Icons.info_outline,
                                     color: Colors.green.shade800,
@@ -176,9 +180,9 @@ class TopDiscountView extends StatelessWidget {
                                       ],
                                     ),
                                   Obx(() {
-                                    final isInLocalCart = cartController.isInCart(item.id);
+                                    final isInLocalCart = cartController.isInCart(item.productId);
                                     final isInServerCart = cartController.fetchedcartItems
-                                        .any((fetchedItem) => fetchedItem['product_id'] == item.id);
+                                        .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
 
                                     final isInCart = isInLocalCart || isInServerCart;
                                     String priceToPost = item.price.toString();
@@ -190,8 +194,9 @@ class TopDiscountView extends StatelessWidget {
                                           ? null
                                           : () {
                                         cartController.toggleCart(
+                                          null,
                                           {}.toString(),
-                                          item.id,
+                                          item.productId,
                                           item.product.name,
                                           priceToPost,
                                           item.product.image,
