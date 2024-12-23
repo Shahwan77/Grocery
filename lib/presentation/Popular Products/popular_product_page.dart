@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/apiClient/api.dart';
@@ -17,7 +18,8 @@ class PopularProductPage extends StatelessWidget {
     final FavoriteController favoriteController = Get.put(FavoriteController());
     final HomeController homeController = Get.put(HomeController());
     final WelcomeController languageController = Get.put(WelcomeController());
-
+    final token = GetStorage().read('access_token');
+    Map<int, RxInt> quantityMap = {};
     return FutureBuilder<void>(
       future: homeController.fetchPopularProducts(), // Call the fetch function
       builder: (context, snapshot) {
@@ -25,15 +27,10 @@ class PopularProductPage extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            // Show error message if something went wrong
             return Center(child: Text("Error: ${snapshot.error}"));
-          }
-          else if (homeController.popularProducts.isEmpty) {
-            // Show a message if no products are found
-            return Center(child: Text(""));
-          }
-          else {
-            // Show popular products if data is successfully fetched
+          } else if (homeController.popularProducts.isEmpty) {
+            return Center(child: Text("No popular products available"));
+          } else {
             return Column(
               children: [
                 Padding(
@@ -45,7 +42,7 @@ class PopularProductPage extends StatelessWidget {
                         languageController.popularText,
                         style: GoogleFonts.roboto(
                           fontWeight: FontWeight.w600,
-                          fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
+                          fontSize: ScreenUtil().screenWidth > 600 ? 16.sp : 18.sp,
                         ),
                       ),
                       GestureDetector(
@@ -89,9 +86,11 @@ class PopularProductPage extends StatelessWidget {
                   child: SizedBox(
                     height: 220.h,
                     child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       itemCount: homeController.popularProducts.length > 1
-                          ? 2
+                          ? 3
                           : homeController.popularProducts.length + 1,
                       itemBuilder: (context, index) {
                         if (index == homeController.popularProducts.length) {
@@ -133,157 +132,223 @@ class PopularProductPage extends StatelessWidget {
                         }
 
                         final item = homeController.popularProducts[index];
+                        RxBool isSelected = false.obs;
+                        quantityMap.putIfAbsent(item.product.id, () => 1.obs);
 
-                        return Container(
-                          width: 150.w,
-                          margin: EdgeInsets.symmetric(horizontal: 8.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [BoxShadow(color: Colors.grey.shade400)],
-                            borderRadius: BorderRadius.circular(15.r),
-                            border: Border.all(color: Colors.grey.shade100),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                        return GestureDetector(
+                          onTap: () {
+                            isSelected.value = !isSelected.value;
+                            if (isSelected.value) {
+                              String priceToPost = item.price.toString();
+                              if (item.promotionPrice != null) {
+                                priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
+                              }
+                              cartController.toggleCart(
+                                null,
+                                {}.toString(),
+                                item.product.id,
+                                item.product.name,
+                                priceToPost,
+                                item.product.image,
+                                {},
+                              );
+                            }// Toggle the selected state
+                          },
+                          child: Container(
+                            width: 150.w,
+                            margin: EdgeInsets.symmetric(horizontal: 8.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [BoxShadow(color: Colors.grey.shade400)],
+                              borderRadius: BorderRadius.circular(15.r),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: Stack(
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // Obx(() {
-                                    //   return GestureDetector(
-                                    //     onTap: () {
-                                    //       final itemData = {
-                                    //         'name': item.product.name,
-                                    //         'price': item.product.price,
-                                    //         'image': item.product.image,
-                                    //       };
-                                    //
-                                    //       favoriteController.toggleFavorite(
-                                    //         itemData['name']!,
-                                    //         itemData['price']!,
-                                    //         itemData['image']!,
-                                    //       );
-                                    //
-                                    //       Get.snackbar(
-                                    //         favoriteController.isFavorite(itemData['name']!)
-                                    //             ? 'Added to Favorites'
-                                    //             : 'Removed from Favorites',
-                                    //         '${itemData['name']} has been ${favoriteController.isFavorite(itemData['name']!) ? 'added to' : 'removed from'} your favorites.',
-                                    //         snackPosition: SnackPosition.TOP,
-                                    //       );
-                                    //     },
-                                    //     child: Icon(
-                                    //       favoriteController.isFavorite(item.product.name)
-                                    //           ? Icons.favorite
-                                    //           : Icons.favorite_border,
-                                    //       color: favoriteController.isFavorite(item.product.name)
-                                    //           ? Color(0xFFEB1C23)
-                                    //           : Colors.grey,
-                                    //     ),
-                                    //   );
-                                    // }),
-                                    Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.grey,
-                                    ),
-                                    Icon(
-                                      Icons.info_outline,
-                                      color: Colors.green.shade800,
-                                    ),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: Image.network(
-                                    '${Api.ImageUrl}/products/${item.product.image}',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Text(
-                                      item.product.name,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  child: Column(
                                     children: [
-                                      // Check if promotionPrice is null
-                                      if (item.promotionPrice == null)
-                                        Text(
-                                          '\AED${item.price}',
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.w700,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            Icons.favorite_border,
+                                            color: Colors.grey,
                                           ),
-                                        )
-                                      else
-                                      // If promotionPrice is not null, show both prices
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          Icon(
+                                            Icons.info_outline,
+                                            color: Colors.green.shade800,
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(
+                                        child: Image.network(
+                                          '${Api.ImageUrl}/products/${item.product.image}',
+                                          fit: BoxFit.contain,
+                                          width: double.infinity,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            item.product.name,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              '\AED${item.price}',
-                                              style: TextStyle(
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.w700,
-                                                decoration: TextDecoration.lineThrough,
+                                            if (item.promotionPrice == null)
+                                              Text(
+                                                '\AED${item.price}',
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              )
+                                            else
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '\AED${item.price}',
+                                                    style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      fontWeight: FontWeight.w700,
+                                                      decoration: TextDecoration.lineThrough,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '\AED${item.promotionPrice}',
+                                                    style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            Text(
-                                              '\AED${item.promotionPrice}',
-                                              style: TextStyle(
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
+                                            Obx(() {
+                                              final isInLocalCart = cartController.isInCart(item.product.id);
+                                              final isInServerCart = cartController.fetchedcartItems
+                                                  .any((fetchedItem) => fetchedItem['product_id'] == item.product.id);
+
+                                              final isInCart = isInLocalCart || isInServerCart;
+
+                                              return GestureDetector(
+                                                onTap: isInCart
+                                                    ? null
+                                                    : () {
+                                                  String priceToPost = item.price.toString();
+                                                  if (item.promotionPrice != null) {
+                                                    priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                                  }
+                                                  cartController.toggleCart(
+                                                    null,
+                                                    {}.toString(),
+                                                    item.product.id,
+                                                    item.product.name,
+                                                    priceToPost,
+                                                    item.product.image,
+                                                    {},
+                                                  );
+                                                },
+                                                child: Icon(
+                                                  isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                                                  color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
+                                                ),
+                                              );
+                                            }),
                                           ],
                                         ),
-                                      Obx(() {
-                                        final isInLocalCart = cartController.isInCart(item.productId);
-                                        final isInServerCart = cartController.fetchedcartItems
-                                            .any((fetchedItem) => fetchedItem['product_id'] == item.productId);
-
-                                        final isInCart = isInLocalCart || isInServerCart;
-
-                                        return GestureDetector(
-                                          onTap: isInCart
-                                              ? null
-                                              : () {
-                                            String priceToPost = item.price.toString();
-                                            if (item.promotionPrice != null) {
-                                              priceToPost = item.promotionPrice.toString(); // Use promotionPrice if it's not null
-                                            }
-                                            cartController.toggleCart(
-                                              null,
-                                              {}.toString(),
-                                              item.productId,
-                                              item.product.name,
-                                              priceToPost,
-                                              item.product.image,
-                                              {},
-                                            );
-                                          },
-                                          child: Icon(
-                                            isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
-                                            color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
-                                          ),
-                                        );
-                                      }),
+                                      ),
                                     ],
                                   ),
                                 ),
+                                Obx(() {
+                                  final quantity = quantityMap[item.product.id]!.value; // Use .value for RxInt
+                                  return isSelected.value
+                                      ? Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.4),
+                                        borderRadius: BorderRadius.circular(13.r),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(14.r),
+                                              color: Colors.white,
+                                            ),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.remove,
+                                                color: (quantity) > 1 ? Colors.red.shade600 : Colors.grey,
+                                              ),
+                                              onPressed: () {
+                                                if (quantity > 1) {
+                                                  // Reduce the quantity by 1
+                                                  cartController.updateQuantity(item.product.id, -1);
+                                                  quantityMap[item.product.id]!.value = quantity - 1; // Update using .value
+                                                } else {
+                                                  // If quantity is 1, remove the item from the cart
+                                                  final productId = item.product.id;
+                                                  if (token != null) {
+                                                    cartController.removeItemFromCart(productId);
+                                                    isSelected.value = false;
+                                                  } else {
+                                                    cartController.removeFromCart(
+                                                      item.product.name,
+                                                      (item.product.price ?? 0).toString(),
+                                                      item.product.image,
+                                                      item.product.type,
+                                                    );
+                                                    isSelected.value = false;
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Text(
+                                            '$quantity',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color:
+                                              Colors.white,
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(14.r),
+                                              color: Colors.white,
+                                            ),
+                                            child: IconButton(
+                                              icon: Icon (Icons.add,
+                                                color: Colors.green.shade800,),
+                                              onPressed: () {
+                                                cartController.updateQuantity(item.product.id, 1);
+                                                quantityMap[item.product.id]!.value = quantity + 1; // Update using .value
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                      : SizedBox.shrink();
+                                }),
 
                               ],
                             ),
@@ -297,7 +362,6 @@ class PopularProductPage extends StatelessWidget {
             );
           }
         } else {
-          // Handle other states
           return SizedBox();
         }
       },

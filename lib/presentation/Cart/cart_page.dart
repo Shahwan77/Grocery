@@ -422,16 +422,25 @@ class CartPage extends StatelessWidget {
                                                                       .shade600
                                                                   : Colors.grey,
                                                         ),
-                                                        onPressed: () {
-                                                          if ((item['quantity'] ??
-                                                                  0) >
-                                                              1) {
-                                                            cartController
-                                                                .updateQuantity(
-                                                                    productId,
-                                                                    -1); // Reduce quantity by 1
-                                                          }
-                                                        },
+                                                          onPressed: () {
+                                                            if ((item['quantity'] ?? 0) > 1) {
+                                                              // Reduce the quantity by 1
+                                                              cartController.updateQuantity(item['product_id'], -1);
+                                                            } else {
+                                                              // If quantity is 1, remove the item from the cart
+                                                              final productId = item['product_id'];
+                                                              if (token != null) {
+                                                                cartController.removeItemFromCart(productId);
+                                                              } else {
+                                                                cartController.removeFromCart(
+                                                                  item['name'],
+                                                                  (item['price'] ?? 0)
+                                                                      .toString(),
+                                                                  item['image'],
+                                                                  item['type'],
+                                                                );
+                                                              }
+                                                            }}
                                                       ),
                                                     ),
 

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Language%20Selection/TranslationService.dart';
+import 'package:grocery/presentation/payment/Telr%20Payment.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
 import 'firebase.dart';
@@ -23,7 +24,10 @@ Future<void> main() async {
       )
   );
   await FirebaseApi().initNotifications();
-  await FirebaseAppCheck.instance.activate();
+  await FirebaseAppCheck.instance.activate(
+   androidProvider: AndroidProvider.playIntegrity
+  );
+
   runApp(const MyApp());
 }
 
@@ -52,7 +56,7 @@ class MyApp extends StatelessWidget {
           Locale('es'), // Spanish
         ],
         title: 'Flutter Demo',
-         // home: LocationPage(),
+         // home: PaymentPage(),
          initialRoute: AppRoutes.Splash,
          getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,

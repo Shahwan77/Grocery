@@ -22,7 +22,7 @@ class UserData {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      final user = User.fromJson(data['user']); // Accessing the 'user' key
+      final user = User.fromJson(data['user']);
       box.write('id', user.id);
       box.write('name', user.name);
       return user;

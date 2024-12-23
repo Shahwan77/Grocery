@@ -25,6 +25,8 @@ class SearchPage extends StatelessWidget {
     final SearchPoductController searchController = Get.put(SearchPoductController());
     final WelcomeController languagecontroller = Get.put(WelcomeController());
     final CartController cartController = Get.put(CartController());
+    final token = GetStorage().read('access_token');
+    Map<int, RxInt> quantityMap = {};
     WidgetsBinding.instance.addPostFrameCallback((_) {
       searchController.searchProducts(query);
     });
@@ -100,114 +102,254 @@ class SearchPage extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final product = searchController.popularProducts[index];
-                      return IntrinsicHeight(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [BoxShadow(color: Colors.grey.shade400)],
-                            borderRadius: BorderRadius.circular(15.r),
-                            border: Border.all(color: Colors.grey.shade100),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                      RxBool isSelected = false.obs;
+                      quantityMap.putIfAbsent(product.product.id, () => 1.obs);
+                      return GestureDetector(
+                        onTap: () {
+                          isSelected.value = !isSelected.value;
+                          if (isSelected.value) {
+                            String priceToPost = product.price.toString();
+                            if (product.promotionPrice != null) {
+                              priceToPost = product.promotionPrice.toString(); // Use promotionPrice if it's not null
+                            }
+                            cartController.toggleCart(
+                                null,
+                                {}.toString(),
+                                product.productId,
+                                product.product.name,
+                                priceToPost,
+                                product.product.image,
+                                {}
+                            );
+                          }// Toggle the selected state
+                        },
+                        child: IntrinsicHeight(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 8.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [BoxShadow(color: Colors.grey.shade400)],
+                              borderRadius: BorderRadius.circular(15.r),
+                              border: Border.all(color: Colors.grey.shade100),
+                            ),
+                            child: Stack(
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
                                   children: [
-                                    Icon(Icons.favorite_border),
-                                    Icon(Icons.info_outline)
-                                  ],
-                                ),
-                                Center(
-                                  child: Image.network(
-                                    fit: BoxFit.cover,
-                                    width: 100.w,
-                                    '${Api.ImageUrl}/products/${product.product.image}',
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Text(
-                                      product.product.name,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(Icons.favorite_border),
+                                        Icon(Icons.info_outline)
+                                      ],
                                     ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      (product.promotionPrice == null
-                                      // Display the regular price if no promotion price
-                                          ? Text(
-                                        '\AED${product.price}',
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.w700,
+                                    Center(
+                                      child: Image.network(
+                                        fit: BoxFit.cover,
+                                        width: 100.w,
+                                        '${Api.ImageUrl}/products/${product.product.image}',
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          product.product.name,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      )
-                                      // If promotion price is not null, show both prices
-                                          : Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          (product.promotionPrice == null
+                                          // Display the regular price if no promotion price
+                                              ? Text(
                                             '\AED${product.price}',
                                             style: TextStyle(
                                               fontSize: 10.sp,
                                               fontWeight: FontWeight.w700,
-                                              decoration: TextDecoration.lineThrough,
                                             ),
-                                          ),
-                                          Text(
-                                            '\AED${product.promotionPrice}',
-                                            style: TextStyle(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                      Obx(() {
-                                        final isInLocalCart = cartController.isInCart(product.id);
-                                        final isInServerCart = cartController.fetchedcartItems
-                                            .any((fetchedItem) => fetchedItem['product_id'] == product.id);
+                                          )
+                                          // If promotion price is not null, show both prices
+                                              : Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '\AED${product.price}',
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  decoration: TextDecoration.lineThrough,
+                                                ),
+                                              ),
+                                              Text(
+                                                '\AED${product.promotionPrice}',
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                          Obx(() {
+                                            final isInLocalCart = cartController.isInCart(product.productId);
+                                            final isInServerCart = cartController.fetchedcartItems
+                                                .any((fetchedItem) => fetchedItem['product_id'] == product.productId);
 
-                                        final isInCart = isInLocalCart || isInServerCart;
-                                        String priceToPost = product.price.toString();
-                                        if (product.promotionPrice != null) {
-                                          priceToPost = product.promotionPrice.toString(); // Use promotionPrice if it's not null
-                                        }
-                                        return GestureDetector(
-                                          onTap: isInCart ? null : () {
-                                            cartController.toggleCart(
-                                                null,
-                                                {}.toString(),
-                                                product.id,
-                                                product.product.name,
-                                                priceToPost,
-                                                product.product.image,
-                                                {}
+                                            final isInCart = isInLocalCart || isInServerCart;
+                                            String priceToPost = product.price.toString();
+                                            if (product.promotionPrice != null) {
+                                              priceToPost = product.promotionPrice.toString(); // Use promotionPrice if it's not null
+                                            }
+                                            return GestureDetector(
+                                              onTap: isInCart ? null : () {
+                                                cartController.toggleCart(
+                                                    null,
+                                                    {}.toString(),
+                                                    product.productId,
+                                                    product.product.name,
+                                                    priceToPost,
+                                                    product.product.image,
+                                                    {}
+                                                );
+                                              },
+                                              child: Icon(
+                                                isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                                                color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
+                                              ),
                                             );
-                                          },
-                                          child: Icon(
-                                            isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
-                                            color: isInCart ? Color(0xFFEB1C23) : Colors.grey,
-                                          ),
-                                        );
-                                      }),
-                                    ],
-                                  ),
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                                Obx(() {
+                            final quantity = quantityMap[product.product.id]!.value; // Ensure quantity has a default value
+                                    return isSelected.value
+                                        ? Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.4),
+                                          borderRadius: BorderRadius.circular(15.r),
+                                        ),
+                                        child:  Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(14.r),
+                                                color: Colors.white,
+                                              ),
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.remove,
+                                                ),
+                                                onPressed: () {
+                                                  if (quantity > 1) {
+                                                    cartController
+                                                        .updateQuantity(
+                                                        product.product.id,
+                                                        -1);
+                                                    quantityMap[product
+                                                        .product.id]!
+                                                        .value =
+                                                        quantity -
+                                                            1; // Update using .value
+                                                  } else if (quantity == 1) {
+                                                    final productId =
+                                                        product.product.id;
+                                                    if (token != null) {
+                                                      cartController
+                                                          .removeItemFromCart(
+                                                          productId);
+                                                    } else {
+                                                      cartController
+                                                          .removeFromCart(
+                                                        product.product.name,
+                                                        (product.product.price ??
+                                                            0)
+                                                            .toString(),
+                                                        product.product.image,
+                                                        product.product.type,
+                                                      );
+                                                    }
+                                                    quantityMap[product
+                                                        .product.id]!
+                                                        .value =
+                                                    0; // Set quantity to 0 after removal
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                            Text(
+                                              '$quantity',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                                fontSize: 14.sp,
+                                              ),
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(14.r),
+                                                color: Colors.white,
+                                              ),
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.add,
+                                                  color: Colors.green.shade800,
+                                                ),
+                                                onPressed: () {
+                                                  if (quantity == 0) {
+                                                    quantityMap[product
+                                                        .product.id]!
+                                                        .value =
+                                                    1; // Set to 1 if it was 0
+                                                    cartController.toggleCart(
+                                                      product.product.id,
+                                                      {}.toString(),
+                                                      product.product.id,
+                                                      product.product.name,
+                                                      product.price.toString(),
+                                                      product.product.image,
+                                                      {},
+                                                    );
+                                                  } else {
+                                                    cartController
+                                                        .updateQuantity(
+                                                        product.product.id, 1);
+                                                    quantityMap[product
+                                                        .product.id]!
+                                                        .value =
+                                                        quantity +
+                                                            1; // Increment quantity
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                        : SizedBox.shrink();
+
+                                }),
+                          ]
                             ),
                           ),
                         ),

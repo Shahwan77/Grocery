@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grocery/data/apiClient/api.dart';
+import 'package:intl/intl.dart';
 import '../../../data/apiClient/api_service.dart';
 import '../../../data/models/aj_models.dart';
 import '../../../data/models/category_model.dart';
@@ -103,9 +104,7 @@ class HomeController extends GetxController {
     try {
       isLoading(true);
       final url = Uri.parse('${Api.ApiUrl}/promotions?shop_id=$selectedShopId');
-      final response = await http.get(
-        url,
-      );
+      final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
@@ -113,10 +112,23 @@ class HomeController extends GetxController {
             .map((item) => Promotion.fromJson(item))
             .toList();
 
-        promotionsList.assignAll(promotionsData);
+        final now = DateTime.now();
+        final dateFormatter = DateFormat('dd/MM/yyyy');
 
-        if (promotionsData.isNotEmpty) {
-          final promotionId = promotionsData.first.promotionId;
+        final activePromotions = promotionsData.where((promotion) {
+          try {
+            final endDate = dateFormatter.parse(promotion.end);
+            return endDate.isAfter(now);
+          } catch (e) {
+            print('Invalid date format for promotion: ${promotion.end}');
+            return false; // Exclude promotions with invalid dates
+          }
+        }).toList();
+
+        promotionsList.assignAll(activePromotions);
+
+        if (activePromotions.isNotEmpty) {
+          final promotionId = activePromotions.first.promotionId;
           print('Promotion ID: $promotionId');
           GetStorage().write('promotion_id', promotionId);
         }
@@ -128,6 +140,7 @@ class HomeController extends GetxController {
     } finally {
       isLoading(false);
     }
+
     isLaundrySelected.value = false;
     isOfferSelected.value = true;
     isGrocerySelected.value = false;

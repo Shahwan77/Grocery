@@ -33,7 +33,7 @@ class User {
       id: json['id']??0,
         address: json['address'] ?? '',
       accessToken: json['access_token']??'',
-        distance: json['distance'] ?? '',// Add this line
+        distance: json['distance'] ?? '0.0 Km',// Add this line
       image: json['image'] ?? '',
     );
   }

@@ -1,120 +1,141 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
-import 'package:grocery/widgets/button/button.dart';
+import '../../../widgets/button/button.dart';
 import '../../Language Selection/language_controller.dart';
 import 'address_controller.dart';
 
-
-
 class AddressPage extends StatelessWidget {
+  final bool changeaddress;
+  AddressPage({super.key, required this.changeaddress});
   final AddressController controller = Get.put(AddressController());
+  final MapController mapController = MapController();
   final WelcomeController languagecontroller = Get.put(WelcomeController());
-
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Container(
-                height: 22.h,
-                width: 26.w,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.r)),
-                child: Center(
-                    child: Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Color(0xFFEB1C23),
-                      size: 20.sp,
-                    ))),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-          iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Color(0xFFEB1C23),
-          title: Text(
-            languagecontroller.addressText,
-            style: TextStyle(color: Colors.white),
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.getCurrentLocation();
+      mapController.move(controller.currentLocation.value, 15.0); // Move map to current location
+    });
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Color(0xFFEB1C23),
+        leading: IconButton(
+          icon: Container(
+              height: 22.h,
+              width: 26.w,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.r)),
+              child: Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_rounded,
+                    color: Color(0xFFEB1C23),
+                    size: 20.sp,
+                  ))),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        title: Text(
+          languagecontroller.addressText,
+          style: TextStyle(
+            color: Colors.white,
           ),
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.grey[100],
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                languagecontroller.youraddressText,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(height: 16.h),
-              TextField(
-                controller: controller.addressController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.location_on, color: Color(0xFFEB1C23)),
-                  labelText: 'Address',
-                  labelStyle: TextStyle(color: Colors.grey[600]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(
-                      color: Color(0xFFEB1C23),
-                      width: 2,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: controller.addressController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.location_on, color: Color(0xFFEB1C23)),
+                    labelText: 'Address',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: const BorderSide(color: Color(0xFFEB1C23), width: 2),
                     ),
+                    hintText: 'Enter your full address here',
                   ),
-                  hintText: 'Enter your full address here',
                 ),
-                style: TextStyle(fontSize: 14.sp),
               ),
-              SizedBox(height: 24.h),
               Obx(() => controller.isLoading.value
-                  ? Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFFEB1C23),
-                ),
-              )
-                  : SizedBox(
-                width: double.infinity,
-                height: 40.h,
-                child: Button(
-                  color: Color(0xFFEB1C23),
-                  text: Text(
-                    languagecontroller.submitText,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ontap: () {
-                    if (controller.addressController.text.isNotEmpty) {
-                      controller.postAddress();
-                    } else {
-                      // Get.snackbar(
-                      //   'Error',
-                      //   'Please enter an address',
-                      //   snackPosition: SnackPosition.BOTTOM,
-                      //   backgroundColor: Colors.red[400],
-                      //   colorText: Colors.white,
-                      // );
-                    }
-                  },
-                ),
+                  ? const Center(child: CircularProgressIndicator(color: Color(0xFFEB1C23)))
+                  : Button(
+                color: Color(0xFFEB1C23),
+                ontap: () async {
+                  await controller.fetchCoordinates(controller.addressController.text);
+                  mapController.move(controller.currentLocation.value, 15.0);
+                },
+                text: Text('Search Address', style: TextStyle(color: Colors.white)),
               )),
+              SizedBox(height: 10.h),
+              SizedBox(
+                height: 350.h,
+                child: Obx(() {
+                  return FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                      initialCenter: controller.currentLocation.value, // Use initialCenter
+                      initialZoom: 15.0, // Use initialZoom
+                      onTap: (tapPosition, point) async {
+                        controller.currentLocation.value = point;
+                        await controller.reverseGeocode(point);
+                      },
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                        subdomains: ['0', '1', '2', '3'],
+                      ),
+
+                      CurrentLocationLayer(),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: controller.currentLocation.value,
+                            width: 40.w,
+                            height: 40.h,
+                            child:  Icon(
+                              Icons.location_pin,
+                              size: 40,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }),
+              ),
+              // Display Latitude and Longitude
+              Obx(() {
+                return Text(
+                  'Latitude: ${controller.currentLocation.value.latitude}, '
+                      'Longitude: ${controller.currentLocation.value.longitude}',
+                  style: TextStyle(fontSize: 10.sp, color: Colors.black),
+                );
+              }),
+              SizedBox(height: 10.h,),
+              Button(
+                color: Color(0xFFEB1C23),
+                ontap: () async {
+                  await controller.postAddress(changeaddress: changeaddress);
+                },
+                text: Text('Submit Address', style: TextStyle(color: Colors.white)),
+              ),
             ],
           ),
         ),

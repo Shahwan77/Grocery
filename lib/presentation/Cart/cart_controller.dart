@@ -85,6 +85,12 @@ class CartController extends GetxController {
       fetchCartItems();
     }
   }
+  int getCartQuantity(int productId) {
+    return cartItems.firstWhere(
+          (item) => item['product_id'] == productId,
+      orElse: () => {'quantity': 0},
+    )['quantity'];
+  }
 
   Future<void> toggleCart(
       int? Id,
@@ -185,7 +191,7 @@ class CartController extends GetxController {
         // } else {
         //   fetchedcartItems.refresh();
         // }
-        saveCartItems();
+       // saveCartItems();
         final token = box.read('access_token');
         if (token != null) {
           postCartItems(fetchedcartItems[itemIndex]);
@@ -275,7 +281,7 @@ class CartController extends GetxController {
       } catch (e) {
         print("Error removing item: $e");
       }
-     // removeItemLocally(productId);
+     removeItemLocally(productId);
     }
   }
 
@@ -283,7 +289,7 @@ class CartController extends GetxController {
     final itemIndex =
     fetchedcartItems.indexWhere((item) => item['product_id'] == productId);
     if (itemIndex >= 0) {
-      print("Deleted item from local cart: ${fetchedcartItems[itemIndex]}");
+      print("Deleted item from fetched cart: ${fetchedcartItems[itemIndex]}");
       fetchedcartItems.removeAt(itemIndex);
       fetchedcartItems.refresh();
     }
@@ -291,8 +297,9 @@ class CartController extends GetxController {
     final localItemIndex =
     cartItems.indexWhere((item) => item['product_id'] == productId);
     if (localItemIndex >= 0) {
-      print("Deleted item from fetched cart: ${cartItems[itemIndex]}");
+      print("Deleted item from local cart: ${cartItems[itemIndex]}");
       cartItems.removeAt(localItemIndex);
+      cartItems.refresh();
       //saveCartItems();
     }
   }
@@ -301,7 +308,8 @@ class CartController extends GetxController {
     final itemIndex = cartItems.indexWhere((item) => item['name'] == itemName);
     if (itemIndex >= 0) {
       cartItems.removeAt(itemIndex);
-      saveCartItems();
+      cartItems.refresh();
+      //saveCartItems();
     }
   }
 

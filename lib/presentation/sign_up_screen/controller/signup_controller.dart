@@ -76,7 +76,7 @@ class SignupController extends GetxController {
           await FirebaseAuth.instance.signInWithCredential(credential);
           Get.snackbar('Success', 'Phone number verified!',
               snackPosition: SnackPosition.BOTTOM);
-          await registerUser(); // Automatically register user on verification
+          await registerUser();
         },
         verificationFailed: (FirebaseAuthException e) {
           Get.snackbar('Error', 'Failed to verify phone number: ${e.message}',
@@ -92,8 +92,8 @@ class SignupController extends GetxController {
         },
       );
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while sending OTP: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      // Get.snackbar('Error', 'An error occurred while sending OTP: $e',
+      //     snackPosition: SnackPosition.BOTTOM);
       print('Error: $e');
     }
   }
@@ -144,7 +144,7 @@ class SignupController extends GetxController {
         },
         body: jsonEncode({
           'name': nameController.text,
-          'address': addressController.text,
+          //'address': addressController.text,
           'mobile_no': mobileNoController.text,
           'email' : emailController.text,
           'password': passwordController.text,
@@ -193,14 +193,13 @@ class SignupController extends GetxController {
         print('Adress: ${addressController.text}');
         print('Mobile No: ${mobileNoController.text}');
         print('Email: ${emailController.text}');
-        Get.offAll(() => CustomBottomNavBar()); // Navigate to desired page
-      } else {
-        Get.snackbar('Error', 'Failed to register user: ${response.body}',
-            snackPosition: SnackPosition.BOTTOM);
+        Get.offAll(() => CustomBottomNavBar());
+        // Get.snackbar('Error', 'Failed to register user: ${response.body}',
+        //     snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      // Get.snackbar('Error', 'An error occurred: $e',
+      //     snackPosition: SnackPosition.BOTTOM);
       print('Error: $e');
     } finally {
       isLoading.value = false;
@@ -211,7 +210,7 @@ class SignupController extends GetxController {
   // Form validation logic
   bool _validateForm() {
     if (nameController.text.isEmpty ||
-        addressController.text.isEmpty ||
+        //addressController.text.isEmpty ||
         mobileNoController.text.isEmpty ||
         emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
@@ -279,8 +278,8 @@ class SignupController extends GetxController {
         isRegistrationSuccessful.value = false; // Set to false on failure
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      // Get.snackbar('Error', 'An error occurred: $e',
+      //     snackPosition: SnackPosition.BOTTOM);
       print('Error: $e');
       isRegistrationSuccessful.value = false; // Set to false on error
     } finally {
@@ -292,7 +291,7 @@ class SignupController extends GetxController {
   @override
   void onClose() {
     nameController.dispose();
-    addressController.dispose();
+   // addressController.dispose();
     mobileNoController.dispose();
     emailController.dispose();
     passwordController.dispose();

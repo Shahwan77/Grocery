@@ -16,19 +16,18 @@ class MostPopularPage extends StatelessWidget {
   final HomeController homeController = Get.put(HomeController());
   final WelcomeController languagecontroller = Get.put(WelcomeController());
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: homeController.fetchPopularCategories(), // Call the fetch method here
+      future:
+          homeController.fetchPopularCategories(), // Call the fetch method here
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (homeController.isLoading.value) {
           return Center(child: CircularProgressIndicator());
         }
 
         if (homeController.popularCategories.isEmpty) {
-          return
-            Center(child: Text(''));
+          return Center(child: Text(''));
         }
 
         return Column(
@@ -42,7 +41,7 @@ class MostPopularPage extends StatelessWidget {
                     languagecontroller.mostText,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: ScreenUtil().screenWidth >600?16.sp:18.sp,
+                      fontSize: ScreenUtil().screenWidth > 600 ? 16.sp : 18.sp,
                     ),
                   ),
                   GestureDetector(
@@ -84,8 +83,10 @@ class MostPopularPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: SizedBox(
-                height: 150.h,
+                height: 138.h,
                 child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: homeController.popularCategories.length,
                   itemBuilder: (context, index) {
@@ -94,53 +95,53 @@ class MostPopularPage extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         Get.to(() => DetailPage(
-                          categoryId: category.id.toString(),
-                          categoryName: category.name,
-                        ));
+                              categoryId: category.id.toString(),
+                              categoryName: category.name,
+                            ));
                       },
-                      child: Container(
-                        width: 140.w,
-                        margin: EdgeInsets.symmetric(horizontal: 8.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [BoxShadow(color: Colors.grey)],
-                          borderRadius: BorderRadius.circular(15.r),
-                          border: Border.all(color: Colors.grey.shade100),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              '${Api.ImageUrl}/categories/${item.image}',
-                            ),
-                            fit: BoxFit.contain,
-                            alignment: Alignment(0, -1),
+                      child: IntrinsicHeight(
+                        child: Container(
+                          width: 128.w,
+                          margin: EdgeInsets.symmetric(horizontal: 8.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [BoxShadow(color: Colors.grey)],
+                            borderRadius: BorderRadius.circular(15.r),
+                            border: Border.all(color: Colors.grey.shade200),
+                            // image: DecorationImage(
+                            //   image: NetworkImage(
+                            //     '${Api.ImageUrl}/categories/${item.image}',
+                            //   ),
+                            //   fit: BoxFit.contain,
+                            //   alignment: Alignment(0, -1),
+                            // ),
                           ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15.r),
-                                ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                '${Api.ImageUrl}/categories/${item.image}',
+                                fit: BoxFit.contain,
+                                width: 100.w,
                               ),
-                            ),
-                            SizedBox(height: 5.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-                              child: Center(
+                              Spacer(),
+                              Center(
                                 child: Text(
                                   item.name,
                                   style: TextStyle(
-                                    fontSize: 12.sp,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                                   textAlign: TextAlign.start,
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: 14.h,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );

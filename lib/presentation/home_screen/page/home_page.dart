@@ -5,9 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:grocery/presentation/Categories/categories_page.dart';
 import 'package:grocery/presentation/Categories/laundry_categories.dart';
 import 'package:grocery/presentation/Most%20Popular/most_popular_page.dart';
-import 'package:grocery/presentation/Popular%20Products/popular_product_page.dart';
 import 'package:grocery/presentation/Promotions/promotion_product.dart';
-import 'package:grocery/presentation/Top%20Discount%20Products/top_discount_page.dart';
 import 'package:grocery/widgets/carousel/cus_carousel.dart';
 import 'package:get/get.dart';
 import '../../../data/apiClient/api.dart';
@@ -15,10 +13,12 @@ import '../../../widgets/app_bar/appbar.dart';
 import '../../AJ.dart';
 import '../../Cart/cart_controller.dart';
 import '../../Language Selection/language_controller.dart';
+import '../../Popular Products/popular_product_page.dart';
 import '../../Promotions/promotion_product_controller.dart';
 import '../../Promotions/promotions_page.dart';
 import '../../Search/search_controller.dart';
 import '../../Search/search_page.dart';
+import '../../Top Discount Products/top_discount_page.dart';
 import '../controller/home_controller.dart';
 
 class HomePage extends StatelessWidget {

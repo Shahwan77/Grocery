@@ -133,18 +133,20 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget _buildIcon(String imagePath, int index, BottomNavController controller) {
     bool isSelected = controller.selectedIndex.value == index;
     return Container(
-      height: 36.h,
+      height: 34.h,
       width: 40.w,
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: isSelected ? Color(0xFFEB1C23) : Colors.transparent,
         borderRadius: BorderRadius.circular(20.r),
       ),
-      child: SvgPicture.asset(
-        imagePath,
-        width: 22.w,
-        height: 22.h,
-        color: isSelected ? Colors.white : Colors.black,
+      child: Center(
+        child: SvgPicture.asset(
+          imagePath,
+          width: 20.w,
+          height: 20.h,
+          color: isSelected ? Colors.white : Colors.black,
+        ),
       ),
     );
   }

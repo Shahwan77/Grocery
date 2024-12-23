@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../data/apiClient/api.dart';
+import '../../data/models/promotion_model.dart';
 
 class CusCarousel extends StatelessWidget {
   const CusCarousel({Key? key}) : super(key: key);
@@ -26,11 +27,11 @@ class CusCarousel extends StatelessWidget {
             }
 
             if (snapshot.hasError) {
-              //return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-            if (carouselController.banners.isEmpty) {
-              //return const Center(child: Text('No promotions available.'));
+            if (carouselController.promotionsList.isEmpty) {
+              return const Center(child: Text('No promotions available.'));
             }
 
             return CarouselSlider(
@@ -43,7 +44,7 @@ class CusCarousel extends StatelessWidget {
                   carouselController.updateIndex(index);
                 },
               ),
-              items: carouselController.banners.map((banner) {
+              items: carouselController.promotionsList.map((promotion) {
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
@@ -51,7 +52,7 @@ class CusCarousel extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
                           image: NetworkImage(
-                            '${Api.ImageUrl}/promotions/$banner',
+                            '${Api.ImageUrl}/promotions/${promotion.banner}',
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -65,13 +66,13 @@ class CusCarousel extends StatelessWidget {
         ),
         SizedBox(height: 10.h), // Space between the carousel and the dots
         Obx(() {
-          if (carouselController.banners.isEmpty) {
+          if (carouselController.promotionsList.isEmpty) {
             return const SizedBox();
           }
 
           return AnimatedSmoothIndicator(
             activeIndex: carouselController.currentIndex.value,
-            count: carouselController.banners.length,
+            count: carouselController.promotionsList.length,
             effect: ScrollingDotsEffect(
               activeDotColor: const Color(0xFFEB1C23),
               dotColor: Colors.grey.shade200,
@@ -84,20 +85,21 @@ class CusCarousel extends StatelessWidget {
             },
           );
         }),
-
       ],
     );
+
   }
 }
 
 class CusCarouselController extends GetxController {
   var currentIndex = 0.obs;
-  var banners = <String>[].obs;
+  var promotionsList = <Promotion>[].obs;
   var isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
+    fetchPromotions();
   }
 
   void updateIndex(int index) {
@@ -116,9 +118,8 @@ class CusCarouselController extends GetxController {
         final jsonData = json.decode(response.body);
         if (jsonData['success']) {
           final promotionData = jsonData['data'] as List;
-          banners.value = promotionData
-              .map((promo) => promo['banner'])
-              .cast<String>()
+          promotionsList.value = promotionData
+              .map((promo) => Promotion.fromJson(promo))
               .toList();
         } else {
           Get.snackbar('Error', 'Failed to fetch promotions');

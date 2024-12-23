@@ -59,28 +59,29 @@ class SignupPage extends StatelessWidget {
                   hint: languagecontroller.nameText,
                 ),
                 SizedBox(height: 24.h),
-                TextField(
-                  controller: signupController.addressController,
-                  maxLines: 4,
-                  minLines: 1,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.location_on, color: Color(0xFFEB1C23)),
-                    labelStyle: TextStyle(color: Colors.grey[600]),
-                    fillColor: Colors.grey.shade200,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide:BorderSide(style: BorderStyle.solid),
-                    ),
-                    hintText: 'Enter your full address here',
-                  ),
-                  style: TextStyle(fontSize: 14.sp),
-                ),
-                SizedBox(height: 24.h),
+                // TextField(
+                //   controller: signupController.addressController,
+                //   maxLines: 4,
+                //   minLines: 1,
+                //   decoration: InputDecoration(
+                //     prefixIcon: Icon(Icons.location_on, color: Color(0xFFEB1C23)),
+                //     labelStyle: TextStyle(color: Colors.grey[600]),
+                //     fillColor: Colors.grey.shade200,
+                //     filled: true,
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(12.r),
+                //       borderSide: BorderSide.none
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(12.r),
+                //       borderSide:BorderSide(style: BorderStyle.solid),
+                //     ),
+                //     hintText: 'Enter your full address here',
+                //   ),
+                //   style: TextStyle(fontSize: 14.sp),
+                // ),
+                // SizedBox(height: 24.h),
+
                 IntlPhoneField(
                   controller: signupController.mobileNoController,
                   decoration: InputDecoration(

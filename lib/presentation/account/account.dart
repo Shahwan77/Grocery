@@ -283,7 +283,7 @@ class Account extends StatelessWidget {
                                               Get.to(LanguagePage());
                                             } else if (accountText ==
                                                 'add_address'.tr) {
-                                              Get.to(AddressPage());
+                                              Get.to(AddressPage(changeaddress: false,));
                                             }
                                             else if (accountText ==
                                                 'change_email'.tr) {

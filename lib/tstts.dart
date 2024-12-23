@@ -1,159 +1,113 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:geocoding/geocoding.dart';
-// import 'package:get/get.dart';
-// import 'package:get_storage/get_storage.dart';
-// import 'package:grocery/data/apiClient/api.dart';
-// import 'package:http/http.dart' as http;
 // import 'dart:convert';
-// import 'package:latlong2/latlong.dart';
-//
-// class AddressController extends GetxController {
-//   var isLoading = false.obs;
-//   var responseMessage = ''.obs;
-//   final TextEditingController addressController = TextEditingController();
-//
-//   var currentLocation = LatLng(0, 0).obs;
-//
-//   Future<void> fetchCoordinates(String address) async {
-//     if (address.isEmpty) return;
-//     try {
-//       isLoading.value = true;
-//       List<Location> locations = await locationFromAddress(address);
-//       if (locations.isNotEmpty) {
-//         currentLocation.value = LatLng(locations[0].latitude, locations[0].longitude);
-//       }
-//     } catch (e) {
-//       Get.snackbar('Error', 'Failed to fetch location: $e');
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-//
-//   Future<void> postAddress() async {
-//     isLoading.value = true;
-//     final String token = GetStorage().read('access_token');
-//     try {
-//       final response = await http.post(
-//         Uri.parse("${Api.ApiUrl}/address"),
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//         body: jsonEncode({"address": addressController.text}),
-//       );
-//
-//       if (response.statusCode == 201) {
-//         Get.back();
-//         responseMessage.value = "Address updated successfully!";
-//       } else {
-//         responseMessage.value =
-//         "Failed to post address: ${response.statusCode}";
-//       }
-//     } catch (e) {
-//       responseMessage.value = "An error occurred: $e";
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-// }
-
 // import 'package:flutter/material.dart';
-// import 'package:flutter_map/flutter_map.dart';
-// import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-// import 'package:latlong2/latlong.dart';
-// import 'package:get/get.dart';
-// import 'address_controller.dart';
+// import 'package:http/http.dart' as http;
 //
-// class AddressPage extends StatelessWidget {
-//   final AddressController controller = Get.put(AddressController());
-//   final MapController mapController = MapController(); // Updated for controlling the map
+// class PaymentGatewayScreen extends StatelessWidget {
+//   final String totalAmount = "100.00"; // Example amount
+//   final String email = "example@example.com"; // User email
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: Colors.white,
 //       appBar: AppBar(
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
+//         title: Text('Telr Payment'),
+//       ),
+//       body: Center(
+//         child: ElevatedButton(
 //           onPressed: () {
-//             Get.back();
+//             openTelrPaymentGateway();
 //           },
-//         ),
-//         backgroundColor: const Color(0xFFEB1C23),
-//         title: const Text(
-//           'Address',
-//           style: TextStyle(color: Colors.white),
+//           child: Text('Pay Now'),
 //         ),
 //       ),
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: TextField(
-//               controller: controller.addressController,
-//               maxLines: 3,
-//               decoration: InputDecoration(
-//                 prefixIcon: const Icon(Icons.location_on, color: Color(0xFFEB1C23)),
-//                 labelText: 'Address',
-//                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-//                 focusedBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(12),
-//                   borderSide: const BorderSide(color: Color(0xFFEB1C23), width: 2),
-//                 ),
-//                 hintText: 'Enter your full address here',
-//               ),
-//             ),
-//           ),
-//           Obx(() => controller.isLoading.value
-//               ? const Center(child: CircularProgressIndicator(color: Color(0xFFEB1C23)))
-//               : ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: const Color(0xFFEB1C23),
-//               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//             ),
-//             onPressed: () async {
-//               await controller.fetchCoordinates(controller.addressController.text);
-//               mapController.move(controller.currentLocation.value, 15.0); // Update map position
-//             },
-//             child: const Text('Submit Address'),
-//           )),
-//           Expanded(
-//             child: Obx(() {
-//               return FlutterMap(
-//                 mapController: mapController, // Use mapController for control
-//                 options: MapOptions(
-//                   initialCenter: controller.currentLocation.value, // Use initialCenter
-//                   initialZoom: 15.0, // Use initialZoom
-//                 ),
-//                 children: [
-//                   TileLayer(
-//                     urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-//                     subdomains: ['a', 'b', 'c'],
-//                   ),
-//                   CurrentLocationLayer(), // Layer to show the user's current location
-//                   MarkerLayer(
-//                     markers: [
-//                       Marker(
-//                         point: controller.currentLocation.value,
-//                         width: 40,
-//                         height: 40,
-//                         child: Icon(
-//                           Icons.location_pin,
-//                           size: 40,
-//                           color: Colors.red,
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               );
-//             }),
-//           ),
+//     );
+//   }
 //
-//         ],
+//   void openTelrPaymentGateway() async {
+//     final paymentRequest = preparePaymentRequest();
+//     final response = await sendPaymentRequest(paymentRequest);
+//
+//     if (response != null) {
+//       // Handle the response from Telr
+//       print('Response: $response');
+//       // Navigate to ResultController or handle the response accordingly
+//     }
+//   }
+//
+//   Map<String, dynamic> preparePaymentRequest() {
+//     return {
+//       "key": "6QsRj-Wxw7S@R6sz",
+//       "store": "22134",
+//       "appId": "123456789",
+//       "appName": "YOUR_APP_NAME",
+//       "appUser ": "123456",
+//       "appVersion": "0.0.1",
+//       "transTest": "1",
+//       "transType": "auth",
+//       "transClass": "paypage",
+//       "transCartid": DateTime.now().millisecondsSinceEpoch.toString(),
+//       "transDesc": "Test API",
+//       "transCurrency": "AED",
+//       "transAmount": totalAmount,
+//       "transLanguage": "en",
+//       "billingEmail": email,
+//       "billingFName": "Hany",
+//       "billingLName": "Sakr",
+//       "billingTitle": "Mr",
+//       "city": "Dubai",
+//       "country": "AE",
+//       "region": "Dubai",
+//       "address": "line 1",
+//       "billingPhone": "8785643",
+//     };
+//   }
+//
+//   Future<Map<String, dynamic>?> sendPaymentRequest(Map<String, dynamic> paymentRequest) async {
+//     final url = 'https://secure.telr.com/gateway/mobile.xml'; // Replace with the correct endpoint
+//     final response = await http.post(
+//       Uri.parse(url),
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: jsonEncode(paymentRequest),
+//     );
+//
+//     if (response.statusCode == 200) {
+//       return jsonDecode(response.body);
+//     } else {
+//       print('Failed to process payment: ${response.body}');
+//       return null;
+//     }
+//   }
+// }
+//
+// class ResultScreen extends StatelessWidget {
+//   final Map<String, dynamic> response;
+//
+//   ResultScreen({required this.response});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Payment Result'),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text('Message: ${response['message']}'),
+//             Text('Trace: ${response['trace']}'),
+//             Text('Status: ${response['status']}'),
+//             Text('AVS: ${response['avs']}'),
+//             Text('Code: ${response['code']}'),
+//             Text('Card Code: ${response['cardCode']}'),
+//             Text('Card Last 4: ${response['cardLast4']}'),
+//             Text('Transaction Reference: ${response['tranRef']}'),
+//           ],
+//         ),
 //       ),
 //     );
 //   }
 // }
-

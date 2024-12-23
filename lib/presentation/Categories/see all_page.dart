@@ -75,7 +75,7 @@ class SeeAllPage extends StatelessWidget {
                           color: Colors.white,
                           border:
                           Border.all(color: Color(0xFFEB1C23), width: 1),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,8 +87,8 @@ class SeeAllPage extends StatelessWidget {
                                     ?Image.network(
                                   '${Api.ImageUrl}/categories/${category.image}',
                                   fit: BoxFit.cover,
-                                  height: 100, // Image height
-                                  width: 100, // Image width
+                                  height: 80.h, // Image height
+                                  width: 80.w, // Image width
                                   errorBuilder: (context, error, stackTrace) => Icon(
                                     Icons.hide_image_outlined,
                                     size: 94.sp,
@@ -102,28 +102,24 @@ class SeeAllPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: ScreenUtil().screenWidth > 600 ? 53.h : 24.7.h,
+                            Spacer(),
+                            Container(
+                              height: 26.h,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFEB1C23),
+                                borderRadius: BorderRadius.only(bottomRight: Radius.circular(18.r),bottomLeft: Radius.circular(18.r))
                               ),
-                              child: Container(
-                                  height: 24.2.h,
-                                  width: 140.w,
-                                  decoration: BoxDecoration(
-                                      color:Color(0xFFEB1C23),
-                                      borderRadius: BorderRadius.vertical(
-                                          bottom: Radius.circular(18))),
-                                  child: Center(
-                                      child: Padding(
-                                        padding:  EdgeInsets.symmetric(horizontal: 6.w),
-                                        child: Text(
-                                          category.name,
-                                          style: TextStyle(
-                                              fontSize: 10.sp, color: Colors.white),
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      )
+                              child: Center(
+                                  child: Padding(
+                                    padding:  EdgeInsets.symmetric(horizontal: 6.w),
+                                    child: Text(
+                                      category.name,
+                                      style: TextStyle(
+                                          fontSize: 10.sp, color: Colors.white),
+                                      maxLines: 4,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   )
                               ),
                             )
