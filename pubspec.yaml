@@ -42,7 +42,7 @@ dependencies:
   smooth_page_indicator:
   get_storage:
   lottie:
-  qr_code_scanner:
+#  qr_code_scanner:
   share_plus:
   intl_phone_field:
   flutter_svg:
@@ -62,12 +62,9 @@ dependencies:
   geocoding:
   flutter_map:
   flutter_compass:
-  flutter_inappwebview: ^6.1.5
-  xml:
+  url_launcher:
+  telr_payment_gateway:
 #  telr_payment_gateway:
-
-
-
 
 dev_dependencies:
   flutter_test:

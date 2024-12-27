@@ -10,6 +10,7 @@ import 'package:grocery/presentation/payment/Telr%20Payment.dart';
 import 'package:grocery/routes/app_pages.dart';
 import 'package:grocery/routes/app_routes.dart';
 import 'firebase.dart';
+import 'kkk.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -56,8 +57,8 @@ class MyApp extends StatelessWidget {
           Locale('es'), // Spanish
         ],
         title: 'Flutter Demo',
-         // home: PaymentPage(),
-         initialRoute: AppRoutes.Splash,
+         home: PaymentScreen(),
+         // initialRoute: AppRoutes.Splash,
          getPages: AppPages.Lists,
         debugShowCheckedModeBanner: false,
       ),
